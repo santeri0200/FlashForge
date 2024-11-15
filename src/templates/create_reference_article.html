@@ -18,6 +18,7 @@
         <br>
         <br>
         <input type="submit" value="Create">
+        {%if error%}<p style="color:red">Virhe: {{ error_message }}</p>{%endif%}
     </form>
 </div>
 {%endbock%}
