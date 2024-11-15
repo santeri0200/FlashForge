@@ -19,10 +19,10 @@ def add_ref():
             year = int(request.form.get("year"))
 
         except ValueError:
-            return render_template("create_reference_article.html", error=True, error_message="Virheelliset tiedot")
+            return render_template("create_reference_article.html", error=True, error_message="Invalid details")
 
         if database.add_article(author, title, journal, year):
             return redirect(url_for("index"))
         else:
-            return render_template("create_reference_article.html", error=True, error_message="Virheelliset tiedot")
+            return render_template("create_reference_article.html", error=True, error_message="Invalid details")
 
