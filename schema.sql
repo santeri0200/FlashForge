@@ -11,4 +11,6 @@ CREATE TABLE IF NOT EXISTS Articles (
     pages   INT,
     month   INT,
     note    TEXT,
+
+    UNIQUE (author, title)
 );
