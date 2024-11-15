@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot generator="Robot 7.1.1 (Python 3.10.12 on linux)" generated="2024-11-15T19:32:32.428741" rpa="false" schemaversion="5">
+<suite id="s1" name="Article Form" source="/home/kuroniil/FlashForge/src/tests/article_form.robot">
+<kw name="Open And Configure Browser" owner="resource" type="SETUP">
+<if>
+<branch type="IF" condition="$BROWSER == 'chrome'">
+<kw name="Evaluate" owner="BuiltIn">
+<msg time="2024-11-15T19:32:32.505573" level="INFO">${options} = &lt;selenium.webdriver.chrome.options.Options object at 0x754a3ccba920&gt;</msg>
+<var>${options}</var>
+<arg>sys.modules['selenium.webdriver'].ChromeOptions()</arg>
+<arg>sys</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="PASS" start="2024-11-15T19:32:32.505321" elapsed="0.000288"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:32:32.503584" elapsed="0.002082"/>
+</branch>
+<branch type="ELSE IF" condition="$BROWSER == 'firefox'">
+<kw name="Evaluate" owner="BuiltIn">
+<var>${options}</var>
+<arg>sys.modules['selenium.webdriver'].FirefoxOptions()</arg>
+<arg>sys</arg>
+<doc>Evaluates the given expression in Python and returns the result.</doc>
+<status status="NOT RUN" start="2024-11-15T19:32:32.505778" elapsed="0.000021"/>
+</kw>
+<status status="NOT RUN" start="2024-11-15T19:32:32.505700" elapsed="0.000132"/>
+</branch>
+<status status="PASS" start="2024-11-15T19:32:32.503568" elapsed="0.002286"/>
+</if>
+<if>
+<branch type="IF" condition="$HEADLESS == 'true'">
+<kw name="Set Selenium Speed" owner="SeleniumLibrary">
+<arg>0</arg>
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<status status="NOT RUN" start="2024-11-15T19:32:32.506026" elapsed="0.000018"/>
+</kw>
+<kw name="Call Method" owner="BuiltIn">
+<arg>${options}</arg>
+<arg>add_argument</arg>
+<arg>--headless</arg>
+<doc>Calls the named method of the given object with the provided arguments.</doc>
+<status status="NOT RUN" start="2024-11-15T19:32:32.506108" elapsed="0.000016"/>
+</kw>
+<status status="NOT RUN" start="2024-11-15T19:32:32.505893" elapsed="0.000259"/>
+</branch>
+<branch type="ELSE">
+<kw name="Set Selenium Speed" owner="SeleniumLibrary">
+<arg>${DELAY}</arg>
+<doc>Sets the delay that is waited after each Selenium command.</doc>
+<status status="PASS" start="2024-11-15T19:32:32.506227" elapsed="0.000188"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:32:32.506173" elapsed="0.000277"/>
+</branch>
+<status status="PASS" start="2024-11-15T19:32:32.505883" elapsed="0.000587"/>
+</if>
+<kw name="Open Browser" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:32.506720" level="INFO">Opening browser 'chrome' to base url 'None'.</msg>
+<arg>browser=${BROWSER}</arg>
+<arg>options=${options}</arg>
+<doc>Opens a new browser instance to the optional ``url``.</doc>
+<status status="PASS" start="2024-11-15T19:32:32.506540" elapsed="0.406334"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:32:32.503429" elapsed="0.409739"/>
+</kw>
+<test id="s1-t1" name="Adding a new article with the form" line="10">
+<kw name="Reset Articles" owner="resource" type="SETUP">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:32.915339" level="INFO">Opening url 'http://localhost:5000/reset_db'</msg>
+<arg>${RESET_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2024-11-15T19:32:32.914930" elapsed="0.561523"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:32:32.914380" elapsed="0.562253"/>
+</kw>
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:33.477151" level="INFO">Opening url 'http://localhost:5000/create_reference/article'</msg>
+<arg>${NEW_ARTICLE_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2024-11-15T19:32:33.476910" elapsed="0.559799"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:34.038920" level="INFO">Typing text 'Matti' into text field 'author'.</msg>
+<arg>author</arg>
+<arg>Matti</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:34.037742" elapsed="1.590627"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:35.629626" level="INFO">Typing text 'Tutkimusartikkeli' into text field 'title'.</msg>
+<arg>title</arg>
+<arg>Tutkimusartikkeli</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:35.629071" elapsed="1.628153"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:37.259069" level="INFO">Typing text 'Scientific American' into text field 'journal'.</msg>
+<arg>journal</arg>
+<arg>Scientific American</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:37.258281" elapsed="1.590498"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:38.851116" level="INFO">Typing text '1989' into text field 'year'.</msg>
+<arg>year</arg>
+<arg>1989</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:38.850177" elapsed="1.590582"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:40.442403" level="INFO">Clicking button 'Create'.</msg>
+<arg>Create</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:40.441695" elapsed="1.607017"/>
+</kw>
+<kw name="Page Should Contain" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:43.077158" level="INFO">Current page contains text 'Welcome page'.</msg>
+<arg>Welcome page</arg>
+<doc>Verifies that current page contains ``text``.</doc>
+<status status="PASS" start="2024-11-15T19:32:42.049702" elapsed="1.027853"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:32:32.913446" elapsed="10.164744"/>
+</test>
+<test id="s1-t2" name="Adding a duplicate article results in error message" line="19">
+<kw name="Reset Articles" owner="resource" type="SETUP">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:43.080675" level="INFO">Opening url 'http://localhost:5000/reset_db'</msg>
+<arg>${RESET_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2024-11-15T19:32:43.080330" elapsed="0.540144"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:32:43.079741" elapsed="0.540891"/>
+</kw>
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:43.621098" level="INFO">Opening url 'http://localhost:5000/create_reference/article'</msg>
+<arg>${NEW_ARTICLE_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2024-11-15T19:32:43.620872" elapsed="0.521922"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:44.144681" level="INFO">Typing text 'Matti' into text field 'author'.</msg>
+<arg>author</arg>
+<arg>Matti</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:44.143847" elapsed="1.595127"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:45.740798" level="INFO">Typing text 'Tutkimusartikkeli' into text field 'title'.</msg>
+<arg>title</arg>
+<arg>Tutkimusartikkeli</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:45.739987" elapsed="1.619433"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:47.360998" level="INFO">Typing text 'Scientific American' into text field 'journal'.</msg>
+<arg>journal</arg>
+<arg>Scientific American</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:47.360361" elapsed="1.635446"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:48.997382" level="INFO">Typing text '1989' into text field 'year'.</msg>
+<arg>year</arg>
+<arg>1989</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:48.996708" elapsed="1.602003"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:50.600973" level="INFO">Clicking button 'Create'.</msg>
+<arg>Create</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:50.600128" elapsed="1.608318"/>
+</kw>
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:52.209393" level="INFO">Opening url 'http://localhost:5000/create_reference/article'</msg>
+<arg>${NEW_ARTICLE_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2024-11-15T19:32:52.208902" elapsed="0.519557"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:52.728994" level="INFO">Typing text 'Matti' into text field 'author'.</msg>
+<arg>author</arg>
+<arg>Matti</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:52.728763" elapsed="1.604310"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:54.334791" level="INFO">Typing text 'Tutkimusartikkeli' into text field 'title'.</msg>
+<arg>title</arg>
+<arg>Tutkimusartikkeli</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:54.334116" elapsed="1.612391"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:55.947970" level="INFO">Typing text 'Scientific American' into text field 'journal'.</msg>
+<arg>journal</arg>
+<arg>Scientific American</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:55.947366" elapsed="1.627622"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:57.576745" level="INFO">Typing text '1989' into text field 'year'.</msg>
+<arg>year</arg>
+<arg>1989</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:57.576012" elapsed="1.593589"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:32:59.171569" level="INFO">Clicking button 'Create'.</msg>
+<arg>Create</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:32:59.170770" elapsed="1.611733"/>
+</kw>
+<kw name="Page Should Contain" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:01.811430" level="INFO">Current page contains text 'Virheelliset tiedot'.</msg>
+<arg>Virheelliset tiedot</arg>
+<doc>Verifies that current page contains ``text``.</doc>
+<status status="PASS" start="2024-11-15T19:33:00.783425" elapsed="1.028382"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:32:43.078871" elapsed="18.733596"/>
+</test>
+<test id="s1-t3" name="The article reference can be viewed after adding" line="34">
+<kw name="Reset Articles" owner="resource" type="SETUP">
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:01.815490" level="INFO">Opening url 'http://localhost:5000/reset_db'</msg>
+<arg>${RESET_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2024-11-15T19:33:01.814976" elapsed="0.529558"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:33:01.814181" elapsed="0.530805"/>
+</kw>
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:02.346155" level="INFO">Opening url 'http://localhost:5000/create_reference/article'</msg>
+<arg>${NEW_ARTICLE_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2024-11-15T19:33:02.345614" elapsed="0.542882"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:02.889677" level="INFO">Typing text 'Teppo' into text field 'author'.</msg>
+<arg>author</arg>
+<arg>Teppo</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:33:02.889171" elapsed="1.610067"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:04.501137" level="INFO">Typing text 'Tepon kirjoitelma' into text field 'title'.</msg>
+<arg>title</arg>
+<arg>Tepon kirjoitelma</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:33:04.500349" elapsed="1.608385"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:06.109347" level="INFO">Typing text 'Scientific American' into text field 'journal'.</msg>
+<arg>journal</arg>
+<arg>Scientific American</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:33:06.109067" elapsed="1.605728"/>
+</kw>
+<kw name="Input Text" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:07.716314" level="INFO">Typing text '2000' into text field 'year'.</msg>
+<arg>year</arg>
+<arg>2000</arg>
+<doc>Types the given ``text`` into the text field identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:33:07.715651" elapsed="1.594165"/>
+</kw>
+<kw name="Click Button" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:09.311648" level="INFO">Clicking button 'Create'.</msg>
+<arg>Create</arg>
+<doc>Clicks the button identified by ``locator``.</doc>
+<status status="PASS" start="2024-11-15T19:33:09.310830" elapsed="1.615828"/>
+</kw>
+<kw name="Go To" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:10.928233" level="INFO">Opening url 'http://localhost:5000/refs'</msg>
+<arg>${REFS_URL}</arg>
+<doc>Navigates the current browser window to the provided ``url``.</doc>
+<status status="PASS" start="2024-11-15T19:33:10.927557" elapsed="0.544971"/>
+</kw>
+<kw name="Page Should Contain" owner="SeleniumLibrary">
+<msg time="2024-11-15T19:33:12.500213" level="INFO">Current page contains text 'Tepon kirjoitelma'.</msg>
+<arg>Tepon kirjoitelma</arg>
+<doc>Verifies that current page contains ``text``.</doc>
+<status status="PASS" start="2024-11-15T19:33:11.473436" elapsed="1.027270"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:33:01.813173" elapsed="10.688522"/>
+</test>
+<kw name="Close Browser" owner="SeleniumLibrary" type="TEARDOWN">
+<doc>Closes the current browser.</doc>
+<status status="PASS" start="2024-11-15T19:33:12.503776" elapsed="0.567337"/>
+</kw>
+<status status="PASS" start="2024-11-15T19:32:32.429325" elapsed="40.641911"/>
+</suite>
+<statistics>
+<total>
+<stat pass="3" fail="0" skip="0">All Tests</stat>
+</total>
+<tag>
+</tag>
+<suite>
+<stat pass="3" fail="0" skip="0" id="s1" name="Article Form">Article Form</stat>
+</suite>
+</statistics>
+<errors>
+</errors>
+</robot>
