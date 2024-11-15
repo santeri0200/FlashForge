@@ -1,8 +1,7 @@
-from config import app, db
+from config import app, db, test_env
 from flask import render_template, request, redirect, url_for
 from modules import database
 from sqlalchemy import text
-
 
 @app.route("/")
 def index():
@@ -32,3 +31,8 @@ def refs():
     refs=database.get_all_articles()
     return render_template("refs.html", references=refs)
 
+if test_env:
+    @app.route("/reset_db")
+    def reset_database():
+        database.reset_db()
+        return "db reset"

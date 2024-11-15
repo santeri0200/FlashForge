@@ -13,3 +13,9 @@ def get_all_articles():
 
     articles = res.fetchall()    
     return articles
+
+def reset_db():
+    print(f"Clearing contents from table articles")
+    sql = text(f"DELETE FROM articles")
+    db.session.execute(sql)
+    db.session.commit()
