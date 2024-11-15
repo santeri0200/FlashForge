@@ -1,6 +1,7 @@
-from config import app
+from config import app, db
 from flask import render_template, request, redirect, url_for
 from modules import database
+from sqlalchemy import text
 
 
 @app.route("/")
@@ -10,7 +11,7 @@ def index():
 @app.route("/create_reference/article", methods=["GET", "POST"])
 def add_ref():
     if request.method == "GET":
-        return render_template("create_reference_article.html", error=False)
+        return render_template("create_reference_article.html")
     if request.method == "POST":
         try:
             author = request.form.get("author")
@@ -25,4 +26,9 @@ def add_ref():
             return redirect(url_for("index"))
         else:
             return render_template("create_reference_article.html", error=True, error_message="Virheelliset tiedot")
+        
+@app.route("/refs")
+def refs():
+    refs=database.get_all_articles()
+    return render_template("refs.html", references=refs)
 
