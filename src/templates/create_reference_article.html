@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Create article{% endblock %}
+{% block content %}
+<div class="content">
+    <form action="/create_reference" method="post">
+        <h3>Author</h3>
+        <textarea name="author" rows="1" cols="50" maxlength="100" required></textarea>
+
+        <h3>Title</h3>
+        <textarea name="title" rows="3" cols="100" maxlength="300" required></textarea>
+
+        <h3>Journal</h3>
+        <textarea name="journal" rows="1" cols="100" maxlength="100" required></textarea>
+
+        <h3>Year</h3>
+        <input type="number" name="year" step="1" min="1900" max="2099" required></input>
+
+        <br>
+        <br>
+        <input type="submit" value="Create">
+    </form>
+</div>
+{%endbock%}
