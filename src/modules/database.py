@@ -11,7 +11,7 @@ def add_article(author, title, journal, year):
     return True
 
 def get_all_articles():
-    sql = text("SELECT author, title, journal, year FROM articles")
+    sql = text("SELECT author, title, journal, year FROM articles ORDER BY id DESC")
     res = db.session.execute(sql)
 
     articles = res.fetchall()    
