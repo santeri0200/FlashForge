@@ -1,4 +1,10 @@
 .env
 venv/
 __pycache__/
+
+# Generated files
 *.png
+*.log
+/log.html
+/report.html
+/output.xml
