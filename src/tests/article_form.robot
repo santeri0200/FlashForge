@@ -14,7 +14,7 @@ Adding a new article with the form
     Input Text  journal  Scientific American
     Input Text  year  1989
     Click Button  Create
-    Page Should Contain  Welcome page
+    Successfully Created Article
 
 Adding a duplicate article results in error message
     Go To  ${NEW_ARTICLE_URL}
@@ -23,13 +23,14 @@ Adding a duplicate article results in error message
     Input Text  journal  Scientific American
     Input Text  year  1989
     Click Button  Create
+    Successfully Created Article
     Go To  ${NEW_ARTICLE_URL}
     Input Text  author  Matti
     Input Text  title  Tutkimusartikkeli
     Input Text  journal  Scientific American
     Input Text  year  1989
     Click Button  Create
-    Page Should Contain  Virheelliset tiedot
+    Failed To Create Article
     
 The article reference can be viewed after adding
     Go To  ${NEW_ARTICLE_URL}
@@ -38,5 +39,6 @@ The article reference can be viewed after adding
     Input Text  journal  Scientific American
     Input Text  year  2000
     Click Button  Create
+    Successfully Created Article
     Go To  ${REFS_URL}
     Page Should Contain  Tepon kirjoitelma

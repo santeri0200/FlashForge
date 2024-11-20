@@ -26,5 +26,17 @@ Open And Configure Browser
     END
     Open Browser  browser=${BROWSER}  options=${options}
 
+Main Page Should Be Open
+    Title Should Be  Index
+    Page Should Contain  Welcome page
+
+Successfully Created Article
+    Main Page Should Be Open
+
+Failed To Create Article
+    Title Should Be  Create article reference
+    Page Should Contain  Virheelliset tiedot
+
+
 Reset Articles
     Go To  ${RESET_URL}
