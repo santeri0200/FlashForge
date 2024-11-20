@@ -32,7 +32,8 @@ def refs():
     return render_template("refs.html", references=refs)
 
 if test_env:
+    print("should be here!!!")
     @app.route("/reset_db")
     def reset_database():
         database.reset_db()
-        return "db reset"
+        return "db reset", 200
