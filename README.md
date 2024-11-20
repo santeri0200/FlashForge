@@ -16,3 +16,5 @@ OHTU miniprojekti
 - CI is successful on the pull request.
 - Pull request is approved by atleast one peer.
 - Pull request merges to master without conflicts.
+
+![Screenshot from 2024-11-20 14-22-15](https://github.com/user-attachments/assets/a0be1591-5cd4-4305-b378-586d864ef504)
