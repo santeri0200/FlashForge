@@ -10,3 +10,9 @@ OHTU miniprojekti
 3. Add the database schema by running `psql -d ohtu < schema.sql`.
 4. Install poetry dependencies with `poetry install`.
 5. Open `poetry shell` and run the flask application with `flask --app src/app run --debug`.
+
+## Definition of Done
+- All subtasks marked on the task are done.
+- CI is successful on the pull request.
+- Pull request is approved by atleast one peer.
+- Pull request merges to master without conflicts.
