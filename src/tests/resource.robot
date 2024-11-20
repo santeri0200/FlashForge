@@ -35,7 +35,7 @@ Successfully Created Article
 
 Failed To Create Article
     Title Should Be  Create article reference
-    Page Should Contain  Virheelliset tiedot
+    Page Should Contain  Invalid details
 
 
 Reset Articles
