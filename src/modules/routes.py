@@ -12,6 +12,7 @@ def add_ref():
     if request.method == "GET":
         return render_template("create_reference_article.html")
     if request.method == "POST":
+        failed = False
         try:
             author = request.form.get("author")
             title = request.form.get("title")
@@ -19,12 +20,31 @@ def add_ref():
             year = int(request.form.get("year"))
 
         except ValueError:
-            return render_template("create_reference_article.html", error=True, error_message="Virheelliset tiedot")
+            return render_template("create_reference_article.html", error=True, error_message="Invalid details")
+        
+        if len(author) > 100:
+            failed = True
+            message = "Name of author cannot exceed 100 characters"
+        
+        if len(title) > 500:
+            failed = True
+            message = "Title cannot exceed 500 characters"
+        
+        if len(journal) > 100:
+            failed = True
+            message = "Name of journal cannot exceed 100 characters"
+        
+        if year < 1900 or year > 2099:
+            failed = True
+            message = "Year must be set between 1900 and 2099"
+        
+        if failed:
+            return render_template("create_reference_article.html", error=True, error_message=message)
 
         if database.add_article(author, title, journal, year):
             return redirect(url_for("index"))
         else:
-            return render_template("create_reference_article.html", error=True, error_message="Virheelliset tiedot")
+            return render_template("create_reference_article.html", error=True, error_message="Invalid details")
         
 @app.route("/refs")
 def refs():
