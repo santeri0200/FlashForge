@@ -3,23 +3,23 @@ from sqlalchemy import text
 
 table_name = "articles"
 def table_exists(name):
-    sql = text("""SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = :name)""")
-    res = db.session.execute(sql, { "name": name })
+    sql = text(f"""SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = '{name}');""")
+    res = db.session.execute(sql)
 
     return res.fetchall()[0][0]
 
-def reset_db():
-    sql = text(f"""DELETE FROM {table_name}""")
+def reset_db(name):
+    sql = text(f"""DELETE FROM {name};""")
     db.session.execute(sql)
     db.session.commit()
 
-def setup_db():
-    if table_exists(table_name):
-        print(f"""Table {table_name} exists, dropping!""")
-        sql = text(f"""DROP TABLE {table_name}""")
-        db.session.execute(sql)
-        db.session.commit()
+def drop_table(name):
+    print(f"""Dropping table {name}!""")
+    sql = text(f"""DROP TABLE {name}""")
+    db.session.execute(sql)
+    db.session.commit()
 
+def create_table(name):
     print(f"""Creating table {table_name}""")
     sql = text(f"""
         CREATE TABLE {table_name} (
@@ -41,6 +41,11 @@ def setup_db():
     """)
     db.session.execute(sql)
     db.session.commit()
+
+def setup_db():
+    if table_exists(table_name):
+        drop_table(table_name)
+    create_table(table_name)
 
 if __name__ == "__main__":
     with app.app_context():
