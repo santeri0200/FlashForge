@@ -57,3 +57,9 @@ if test_env:
     def reset_database():
         database.reset_db()
         return "db reset", 200
+
+@app.route("/result")
+def search_results():
+    query = request.form.get('query')
+    result = database.search_result(query)
+    return render_template("search_results.html", references = result)
