@@ -9,6 +9,7 @@
   <meta name="referrer" content="no-referrer">
   <meta name="color-scheme" content="light dark">
   <meta name="viewport" content="initial-scale=1, width=device-width">
+  <link rel="stylesheet" href="../static/main.css">
 
   <!-- LINKS -->
   <link rel="icon" href="data:,">
@@ -17,8 +18,15 @@
 
 <body>
   <header>
-    <a href="/">Main page</a>
-    <hr>
+    <div class="header-left">
+      <a href="/">Main page</a>
+    </div>
+    <div class="header-right">
+      <form action="/result" method="GET">
+        Search for references: <input type="text" name="query" maxlength="5000">
+        <input type="submit" value="Search">
+      </form>
+    </div>
   </header>
   {% block content %}{% endblock %}
 </body>
