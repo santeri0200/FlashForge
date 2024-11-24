@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Edit article reference{% endblock %}
+{% block content %}
+<div class="content">
+    <form action="/edit/article/{{article.id}}" method="post">
+        <h3>Author</h3>
+        <textarea name="author" rows="1" cols="50" maxlength="100" required>{{article.author}}</textarea>
+
+        <h3>Title</h3>
+        <textarea name="title" rows="3" cols="100" maxlength="300" required>{{article.title}}</textarea>
+
+        <h3>Journal</h3>
+        <textarea name="journal" rows="1" cols="100" maxlength="100" required>{{article.journal}}</textarea>
+
+        <h3>Year</h3>
+        <input type="number" name="year" step="1" min="1900" max="2099" value="{{article.year}}" required></input>
+
+        <br>
+        <br>
+        <input type="submit" value="Save changes"> <input type="button" onclick="location.href='/article/{{article.id}}';" value="Cancel">
+        {%if error%}<p style="color:red">Error: {{ error_message }}</p>{%endif%}
+    </form>
+</div>
+{%endblock%}
