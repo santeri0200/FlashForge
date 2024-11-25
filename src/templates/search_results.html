@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Search results{% endblock %}
 {% block content %}
-{% for res in result %}
 <div class="content">
     {%if references%}
         {% set result_count = references | length %}

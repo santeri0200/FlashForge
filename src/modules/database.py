@@ -41,6 +41,27 @@ def article_from_id(id):
     article = res.fetchone()
     return article
 
+def search_result(query):
+    if query is None:
+        return []
+
+    res = db.session.execute(
+        text("""
+            SELECT author, title, journal, year
+            FROM articles
+            WHERE
+                author LIKE :query
+                OR title LIKE :query
+                OR journal LIKE :query
+                OR CAST(year as TEXT) LIKE :query
+            ORDER BY id DESC
+        """),
+        { "query": f"%{query}%" }
+    )
+
+    articles = res.fetchall()    
+    return articles
+
 def reset_db():
     print(f"Clearing contents from table articles")
     sql = text(f"DELETE FROM articles")

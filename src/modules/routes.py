@@ -60,7 +60,7 @@ if test_env:
 
 @app.route("/result")
 def search_results():
-    query = request.form.get('query')
+    query = request.args.get('query')
     result = database.search_result(query)
     return render_template("search_results.html", references = result)
 
