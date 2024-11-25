@@ -11,6 +11,7 @@
         {% endif %}
         {% for ref in references %}
             <hr>
+            <h2><a href="/article/{{ ref.id }}">View reference</a></h2>
             <ul>
                 <li>Author: {{ ref.author }}</li>
                 <li>Title: {{ ref.title }}</li>

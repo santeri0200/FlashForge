@@ -27,7 +27,7 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
             res = database.get_all_articles()
-            expected = [('Author', 'Title', 'Journal', 2024)]
+            expected = [(res[0].id, 'Author', 'Title', 'Journal', 2024)]
             self.assertEqual(res, expected)
     
     def test_database_add_duplicate(self):

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Article reference{% endblock %}
+{% block content %}
+<div class="content">
+    <h2>{{article.title}}</h2>
+    <ul>
+        <li>Author: {{ article.author }}</li>
+        <li>Journal: {{ article.journal }}</li>
+        <li>Year: {{ article.year }}</li>
+    </ul>
+    <h2>LaTeX entry</h2>
+    <pre>
+{%raw%}
+@article{your_tag_here,
+    title        = {{%endraw%}{{article.title}}{%raw%}},
+    author       = {{%endraw%}{{article.author}}{%raw%}},
+    year         = {%endraw%}{{article.year}}{%raw%},
+    journal      = {{%endraw%}{{article.journal}}{%raw%}}
+    }
+{%endraw%}
+    </pre>
+    <hr>
+    <h3>Options</h3>
+    <a href="/edit/article/{{article.id}}">Edit reference</a> | <a href="/delete/article/{{article.id}}">Delete reference</a>
+</div>
+{%endblock%}

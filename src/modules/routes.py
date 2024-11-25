@@ -63,3 +63,68 @@ def search_results():
     query = request.args.get('query')
     result = database.search_result(query)
     return render_template("search_results.html", references = result)
+
+@app.route("/article/<id>")
+def article_page(id):
+    article = database.article_from_id(id)
+    if article:
+        return render_template("article.html", article=article)
+    else:
+        return "Article not found", 404
+
+@app.route("/edit/article/<id>", methods=["GET", "POST"])
+def article_edit(id):
+    article = database.article_from_id(id)
+    if request.method == "GET":
+        if article:
+            return render_template("edit_article.html", article=article)
+        else:
+            return "Article not found", 404
+    if request.method == "POST":
+        failed = False
+        try:
+            author = request.form.get("author")
+            title = request.form.get("title")
+            journal = request.form.get("journal")
+            year = int(request.form.get("year"))
+
+        except ValueError:
+            return render_template("edit_article.html", error=True, error_message="Invalid details")
+        
+        if len(author) > 100:
+            failed = True
+            message = "Name of author cannot exceed 100 characters"
+        
+        if len(title) > 500:
+            failed = True
+            message = "Title cannot exceed 500 characters"
+        
+        if len(journal) > 100:
+            failed = True
+            message = "Name of journal cannot exceed 100 characters"
+        
+        if year < 1900 or year > 2099:
+            failed = True
+            message = "Year must be set between 1900 and 2099"
+        
+        if failed:
+            return render_template("edit_article.html", article=article, error=True, error_message=message)
+
+        if database.edit_article(id, author, title, journal, year):
+            return redirect(f"/article/{id}")
+        else:
+            return render_template("edit_article.html",article=article, error=True, error_message="Invalid details")
+
+@app.route("/delete/article/<id>", methods=["GET", "POST"])
+def article_delete(id):
+    article = database.article_from_id(id)
+    if request.method == "GET":
+        if article:
+            return render_template("delete_article.html", article=article)
+        else:
+            return "Article not found", 404
+    if request.method == "POST":
+        if database.delete_article(id):
+            return redirect("/")
+        else:
+            return render_template("error.html", error="Something went wrong.")
