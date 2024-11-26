@@ -1,3 +1,4 @@
+# pylint: disable=no-else-return, redefined-builtin, inconsistent-return-statements
 from config import app, test_env
 from flask import render_template, request, redirect, url_for
 from modules import database
@@ -8,6 +9,7 @@ def index():
 
 @app.route("/create_reference/article", methods=["GET", "POST"])
 def add_ref():
+    # pylint: disable=possibly-used-before-assignment
     if request.method == "GET":
         return render_template("create_reference_article.html")
     if request.method == "POST":
@@ -46,7 +48,7 @@ def add_ref():
             return render_template("create_reference_article.html", error=True, error_message="Invalid details")
 
 @app.route("/refs")
-def refs():
+def refs_page():
     refs=database.get_all_articles()
     return render_template("refs.html", references=refs)
 
@@ -73,6 +75,7 @@ def article_page(id):
 
 @app.route("/edit/article/<id>", methods=["GET", "POST"])
 def article_edit(id):
+    # pylint: disable=possibly-used-before-assignment
     article = database.article_from_id(id)
     if request.method == "GET":
         if article:

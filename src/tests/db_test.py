@@ -1,9 +1,11 @@
 import unittest
-import tests.db_helper as db_helper
-import modules.database as database
+from tests import db_helper
+from modules import database
 from config import app
 
 class TestDatabase(unittest.TestCase):
+    """Class for testing the database"""
+
     @classmethod
     def setUpClass(cls):
         cls.app = app

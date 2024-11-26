@@ -1,7 +1,7 @@
 from config import app, db
 from sqlalchemy import text
 
-table_name = "articles"
+TABLE_NAME = "articles"
 def table_exists(name):
     sql = text(f"""SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = '{name}');""")
     res = db.session.execute(sql)
@@ -20,9 +20,10 @@ def drop_table(name):
     db.session.commit()
 
 def create_table(name):
-    print(f"""Creating table {table_name}""")
+    # pylint: disable=unused-argument
+    print(f"""Creating table {TABLE_NAME}""")
     sql = text(f"""
-        CREATE TABLE {table_name} (
+        CREATE TABLE {TABLE_NAME} (
             id SERIAL PRIMARY KEY,
             -- Required fields
             author  TEXT NOT NULL,
@@ -43,9 +44,9 @@ def create_table(name):
     db.session.commit()
 
 def setup_db():
-    if table_exists(table_name):
-        drop_table(table_name)
-    create_table(table_name)
+    if table_exists(TABLE_NAME):
+        drop_table(TABLE_NAME)
+    create_table(TABLE_NAME)
 
 if __name__ == "__main__":
     with app.app_context():

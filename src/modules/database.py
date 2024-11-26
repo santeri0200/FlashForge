@@ -1,3 +1,4 @@
+# pylint: disable=redefined-builtin, bare-except
 from config import db
 from sqlalchemy import text
 
