@@ -1,7 +1,7 @@
-from config import app, db, test_env
+# pylint: disable=no-else-return, redefined-builtin, inconsistent-return-statements
+from config import app, test_env
 from flask import render_template, request, redirect, url_for
 from modules import database
-from sqlalchemy import text
 
 @app.route("/")
 def index():
@@ -9,6 +9,7 @@ def index():
 
 @app.route("/create_reference/article", methods=["GET", "POST"])
 def add_ref():
+    # pylint: disable=possibly-used-before-assignment
     if request.method == "GET":
         return render_template("create_reference_article.html")
     if request.method == "POST":
@@ -21,23 +22,23 @@ def add_ref():
 
         except ValueError:
             return render_template("create_reference_article.html", error=True, error_message="Invalid details")
-        
+
         if len(author) > 100:
             failed = True
             message = "Name of author cannot exceed 100 characters"
-        
+
         if len(title) > 500:
             failed = True
             message = "Title cannot exceed 500 characters"
-        
+
         if len(journal) > 100:
             failed = True
             message = "Name of journal cannot exceed 100 characters"
-        
+
         if year < 1900 or year > 2099:
             failed = True
             message = "Year must be set between 1900 and 2099"
-        
+
         if failed:
             return render_template("create_reference_article.html", error=True, error_message=message)
 
@@ -45,9 +46,9 @@ def add_ref():
             return redirect(url_for("index"))
         else:
             return render_template("create_reference_article.html", error=True, error_message="Invalid details")
-        
+
 @app.route("/refs")
-def refs():
+def refs_page():
     refs=database.get_all_articles()
     return render_template("refs.html", references=refs)
 
@@ -74,6 +75,7 @@ def article_page(id):
 
 @app.route("/edit/article/<id>", methods=["GET", "POST"])
 def article_edit(id):
+    # pylint: disable=possibly-used-before-assignment
     article = database.article_from_id(id)
     if request.method == "GET":
         if article:
@@ -90,23 +92,23 @@ def article_edit(id):
 
         except ValueError:
             return render_template("edit_article.html", error=True, error_message="Invalid details")
-        
+
         if len(author) > 100:
             failed = True
             message = "Name of author cannot exceed 100 characters"
-        
+
         if len(title) > 500:
             failed = True
             message = "Title cannot exceed 500 characters"
-        
+
         if len(journal) > 100:
             failed = True
             message = "Name of journal cannot exceed 100 characters"
-        
+
         if year < 1900 or year > 2099:
             failed = True
             message = "Year must be set between 1900 and 2099"
-        
+
         if failed:
             return render_template("edit_article.html", article=article, error=True, error_message=message)
 

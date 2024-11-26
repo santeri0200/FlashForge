@@ -1,16 +1,18 @@
 import unittest
-import tests.db_helper as db_helper
-import modules.database as database
-from config import app, db
+from tests import db_helper
+from modules import database
+from config import app
 
 class TestDatabase(unittest.TestCase):
+    """Class for testing the database"""
+
     @classmethod
     def setUpClass(cls):
         cls.app = app
         cls.context = cls.app.app_context()
 
         with cls.context:
-          db_helper.setup_db()
+            db_helper.setup_db()
 
     def setUp(self):
         pass
@@ -18,7 +20,7 @@ class TestDatabase(unittest.TestCase):
     def tearDown(self):
         with self.context:
             db_helper.reset_db("articles")
-    
+
     def test_database_add(self):
         with self.context:
             self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
@@ -29,7 +31,7 @@ class TestDatabase(unittest.TestCase):
             res = database.get_all_articles()
             expected = [(res[0].id, 'Author', 'Title', 'Journal', 2024)]
             self.assertEqual(res, expected)
-    
+
     def test_database_add_duplicate(self):
         with self.context:
             self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
