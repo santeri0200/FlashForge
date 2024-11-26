@@ -32,7 +32,7 @@ def get_all_articles():
     sql = text("SELECT id, author, title, journal, year FROM articles ORDER BY id DESC")
     res = db.session.execute(sql)
 
-    articles = res.fetchall()    
+    articles = res.fetchall()
     return articles
 
 def article_from_id(id):
@@ -59,11 +59,11 @@ def search_result(query):
         { "query": f"%{query}%" }
     )
 
-    articles = res.fetchall()    
+    articles = res.fetchall()
     return articles
 
 def reset_db():
-    print(f"Clearing contents from table articles")
-    sql = text(f"DELETE FROM articles")
+    print("Clearing contents from table articles")
+    sql = text("DELETE FROM articles")
     db.session.execute(sql)
     db.session.commit()
