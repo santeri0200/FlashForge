@@ -25,7 +25,7 @@ Run unittest with command: `poetry run pytest`
 
 ### Pylint
 
-Run pylint with command: `pylint src`
+Run pylint with command: `poetry run pylint src`
 
 ### Robot tests
 
