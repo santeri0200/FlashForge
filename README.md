@@ -17,6 +17,20 @@ or
 4. Install poetry dependencies with `poetry install`.
 5. Open `poetry shell` and run the flask application with `flask --app src/app run --debug`.
 
+## Running tests
+
+### Unittest
+
+Run unittest with command: `poetry run pytest`
+
+### Pylint
+
+Run pylint with command: `poetry run pylint src`
+
+### Robot tests
+
+Run Robot tests with command: `sh run_robot_tests.sh`
+
 ## Definition of Done
 - All subtasks marked on the task are done.
 - CI is successful on the pull request.
