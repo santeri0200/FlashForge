@@ -36,3 +36,20 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
             self.assertFalse(database.add_article('Author', 'Title', 'Journal', 2024))
+
+    def test_database_edit_article(self):
+        with self.context:
+            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
+            all_articles = database.get_all_articles()
+            self.assertTrue(database.edit_article(all_articles[0].id, 'Author2', 'Title2', 'Journal2', 2022))
+            expected = (all_articles[0].id, 'Author2', 'Title2', 'Journal2', 2022)
+            res = database.article_from_id(all_articles[0].id)
+            self.assertEqual(res, expected)
+
+    def test_database_delete_article(self):
+        with self.context:
+            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
+            all_articles = database.get_all_articles()
+            self.assertTrue(database.delete_article(all_articles[0].id))
+            res = database.get_all_articles()
+            self.assertEqual(res, [])
