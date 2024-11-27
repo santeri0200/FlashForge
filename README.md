@@ -23,11 +23,11 @@ or
 
 Run unittest with command: `poetry run pytest`
 
-###Pylint
+### Pylint
 
 Run pylint with command: `pylint src`
 
-###Robot tests
+### Robot tests
 
 Run Robot tests with command: sh run_robot_tests.sh
 
