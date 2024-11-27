@@ -37,6 +37,25 @@ class TestDatabase(unittest.TestCase):
             self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
             self.assertFalse(database.add_article('Author', 'Title', 'Journal', 2024))
 
+    def test_database_valid_search(self):
+        with self.context:
+            expected = ('Author', 'Title', 'Journal', 2024)
+            self.assertTrue(database.add_article(*expected))
+            res = database.search_result('Au')
+            self.assertEqual(res, [expected])
+            res = database.search_result('thor')
+            self.assertEqual(res, [expected])
+            res = database.search_result('2024')
+            self.assertEqual(res, [expected])
+
+    def test_database_invalid_search(self):
+        with self.context:
+            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
+            res = database.search_result('Invalid')
+            self.assertEqual(res, [])
+            res = database.search_result('1999')
+            self.assertEqual(res, [])
+
     def test_database_edit_article(self):
         with self.context:
             self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
