@@ -2,6 +2,7 @@
 OHTU miniprojekti
 
 [BACKLOG](https://github.com/users/santeri0200/projects/3)
+[USER STORIES](https://github.com/users/santeri0200/projects/4)
 
 ## Running the project
 1. Run your Postgresql service.
