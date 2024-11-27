@@ -5,6 +5,11 @@ OHTU miniprojekti
 [USER STORIES](https://github.com/users/santeri0200/projects/4)
 
 ## Running the project
+Run the project with `sh run_setup.sh`.
+The script uses database `ohtu` which is the same as the default used without `.env`-file.
+
+or
+
 1. Run your Postgresql service.
 2. Create a database with `createdb`. The default used by the project is `ohtu`.
 > You can combine these to `createdb ohtu`.
