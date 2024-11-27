@@ -29,7 +29,7 @@ Run pylint with command: `pylint src`
 
 ### Robot tests
 
-Run Robot tests with command: sh run_robot_tests.sh
+Run Robot tests with command: `sh run_robot_tests.sh`
 
 ## Definition of Done
 - All subtasks marked on the task are done.
