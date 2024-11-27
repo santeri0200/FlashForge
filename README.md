@@ -38,3 +38,4 @@ Run Robot tests with command: `sh run_robot_tests.sh`
 - Pull request merges to master without conflicts.
 
 ![Screenshot from 2024-11-20 14-22-15](https://github.com/user-attachments/assets/a0be1591-5cd4-4305-b378-586d864ef504)
+![Screenshot from 2024-11-27 14-00-03](https://github.com/user-attachments/assets/95a6da17-7494-4cd8-b92d-f2b62e355663)
