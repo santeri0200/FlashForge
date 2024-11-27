@@ -8,4 +8,4 @@ echo "Installing dependencies"
 poetry install || exit 1
 
 echo "Running flask server"
-flask --app src/app run --debug
+poetry run flask --app src/app run --debug
