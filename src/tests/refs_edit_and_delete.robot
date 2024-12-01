@@ -10,6 +10,7 @@ Editing references successfully
     Input Text  year  1987
     Click Button  Save changes
     Page Should Contain  1987
+    Title Should Be  Article reference
 
 Deleting references successfully
     Click Link  Delete reference
