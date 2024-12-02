@@ -2,19 +2,19 @@
 from config import db
 from sqlalchemy import text
 
-def add_article(author, title, journal, year):
+def add_article(author, title, journal, year, volume, number, pages, month, note):
     try:
-        sql = text("INSERT INTO articles (author, title, journal, year) VALUES (:author, :title, :journal, :year)")
-        db.session.execute(sql, {"author": author, "title": title, "journal": journal, "year": year})
+        sql = text("INSERT INTO articles (author, title, journal, year, volume, number, pages, month, note) VALUES (:author, :title, :journal, :year, :volume, :number, :pages, :month, :note)")
+        db.session.execute(sql, {"author": author, "title": title, "journal": journal, "year": year, "volume": volume, "number": number, "pages": pages, "month": month, "note":note})
     except:
         return False
     db.session.commit()
     return True
 
-def edit_article(id, author, title, journal, year):
+def edit_article(id, author, title, journal, year, volume, number, pages, month, note):
     try:
-        sql = text("UPDATE articles SET author=:author, title=:title, journal=:journal, year=:year WHERE id=:id")
-        db.session.execute(sql, {"author": author, "title": title, "journal": journal, "year": year, "id":id})
+        sql = text("UPDATE articles SET author=:author, title=:title, journal=:journal, year=:year, volume=:volume, number=:number, pages=:pages, month=:month, note=:note  WHERE id=:id")
+        db.session.execute(sql, {"author": author, "title": title, "journal": journal, "year": year, "volume": volume, "number": number, "pages": pages, "month": month, "note":note, "id":id})
     except:
         return False
     db.session.commit()
@@ -37,7 +37,7 @@ def get_all_articles():
     return articles
 
 def article_from_id(id):
-    sql = text(f"SELECT id, author, title, journal, year FROM articles WHERE id={id} LIMIT 1")
+    sql = text(f"SELECT id, author, title, journal, year, volume, number, pages, month, note FROM articles WHERE id={id} LIMIT 1")
     res = db.session.execute(sql)
     article = res.fetchone()
     return article
@@ -48,13 +48,19 @@ def search_result(query):
 
     res = db.session.execute(
         text("""
-            SELECT author, title, journal, year
+            SELECT *
             FROM articles
             WHERE
                 author LIKE :query
                 OR title LIKE :query
                 OR journal LIKE :query
                 OR CAST(year as TEXT) LIKE :query
+                OR volume != NULL
+                OR CAST(volume as TEXT) LIKE :query
+                OR CAST(number as TEXT) LIKE :query
+                OR pages LIKE :query
+                OR month LIKE :query
+                OR note LIKE :query
             ORDER BY id DESC
         """),
         { "query": f"%{query}%" }

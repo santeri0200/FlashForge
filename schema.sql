@@ -8,8 +8,8 @@ CREATE TABLE IF NOT EXISTS Articles (
     -- Optional fields
     volume  INT,
     number  INT,
-    pages   INT,
-    month   INT,
+    pages   TEXT,
+    month   TEXT,
     note    TEXT,
 
     UNIQUE (author, title)
