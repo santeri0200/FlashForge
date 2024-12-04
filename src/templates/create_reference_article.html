@@ -15,7 +15,23 @@
         <h3>Year</h3>
         <input type="number" name="year" step="1" min="1900" max="2099" required></input>
 
+        <h3>Volume*</h3>
+        <input type="number" name="volume" min="0" max="2099"></input>
+
+        <h3>Number*</h3>
+        <input type="number" name="number" min="0" max="2099"></input>
+
+        <h3>Pages*</h3>
+        <textarea name="pages" rows="1" cols="100" maxlength="100"></textarea>
+
+        <h3>Month*</h3>
+        <textarea name="month" rows="1" cols="100" maxlength="100"></textarea>
+
+        <h3>Note*</h3>
+        <textarea name="note" rows="1" cols="100" maxlength="100"></textarea>
+
         <br>
+        <p>*optional</p>
         <br>
         <input type="submit" value="Create">
         {%if error%}<p style="color:red">Error: {{ error_message }}</p>{%endif%}

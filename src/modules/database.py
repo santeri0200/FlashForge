@@ -1,20 +1,57 @@
 # pylint: disable=redefined-builtin, bare-except
+# pylint: disable=too-many-arguments, too-many-positional-arguments
 from config import db
 from sqlalchemy import text
 
-def add_article(author, title, journal, year):
+def add_article(author, title, journal, year, volume, number, pages, month, note):
     try:
-        sql = text("INSERT INTO articles (author, title, journal, year) VALUES (:author, :title, :journal, :year)")
-        db.session.execute(sql, {"author": author, "title": title, "journal": journal, "year": year})
+        sql = text("""
+            INSERT INTO articles
+            VALUES (DEFAULT, :author, :title, :journal, :year, :volume, :number, :pages, :month, :note)
+        """)
+        db.session.execute(sql, {
+            "author": author,
+            "title": title,
+            "journal": journal,
+            "year": year,
+            "volume": volume,
+            "number": number,
+            "pages": pages,
+            "month": month,
+            "note":note
+        })
     except:
         return False
     db.session.commit()
     return True
 
-def edit_article(id, author, title, journal, year):
+def edit_article(id, author, title, journal, year, volume, number, pages, month, note):
     try:
-        sql = text("UPDATE articles SET author=:author, title=:title, journal=:journal, year=:year WHERE id=:id")
-        db.session.execute(sql, {"author": author, "title": title, "journal": journal, "year": year, "id":id})
+        sql = text("""
+            UPDATE articles
+            SET author=:author,
+                title=:title,
+                journal=:journal,
+                year=:year,
+                volume=:volume,
+                number=:number,
+                pages=:pages,
+                month=:month,
+                note=:note
+            WHERE id=:id
+        """)
+        db.session.execute(sql, {
+            "author": author,
+            "title": title,
+            "journal": journal,
+            "year": year,
+            "volume": volume,
+            "number": number,
+            "pages": pages,
+            "month": month,
+            "note":note,
+            "id":id
+        })
     except:
         return False
     db.session.commit()
@@ -30,15 +67,19 @@ def delete_article(id):
     return True
 
 def get_all_articles():
-    sql = text("SELECT id, author, title, journal, year FROM articles ORDER BY id DESC")
+    sql = text("SELECT * FROM articles ORDER BY id DESC")
     res = db.session.execute(sql)
 
     articles = res.fetchall()
     return articles
 
 def article_from_id(id):
-    sql = text(f"SELECT id, author, title, journal, year FROM articles WHERE id={id} LIMIT 1")
-    res = db.session.execute(sql)
+    sql = text("""
+        SELECT id, author, title, journal, year, volume, number, pages, month, note
+        FROM articles
+        WHERE id=:id LIMIT 1
+    """)
+    res = db.session.execute(sql, { "id": id })
     article = res.fetchone()
     return article
 
@@ -48,13 +89,19 @@ def search_result(query):
 
     res = db.session.execute(
         text("""
-            SELECT author, title, journal, year
+            SELECT *
             FROM articles
             WHERE
                 author LIKE :query
                 OR title LIKE :query
                 OR journal LIKE :query
                 OR CAST(year as TEXT) LIKE :query
+                OR volume != NULL
+                OR CAST(volume as TEXT) LIKE :query
+                OR CAST(number as TEXT) LIKE :query
+                OR pages LIKE :query
+                OR month LIKE :query
+                OR note LIKE :query
             ORDER BY id DESC
         """),
         { "query": f"%{query}%" }

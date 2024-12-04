@@ -23,6 +23,22 @@ def add_ref():
         except ValueError:
             return render_template("create_reference_article.html", error=True, error_message="Invalid details")
 
+        try:
+            volume = request.form.get("volume") or None
+            volume = int(volume) if volume else volume
+            number = request.form.get("number") or None
+            number = int(number) if number else number
+            pages = request.form.get("pages") or None
+            month = request.form.get("month") or None
+            note = request.form.get("note") or None
+
+        except ValueError:
+            return render_template(
+                "create_reference_article.html",
+                error=True,
+                error_message="Invalid optional details"
+            )
+
         if len(author) > 100:
             failed = True
             message = "Name of author cannot exceed 100 characters"
@@ -39,10 +55,12 @@ def add_ref():
             failed = True
             message = "Year must be set between 1900 and 2099"
 
+
+
         if failed:
             return render_template("create_reference_article.html", error=True, error_message=message)
 
-        if database.add_article(author, title, journal, year):
+        if database.add_article(author, title, journal, year, volume, number, pages, month, note):
             return redirect(url_for("index"))
         else:
             return render_template("create_reference_article.html", error=True, error_message="Invalid details")
@@ -76,6 +94,7 @@ def article_page(id):
 @app.route("/edit/article/<id>", methods=["GET", "POST"])
 def article_edit(id):
     # pylint: disable=possibly-used-before-assignment
+    # pylint: disable=too-many-return-statements, too-many-branches
     article = database.article_from_id(id)
     if request.method == "GET":
         if article:
@@ -92,6 +111,22 @@ def article_edit(id):
 
         except ValueError:
             return render_template("edit_article.html", error=True, error_message="Invalid details")
+
+        try:
+            volume = request.form.get("volume") or None
+            volume = int(volume) if volume else volume
+            number = request.form.get("number") or None
+            number = int(number) if number else number
+            pages = request.form.get("pages") or None
+            month = request.form.get("month") or None
+            note = request.form.get("note") or None
+
+        except ValueError:
+            return render_template(
+                "create_reference_article.html",
+                error=True,
+                error_message="Invalid optional details"
+            )
 
         if len(author) > 100:
             failed = True
@@ -112,7 +147,7 @@ def article_edit(id):
         if failed:
             return render_template("edit_article.html", article=article, error=True, error_message=message)
 
-        if database.edit_article(id, author, title, journal, year):
+        if database.edit_article(id, author, title, journal, year, volume, number, pages, month, note):
             return redirect(f"/article/{id}")
         else:
             return render_template("edit_article.html",article=article, error=True, error_message="Invalid details")
