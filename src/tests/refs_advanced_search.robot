@@ -8,35 +8,35 @@ Test Setup       Setup Search
 Advanced search by author
     Select From List By Label  field  author
     Input Text  advanced_query  ma
-    Click Button  Search
+    Click Button  Advanced search
     Page Should Contain  Found 1 reference:
     Page Should Contain  Tutkimusartikkeli
 
 Advanced search by title
     Select From List By Label  field  title
     Input Text  advanced_query  kimusart
-    Click Button  Search
+    Click Button  Advanced search
     Page Should Contain  Found 1 reference:
     Page Should Contain  Tutkimusartikkeli
 
 Advanced search by journal
     Select From List By Label  field  journal
     Input Text  advanced_query  merican
-    Click Button  Search
+    Click Button  Advanced search
     Page Should Contain  Found 1 reference:
     Page Should Contain  Tutkimusartikkeli
 
 Advanced search by year
     Select From List By Label  field  year
     Input Text  advanced_query  1989
-    Click Button  Search
+    Click Button  Advanced search
     Page Should Contain  Found 1 reference:
     Page Should Contain  Tutkimusartikkeli
 
 Advanced search non existing
     Select From List By Label  field  all fields
     Input Text  advanced_query  8000
-    Click Button  Search
+    Click Button  Advanced search
     Page Should Contain  No results.
 
 *** Keywords ***
