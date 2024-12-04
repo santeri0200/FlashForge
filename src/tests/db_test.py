@@ -19,7 +19,7 @@ class TestDatabase(unittest.TestCase):
 
     def tearDown(self):
         with self.context:
-            db_helper.reset_db("articles")
+            db_helper.reset_db()
 
     def test_database_add(self):
         with self.context:
