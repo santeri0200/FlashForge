@@ -44,6 +44,7 @@ The article reference can be viewed after adding
     Page Should Contain  Tepon kirjoitelma
 
 The article bibtex can be copied to clipboard
+    [Tags]  clipboard
     Go To  ${NEW_ARTICLE_URL}
     Input Text  author  Teppo
     Input Text  title  Tepon kirjoitelma
