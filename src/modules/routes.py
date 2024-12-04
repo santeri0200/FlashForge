@@ -1,6 +1,6 @@
 # pylint: disable=no-else-return, redefined-builtin, inconsistent-return-statements
 from config import app, test_env
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, Response
 from modules import database
 
 @app.route("/")
@@ -175,3 +175,26 @@ def advanced_search():
         query = request.form.get("advanced_query")
         result = database.advanced_search_result(field, query)
         return render_template("refs.html", references = result)
+
+@app.route("/generate_bib")
+def generate_bib():
+    refs = database.get_all_articles()
+    if refs:
+        entry = ""
+        for ref in refs:
+            entry += f"""@article{{article-{ref.id},\
+            \n\tauthor = {{{ref.author}}},\
+            \n\ttitle = {{{ref.title}}},\
+            \n\tjournal = {{{ref.journal}}},\
+            \n\tyear = {{{ref.year}}}\
+            \n}}\n\n"""
+
+        response = Response(
+            entry,
+            mimetype="application/x-bibtex",
+            content_type="application/x-bibtex; charset=utf-8",
+            headers={"Content-Disposition": "attachment;filename=references.bib"}
+        )
+        return response
+    else:
+        return render_template("error.html", error="No references found.")
