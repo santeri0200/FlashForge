@@ -28,7 +28,7 @@ Open And Configure Browser
 
 Main Page Should Be Open
     Title Should Be  Index
-    Page Should Contain  Welcome page
+    Page Should Contain  Reference Database
 
 Successfully Created Article
     Main Page Should Be Open
