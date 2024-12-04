@@ -1,8 +1,8 @@
 # FlashForge
 OHTU miniprojekti
 
-[BACKLOG](https://github.com/users/santeri0200/projects/3)
-[USER STORIES](https://github.com/users/santeri0200/projects/4)
+[BACKLOG](https://github.com/users/santeri0200/projects/4)
+[SPRINT BACKLOG](https://github.com/users/santeri0200/projects/3)
 
 ## Running the project
 Run the project with `sh run_setup.sh`.
