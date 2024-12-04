@@ -105,7 +105,11 @@ def get_all_articles():
     sql = text("SELECT * FROM articles ORDER BY id DESC")
     res = db.session.execute(sql)
 
-    articles = res.fetchall()
+    # This should throw
+    if not res:
+        return []
+
+    articles = [Article(**row._asdict()) for row in res.fetchall()]
     return articles
 
 def article_from_id(id):
@@ -122,7 +126,11 @@ def get_all_books():
     sql = text("SELECT * FROM Books ORDER BY id DESC")
     res = db.session.execute(sql)
 
-    books = res.fetchall()
+    # This should throw
+    if not res:
+        return []
+
+    books = [Book(**row._asdict()) for row in res.fetchall()]
     return books 
 
 def ref_from_id(ref_type, id):

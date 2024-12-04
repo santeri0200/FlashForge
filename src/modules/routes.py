@@ -36,11 +36,11 @@ def add_ref(ref_type):
 
 @app.route("/refs")
 def refs_page():
-    articles = [Article(**params._asdict()).details() for params in database.get_all_articles()]
-    books = [Book(**params._asdict()).details() for params in database.get_all_books()]
+    articles = [ref.details() for ref in database.get_all_articles()]
+    books    = [ref.details() for ref in database.get_all_books()]
 
     refs = articles + books
-    return render_template("refs.html", references=refs, articles=articles)
+    return render_template("refs.html", references=refs)
 
 if test_env:
     print("should be here!!!")
