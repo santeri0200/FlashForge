@@ -117,7 +117,7 @@ def reset_db():
     db.session.commit()
 
 def advanced_search_result(field, query):
-    if query is "":
+    if query == "":
         return []
 
     if field=="all_fields":
