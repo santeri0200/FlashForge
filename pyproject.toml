@@ -18,6 +18,7 @@ python-dotenv = "^1.0.1"
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"
 pylint = "^3.3.1"
+coverage = "^7.6.8"
 
 [build-system]
 requires = ["poetry-core"]
