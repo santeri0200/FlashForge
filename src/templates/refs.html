@@ -2,7 +2,9 @@
 {% block title %}{{ title or "References" }}{% endblock %}
 {% block content %}
     {%if references%}
-        <a href="/generate_bib">Download .bib file of all references</a>
+        <div class="bib-section">
+            <a href="/generate_bib" class="generate-bib">Download references here as .bib</a>
+        </div>
         {% set result_count = references | length %}
         {% if result_count == 1 %}
             <p>Found 1 reference:</p>
@@ -11,7 +13,7 @@
         {% endif %}
         {% for ref in references %}
             <div class="ref">
-                <h2 class="ref-header"><a href="/article/{{ ref.id }}" name="article">View reference</a></h2>
+                <h2 class="ref-header"><a href="/article/{{ ref.id }}" name="article" style="text-decoration: underline;">View reference</a></h2>
                 <p class="ref-detail">Author: {{ ref.author }}</p>
                 <p class="ref-detail">Title: {{ ref.title }}</p>
                 <p class="ref-detail">Journal: {{ ref.journal }}</p>
