@@ -33,7 +33,11 @@ def add_ref():
             note = request.form.get("note") or None
 
         except ValueError:
-            return render_template("create_reference_article.html", error=True, error_message="Invalid optional details")
+            return render_template(
+                "create_reference_article.html",
+                error=True,
+                error_message="Invalid optional details"
+            )
 
         if len(author) > 100:
             failed = True
@@ -90,6 +94,7 @@ def article_page(id):
 @app.route("/edit/article/<id>", methods=["GET", "POST"])
 def article_edit(id):
     # pylint: disable=possibly-used-before-assignment
+    # pylint: disable=too-many-return-statements, too-many-branches
     article = database.article_from_id(id)
     if request.method == "GET":
         if article:
@@ -117,7 +122,11 @@ def article_edit(id):
             note = request.form.get("note") or None
 
         except ValueError:
-            return render_template("create_reference_article.html", error=True, error_message="Invalid optional details")
+            return render_template(
+                "create_reference_article.html",
+                error=True,
+                error_message="Invalid optional details"
+            )
 
         if len(author) > 100:
             failed = True

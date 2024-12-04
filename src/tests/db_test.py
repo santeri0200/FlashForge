@@ -61,7 +61,18 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
             all_articles = database.get_all_articles()
-            self.assertTrue(database.edit_article(all_articles[0].id, 'Author2', 'Title2', 'Journal2', 2022, None, None, None, None, None))
+            self.assertTrue(database.edit_article(
+                all_articles[0].id,
+                'Author2',
+                'Title2',
+                'Journal2',
+                2022,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ))
             expected = (all_articles[0].id, 'Author2', 'Title2', 'Journal2', 2022, None, None, None, None, None)
             res = database.article_from_id(all_articles[0].id)
             self.assertEqual(res, expected)

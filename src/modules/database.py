@@ -1,11 +1,25 @@
 # pylint: disable=redefined-builtin, bare-except
+# pylint: disable=too-many-arguments, too-many-positional-arguments
 from config import db
 from sqlalchemy import text
 
 def add_article(author, title, journal, year, volume, number, pages, month, note):
     try:
-        sql = text("INSERT INTO articles (author, title, journal, year, volume, number, pages, month, note) VALUES (:author, :title, :journal, :year, :volume, :number, :pages, :month, :note)")
-        db.session.execute(sql, {"author": author, "title": title, "journal": journal, "year": year, "volume": volume, "number": number, "pages": pages, "month": month, "note":note})
+        sql = text("""
+            INSERT INTO articles
+            VALUES (DEFAULT, :author, :title, :journal, :year, :volume, :number, :pages, :month, :note)
+        """)
+        db.session.execute(sql, {
+            "author": author,
+            "title": title,
+            "journal": journal,
+            "year": year,
+            "volume": volume,
+            "number": number,
+            "pages": pages,
+            "month": month,
+            "note":note
+        })
     except:
         return False
     db.session.commit()
@@ -13,8 +27,31 @@ def add_article(author, title, journal, year, volume, number, pages, month, note
 
 def edit_article(id, author, title, journal, year, volume, number, pages, month, note):
     try:
-        sql = text("UPDATE articles SET author=:author, title=:title, journal=:journal, year=:year, volume=:volume, number=:number, pages=:pages, month=:month, note=:note  WHERE id=:id")
-        db.session.execute(sql, {"author": author, "title": title, "journal": journal, "year": year, "volume": volume, "number": number, "pages": pages, "month": month, "note":note, "id":id})
+        sql = text("""
+            UPDATE articles
+            SET author=:author,
+                title=:title,
+                journal=:journal,
+                year=:year,
+                volume=:volume,
+                number=:number,
+                pages=:pages,
+                month=:month,
+                note=:note
+            WHERE id=:id
+        """)
+        db.session.execute(sql, {
+            "author": author,
+            "title": title,
+            "journal": journal,
+            "year": year,
+            "volume": volume,
+            "number": number,
+            "pages": pages,
+            "month": month,
+            "note":note,
+            "id":id
+        })
     except:
         return False
     db.session.commit()
@@ -37,8 +74,12 @@ def get_all_articles():
     return articles
 
 def article_from_id(id):
-    sql = text(f"SELECT id, author, title, journal, year, volume, number, pages, month, note FROM articles WHERE id={id} LIMIT 1")
-    res = db.session.execute(sql)
+    sql = text("""
+        SELECT id, author, title, journal, year, volume, number, pages, month, note
+        FROM articles
+        WHERE id=:id LIMIT 1
+    """)
+    res = db.session.execute(sql, { "id": id })
     article = res.fetchone()
     return article
 
