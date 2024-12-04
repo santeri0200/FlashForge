@@ -41,9 +41,9 @@ jobs:
       - name: Run database tests
         run: poetry run pytest src/tests/db_test.py
       - name: Run coverage
-        uses: codecov/test-results-action@v1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Setup chromedriver
         uses: nanasess/setup-chromedriver@master
       - run: |
