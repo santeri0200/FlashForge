@@ -174,4 +174,4 @@ def advanced_search():
         field = request.form.get("field")
         query = request.form.get("advanced_query")
         result = database.advanced_search_result(field, query)
-        return render_template("search_results.html", references = result)
+        return render_template("refs.html", references = result)
