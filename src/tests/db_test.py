@@ -41,24 +41,26 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             expected = ('Author', 'Title', 'Journal', 2024, None, None, None, None, None)
             self.assertTrue(database.add_article(*expected))
-            res = database.search_result('Au')
+            (res, _) = database.search_result('Au')
             print(res)
             self.assertEqual(res, [(res[0].id, *expected)])
-            res = database.search_result('thor')
+            (res, _) = database.search_result('thor')
             self.assertEqual(res, [(res[0].id, *expected)])
-            res = database.search_result('2024')
+            (res, _) = database.search_result('2024')
             self.assertEqual(res, [(res[0].id, *expected)])
 
     def test_database_invalid_search(self):
         with self.context:
             self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
-            res = database.search_result('Invalid')
+            (res, _) = database.search_result('Invalid')
             self.assertEqual(res, [])
-            res = database.search_result('1999')
+            (res, _) = database.search_result('1999')
             self.assertEqual(res, [])
 
     def test_database_edit_article(self):
         with self.context:
+            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
+            all_articles = database.get_all_articles()
             self.assertTrue(database.edit_article(
                 all_articles[0].id,
                 'Author2',
