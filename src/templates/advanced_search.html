@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Advanced search{% endblock %}
+{% block content %}
+<h2>Advanced search</h2>
+<br>
+<form action="/advanced_search" method="POST">
+  <select name="field">
+    <option value="all_fields">all fields</option>
+    <option value="author">author</option>
+    <option value="title">title</option>
+    <option value="journal">journal</option>
+    <option value="year">year</option>
+  </select>
+  <input type="text" name="advanced_query" maxlength="5000">
+  <input type="submit" value="Search">
+</form>
+{%endblock%}

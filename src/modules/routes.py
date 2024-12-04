@@ -165,3 +165,13 @@ def article_delete(id):
             return redirect("/")
         else:
             return render_template("error.html", error="Something went wrong.")
+
+@app.route("/advanced_search", methods=["GET", "POST"])
+def advanced_search():
+    if request.method == "GET":
+        return render_template("advanced_search.html")
+    if request.method == "POST":
+        field = request.form.get("field")
+        query = request.form.get("advanced_query")
+        result = database.advanced_search_result(field, query)
+        return render_template("search_results.html", references = result)
