@@ -84,3 +84,18 @@ class TestDatabase(unittest.TestCase):
             self.assertTrue(database.delete_article(all_articles[0].id))
             res = database.get_all_articles()
             self.assertEqual(res, [])
+
+    def test_advanced_search(self):
+        with self.context:
+            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
+            expected = ('Author', 'Title', 'Journal', 2024)
+            res = database.advanced_search_result('author', 'au')
+            self.assertEqual(res, [expected])
+            res = database.advanced_search_result('title', 'tle')
+            self.assertEqual(res, [expected])
+            res = database.advanced_search_result('journal', 'rnal')
+            self.assertEqual(res, [expected])
+            res = database.advanced_search_result('year', '202')
+            self.assertEqual(res, [expected])
+            res = database.advanced_search_result('year', '1999')
+            self.assertEqual(res, [])
