@@ -1,5 +1,6 @@
 # FlashForge
 OHTU miniprojekti
+[![codecov](https://codecov.io/gh/santeri0200/FlashForge/graph/badge.svg?token=D9VO9WIV8L)](https://codecov.io/gh/santeri0200/FlashForge)
 
 [BACKLOG](https://github.com/users/santeri0200/projects/4)
 [SPRINT BACKLOG](https://github.com/users/santeri0200/projects/3)
