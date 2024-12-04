@@ -87,7 +87,7 @@ class TestDatabase(unittest.TestCase):
 
     def test_advanced_search(self):
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024))
+            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
             expected = ('Author', 'Title', 'Journal', 2024)
             res = database.advanced_search_result('author', 'au')
             self.assertEqual(res, [expected])
