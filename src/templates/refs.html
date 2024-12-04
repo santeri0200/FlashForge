@@ -12,7 +12,7 @@
             <div class="ref">
                 <h2><a href="/{{ ref.type }}/{{ ref.id }}">View reference</a></h2>
                 {% for detail in ref %}
-                    {% if detail != "id" and ref[detail] != None %}
+                    {% if detail != "id" and detail != "type" and ref[detail] != None %}
                         <p class="ref-detail">{{ detail | capitalize }}: {{ ref[detail] or "-" }}</li>
                     {% endif %}
                 {% endfor %}

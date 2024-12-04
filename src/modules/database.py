@@ -4,36 +4,24 @@ from config import db
 from sqlalchemy import text
 from tests import db_helper
 
-def add_reference(ref_type, *argv):
-    if ref_type == "article":
-        author, title, journal, year, volume, number, pages, month, note = argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]
-        if add_article(author, title, journal, year, volume, number, pages, month, note):
+def add_reference(ref_type, ref):
+    if ref.type == "article":
+        if add_article(ref):
             return True
         return False
 
-    if ref_type == "book":
-        author, year, title, publisher, address = argv[0], argv[1], argv[2], argv[3], argv[4]
-        if add_book(author, year, title, publisher, address):
+    if ref.type == "book":
+        if add_book(ref):
             return True
         return False
 
-def add_article(author, title, journal, year, volume, number, pages, month, note):
+def add_article(ref):
     try:
         sql = text("""
             INSERT INTO articles
             VALUES (DEFAULT, :author, :title, :journal, :year, :volume, :number, :pages, :month, :note)
         """)
-        db.session.execute(sql, {
-            "author": author,
-            "title": title,
-            "journal": journal,
-            "year": year,
-            "volume": volume,
-            "number": number,
-            "pages": pages,
-            "month": month,
-            "note":note
-        })
+        db.session.execute(sql, ref.details())
     except:
         return False
     db.session.commit()
@@ -71,10 +59,10 @@ def edit_article(id, author, title, journal, year, volume, number, pages, month,
     db.session.commit()
     return True
 
-def add_book(author, year, title, publisher, address):
+def add_book(ref):
     try:
         sql = text("INSERT INTO books (author, year, title, publisher, address) VALUES (:author, :year, :title, :publisher, :address)")
-        db.session.execute(sql, {"author": author, "year": year, "title": title, "publisher": publisher, "address": address})
+        db.session.execute(sql, ref.details())
     except:
         return False
     db.session.commit()

@@ -10,60 +10,34 @@ def index():
 
 @app.route("/create_reference/<ref_type>", methods=["GET", "POST"])
 def add_ref(ref_type):
-    # pylint: disable=possibly-used-before-assignment
-    if ref_type == "article":
-        if request.method == "GET":
-            return render_template("create_reference_article.html")
-        if request.method == "POST":
-            try:
-                author = request.form.get("author")
-                title = request.form.get("title")
-                journal = request.form.get("journal")
-                year = int(request.form.get("year"))
-                volume = request.form.get("volume") or None
-                volume = int(volume) if volume else volume
-                number = request.form.get("number") or None
-                number = int(number) if number else number
-                pages = request.form.get("pages") or None
-                month = request.form.get("month") or None
-                note = request.form.get("note") or None
-            except ValueError:
+    match ref_type:
+        case "article":
+            if request.method == "GET":
+                return render_template("create_reference_article.html")
+
+            ref = Article(**(request.form))
+            if not ref.validate():
                 return render_template("create_reference_article.html", error=True, error_message="Invalid details")
-            failed, message = validate.validate_ref("article", author, title, journal, year)
-            if failed:
-                return render_template("create_reference_article.html", error=True, error_message=message)
-        
-            if database.add_reference(ref_type, author, title, journal, year, volume, number, pages, month, note):
-                return redirect(url_for("index"))
-            else:
+            elif not database.add_reference(ref_type, ref):
                 return render_template("create_reference_article.html", error=True, error_message="Invalid details")
-    
-    if ref_type == "book":
-        if request.method == "GET":
-            return render_template("create_reference_book.html")
-        if request.method == "POST":
-            try:
-                author = request.form.get("author")
-                title = request.form.get("title")
-                publisher = request.form.get("publisher")
-                year = int(request.form.get("year"))
-                address = request.form.get("address")
-            except ValueError:
+        case "book":
+            if request.method == "GET":
+                return render_template("create_reference_book.html")
+
+            ref = Book(**(request.form))
+            if not ref.validate():
                 return render_template("create_reference_book.html", error=True, error_message="Invalid details")
-            failed, message = validate.validate_ref("book", author, year, title, publisher, address)
-            if failed:
-                return render_template("create_reference_article.html", error=True, error_message=message)
-            if database.add_reference(ref_type, author, year, title, publisher, address):
-                return redirect(url_for("index"))
-            else:
+            elif not database.add_reference(ref_type, ref):
                 return render_template("create_reference_book.html", error=True, error_message="Invalid details")
+        case _:
+            return render_template("error.html", error="Invalid reference type!")
+
+    return redirect(url_for("index"))
 
 @app.route("/refs")
 def refs_page():
-    refs = database.get_all_articles()
-    
-    articles = [Article(*params).details() for params in database.get_all_articles()]
-    books = [Book(*params).details() for params in database.get_all_books()]
+    articles = [Article(**params._asdict()).details() for params in database.get_all_articles()]
+    books = [Book(**params._asdict()).details() for params in database.get_all_books()]
 
     refs = articles + books
     return render_template("refs.html", references=refs, articles=articles)
@@ -79,8 +53,8 @@ if test_env:
 def search_results():
     query = request.args.get('query')
     articles, books = database.search_result(query)
-    books = [Book(*params).details() for params in books]
-    articles = [Article(*params).details() for params in articles]
+    books = [Book(**params._asdict()).details() for params in books]
+    articles = [Article(**params._asdict()).details() for params in articles]
     return render_template("refs.html", references=books+articles, title="Search results")
 
 @app.route("/<ref_type>/<id>")
@@ -94,9 +68,9 @@ def ref_page(ref_type, id):
 @app.route("/edit/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_edit(ref_type, id):
     if ref_type == "article":
-        ref = Article(*database.ref_from_id(ref_type, id)).details()
+        ref = Article(**database.ref_from_id(ref_type, id)._asdict()).details()
     elif ref_type == "book":
-        ref = Book(*database.ref_from_id(ref_type, id)).details()
+        ref = Book(**database.ref_from_id(ref_type, id)._asdict()).details()
 
     if request.method == "GET":
         if ref:
@@ -139,7 +113,7 @@ def reference_edit(ref_type, id):
 @app.route("/delete/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_delete(ref_type, id):
     if ref_type == "article":
-        article = Article(*database.ref_from_id(ref_type, id)).details()
+        article = Article(**database.ref_from_id(ref_type, id)._asdict()).details()
         if request.method == "GET":
             if article:
                 return render_template("delete_ref.html", ref=article)
@@ -151,7 +125,7 @@ def reference_delete(ref_type, id):
             else:
                 return render_template("error.html", error="Something went wrong.")
     if ref_type == "book":
-        book = Book(*database.ref_from_id(ref_type, id)).details()
+        book = Book(**database.ref_from_id(ref_type, id)._asdict()).details()
         if request.method == "GET":
             if book:
                 return render_template("delete_ref.html", ref=book)
