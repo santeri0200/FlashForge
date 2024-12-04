@@ -1,31 +1,28 @@
 {% extends "base.html" %}
-{% block title %}References{% endblock %}
+{% block title %}{{ title or "References" }}{% endblock %}
 {% block content %}
-<div class="content">
     {%if references%}
-    {% set result_count = references | length %}
-    {% if result_count == 1 %}
-    <p>Found 1 reference:</p>
-    {% else %}
-    <p>Found {{ result_count }} references:</p>
-    {% endif %}
-    {% for ref in references %}
-    <hr>
-    <h2><a href="/article/{{ ref.id }}">View reference</a></h2>
-    <ul>
-        <li>Author: {{ ref.author }}</li>
-        <li>Title: {{ ref.title }}</li>
-        <li>Journal: {{ ref.journal }}</li>
-        <li>Year: {{ ref.year }}</li>
-        <li>Volume: {{ ref.volume or ""}}</li>
-        <li>Number: {{ ref.number or ""}}</li>
-        <li>Pages: {{ ref.pages or ""}}</li>
-        <li>Month: {{ ref.month or ""}}</li>
-        <li>Note: {{ ref.note or ""}}</li>
-    </ul>
-    {% endfor %}
+        {% set result_count = references | length %}
+        {% if result_count == 1 %}
+            <p>Found 1 reference:</p>
+        {% else %}
+            <p>Found {{ result_count }} references:</p>
+        {% endif %}
+        {% for ref in references %}
+            <div class="ref">
+                <h2 class="ref-header"><a href="/article/{{ ref.id }}">View reference</a></h2>
+                <p class="ref-detail">Author: {{ ref.author }}</p>
+                <p class="ref-detail">Title: {{ ref.title }}</p>
+                <p class="ref-detail">Journal: {{ ref.journal }}</p>
+                <p class="ref-detail">Year: {{ ref.year }}</p>
+                <p class="ref-detail">Volume: {{ ref.volume or ""}}</p>
+                <p class="ref-detail">Number: {{ ref.number or ""}}</p>
+                <p class="ref-detail">Pages: {{ ref.pages or ""}}</p>
+                <p class="ref-detail">Month: {{ ref.month or ""}}</p>
+                <p class="ref-detail">Note: {{ ref.note or ""}}</p>
+            </div>
+        {% endfor %}
     {%else%}
     <p>No results.</p>
     {%endif%}
-</div>
 {%endblock%}
