@@ -33,8 +33,8 @@ def create_table(name):
             -- Optional fields
             volume  INT,
             number  INT,
-            pages   INT,
-            month   INT,
+            pages   TEXT,
+            month   TEXT,
             note    TEXT,
 
             UNIQUE (author, title)
