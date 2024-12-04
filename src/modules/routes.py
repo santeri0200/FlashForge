@@ -110,7 +110,14 @@ def reference_edit(ref_type, id):
                 title = request.form.get("title")
                 journal = request.form.get("journal")
                 year = int(request.form.get("year"))
-                details = {"author": author, "title": title, "journal": journal, "year": year}
+                volume = request.form.get("volume") or None
+                volume = int(volume) if volume else volume
+                number = request.form.get("number") or None
+                number = int(number) if number else number
+                pages = request.form.get("pages") or None
+                month = request.form.get("month") or None
+                note = request.form.get("note") or None
+                details = {"author": author, "title": title, "journal": journal, "year": year, "volume": volume, "number": number, "pages": pages, "month": month, "note": note}
             elif ref_type == "book":
                 author = request.form.get("author")
                 title = request.form.get("title")
@@ -119,7 +126,7 @@ def reference_edit(ref_type, id):
                 address = request.form.get("address")
                 details = {"author": author, "year": year, "title": title, "publisher": publisher, "address": address}
         except ValueError:
-            return render_template("edit_ref.html", error=True, error_message="Invalid details")
+            return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
 
         failed, message = validate.validate_ref(ref_type, *list(details.values()))
         if failed:
