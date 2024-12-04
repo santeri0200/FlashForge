@@ -40,3 +40,7 @@ Run Robot tests with command: `sh run_robot_tests.sh`
 
 ![Screenshot from 2024-11-20 14-22-15](https://github.com/user-attachments/assets/a0be1591-5cd4-4305-b378-586d864ef504)
 ![Screenshot from 2024-11-27 14-00-03](https://github.com/user-attachments/assets/95a6da17-7494-4cd8-b92d-f2b62e355663)
+![Screenshot from 2024-12-04 14-29-17](https://github.com/user-attachments/assets/9f53c2f2-cc85-42b3-82f9-128381c47551)
+
+
+
