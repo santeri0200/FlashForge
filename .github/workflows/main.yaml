@@ -35,7 +35,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install clipboard tool
-        run: sudo apt-get install -y xselect
+        run: sudo apt-get install -y xsel
       - name: Install Poetry
         run: pip install poetry
       - name: Install dependencies
