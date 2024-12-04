@@ -3,7 +3,7 @@ Resource         resource.robot
 Suite Setup      Open And Configure Browser
 Suite Teardown   Close Browser
 Test Setup       Reset Articles
-
+Library    pyperclip
 
 
 *** Test Cases ***
@@ -42,3 +42,24 @@ The article reference can be viewed after adding
     Successfully Created Article
     Go To  ${REFS_URL}
     Page Should Contain  Tepon kirjoitelma
+
+The article bibtex can be copied to clipboard
+    [Tags]  clipboard
+    Go To  ${NEW_ARTICLE_URL}
+    Input Text  author  Teppo
+    Input Text  title  Tepon kirjoitelma
+    Input Text  journal  Scientific American
+    Input Text  year  2000
+    Click Button  Create
+    Successfully Created Article
+    Go To  ${REFS_URL}
+    Click Link  article
+    Click Button  Copy LaTeX
+    ${clipboard_text}=    Get Clipboard Text
+    Should Contain    ${clipboard_text}    Tepon kirjoitelma
+
+*** Keywords ***
+Get Clipboard Text
+    ${text}=    Evaluate    pyperclip.paste()
+    RETURN    ${text}
+
