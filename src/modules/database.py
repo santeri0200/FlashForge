@@ -3,17 +3,15 @@
 from config import db
 from sqlalchemy import text
 from tests import db_helper
+from entities.reference import Article, Book
 
 def add_reference(ref_type, ref):
-    if ref.type == "article":
-        if add_article(ref):
-            return True
-        return False
+    if ref.type == "article" and add_article(ref):
+        return True
+    elif ref.type == "book" and add_book(ref):
+        return True
 
-    if ref.type == "book":
-        if add_book(ref):
-            return True
-        return False
+    return False
 
 def add_article(ref):
     try:
@@ -27,7 +25,7 @@ def add_article(ref):
     db.session.commit()
     return True
 
-def edit_article(id, author, title, journal, year, volume, number, pages, month, note):
+def edit_article(ref):
     try:
         sql = text("""
             UPDATE articles
@@ -42,18 +40,7 @@ def edit_article(id, author, title, journal, year, volume, number, pages, month,
                 note=:note
             WHERE id=:id
         """)
-        db.session.execute(sql, {
-            "author": author,
-            "title": title,
-            "journal": journal,
-            "year": year,
-            "volume": volume,
-            "number": number,
-            "pages": pages,
-            "month": month,
-            "note":note,
-            "id":id
-        })
+        db.session.execute(sql, ref.details())
     except:
         return False
     db.session.commit()
@@ -102,7 +89,11 @@ def delete_reference(ref_type, id):
     return True
 
 def get_all_articles():
-    sql = text("SELECT * FROM articles ORDER BY id DESC")
+    sql = text("""
+        SELECT *
+        FROM articles
+        ORDER BY id DESC
+    """)
     res = db.session.execute(sql)
 
     # This should throw
@@ -114,12 +105,13 @@ def get_all_articles():
 
 def article_from_id(id):
     sql = text("""
-        SELECT id, author, title, journal, year, volume, number, pages, month, note
+        SELECT *
         FROM articles
         WHERE id=:id LIMIT 1
     """)
     res = db.session.execute(sql, { "id": id })
-    article = res.fetchone()
+
+    article = Article(**res.fetchone()._asdict())
     return article
 
 def get_all_books():

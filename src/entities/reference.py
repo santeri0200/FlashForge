@@ -1,4 +1,15 @@
-class Article:
+from abc import ABC, abstractmethod
+
+class Reference(ABC):
+    @abstractmethod
+    def validate(self):
+        pass
+
+    @abstractmethod
+    def details(self):
+        pass
+
+class Article(Reference):
     def __init__(self, id=None, **kwargs):
         self.type     = "article"
         self.required = ["author", "title", "journal", "year"]
@@ -29,7 +40,7 @@ class Article:
     def details(self):
         return {key: val if key in self.required else val or None for key, val in self.fields.items()}
 
-class Book:
+class Book(Reference):
     def __init__(self, id=None, **kwargs):
         self.type     = "book"
         self.required = ["author", "title", "publisher", "year", "address"]
