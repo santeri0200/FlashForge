@@ -31,24 +31,24 @@
     </div></pre>
     <button id="copy-button">Copy LaTeX</button> <p id="copied" style="display: none; color: lime">Copied!</p>
     <div class="ref">
+        <button id="copy-button">Copy LaTeX</button> <p id="copied" style="display: none; color: lime">Copied!</p>
+        <hr>
         <h3>Options</h3>
         <a href="/edit/article/{{article.id}}">Edit reference</a> | <a href="/delete/article/{{article.id}}">Delete reference</a>
     </div>
-</div>
+    <script>
+        const latex = document.getElementById("latex");
+        const copyButton = document.getElementById("copy-button");
 
-<script>
-    const latex = document.getElementById("latex");
-    const copyButton = document.getElementById("copy-button");
-
-    copyButton.addEventListener("click", function(){
-        navigator.clipboard.writeText(latex.textContent.trim()).then(() => {
-            copied.style.display = "block";
-            setTimeout(function() {
-                copied.style.display = "none";
-            }, 2000);
-        }).catch(err => {
-            console.error("Unable to copy text", err);
+        copyButton.addEventListener("click", function(){
+            navigator.clipboard.writeText(latex.textContent.trim()).then(() => {
+                copied.style.display = "block";
+                setTimeout(function() {
+                    copied.style.display = "none";
+                }, 2000);
+            }).catch(err => {
+                console.error("Unable to copy text", err);
+            });
         });
-    });
-</script>
+    </script>
 {%endblock%}

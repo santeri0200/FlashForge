@@ -40,7 +40,11 @@ jobs:
         run: poetry install
       - name: Run database tests
         run: poetry run pytest src/tests/db_test.py
-      - name: Run coverage
+      - name: Run tests
+        run: poetry run coverage run --branch -m pytest
+      - name: Coverage report
+        run: poetry run coverage xml
+      - name: Coverage report to Codecov
         uses: codecov/codecov-action@v4
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
