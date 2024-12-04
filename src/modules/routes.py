@@ -20,13 +20,20 @@ def add_ref(ref_type):
                 title = request.form.get("title")
                 journal = request.form.get("journal")
                 year = int(request.form.get("year"))
+                volume = request.form.get("volume") or None
+                volume = int(volume) if volume else volume
+                number = request.form.get("number") or None
+                number = int(number) if number else number
+                pages = request.form.get("pages") or None
+                month = request.form.get("month") or None
+                note = request.form.get("note") or None
             except ValueError:
                 return render_template("create_reference_article.html", error=True, error_message="Invalid details")
             failed, message = validate.validate_ref("article", author, title, journal, year)
             if failed:
                 return render_template("create_reference_article.html", error=True, error_message=message)
         
-            if database.add_reference(ref_type, author, title, journal, year):
+            if database.add_reference(ref_type, author, title, journal, year, volume, number, pages, month, note):
                 return redirect(url_for("index"))
             else:
                 return render_template("create_reference_article.html", error=True, error_message="Invalid details")
@@ -74,7 +81,7 @@ def search_results():
     articles, books = database.search_result(query)
     books = [Book(*params).details() for params in books]
     articles = [Article(*params).details() for params in articles]
-    return render_template("search_results.html", references=books+articles)
+    return render_template("refs.html", references=books+articles, title="Search results")
 
 @app.route("/<ref_type>/<id>")
 def ref_page(ref_type, id):

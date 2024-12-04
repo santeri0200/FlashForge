@@ -5,7 +5,7 @@
         {% for detail in ref %}
             {% if detail != "id" and detail != "year" and detail != "type" %}
                 <h3>{{ detail | capitalize }}</h3>
-                <textarea name="{{ detail }}" rows="1" cols="50" maxlength="100" required>{{ref[detail]}}</textarea>
+                <textarea name="{{ detail }}" rows="1" cols="50" maxlength="100" required>{{ref[detail] or ""}}</textarea>
             {% endif %}
         {% endfor%}
         <h3>Year</h3>

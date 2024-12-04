@@ -46,7 +46,7 @@ body {
 input,
 textarea {
   padding: 0.5em;
-
+  color: white;
   border: 1px solid var(--border-color-light);
   border-radius: 0.375em;
   background: var(--background);

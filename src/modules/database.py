@@ -5,8 +5,8 @@ from sqlalchemy import text
 
 def add_reference(ref_type, *argv):
     if ref_type == "article":
-        author, title, journal, year = argv[0], argv[1], argv[2], argv[3]
-        if add_article(author, title, journal, year):
+        author, title, journal, year, volume, number, pages, month, note = argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8]
+        if add_article(author, title, journal, year, volume, number, pages, month, note):
             return True
         return False
 
