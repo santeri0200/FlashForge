@@ -81,7 +81,7 @@ if test_env:
 def search_results():
     query = request.args.get('query')
     result = database.search_result(query)
-    return render_template("search_results.html", references = result)
+    return render_template("refs.html", references=result, title="Search results")
 
 @app.route("/article/<id>")
 def article_page(id):

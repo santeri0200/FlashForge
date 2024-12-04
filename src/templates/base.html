@@ -22,14 +22,13 @@
       <a href="/">Main page</a>
     </div>
     <div class="header-right">
-      <form action="/result" method="GET">
-        Search for references: <input type="text" name="query" maxlength="5000">
+      <form id="search-form" action="/result" method="GET">
+        <p id="search-text">Search for references: </p><input type="text" name="query" maxlength="5000">
         <input type="submit" value="Search">
       </form>
     </div>
   </header>
-  <hr>
-  {% block content %}{% endblock %}
+  <div class="content">{% block content %}{% endblock %}</div>
 </body>
 
 </html>

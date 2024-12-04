@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Delete article reference{% endblock %}
 {% block content %}
-<div class="content">
     <form action="/delete/article/{{article.id}}" method="post">
     Are you sure you want to delete the reference with the following details?
         <ul>
@@ -13,5 +12,4 @@
         <input type="submit" value="Delete" style="background:red;"> <input type="button" onclick="location.href='/article/{{article.id}}';" value="Cancel">
         {%if error%}<p style="color:red">Error: {{ error_message }}</p>{%endif%}
     </form>
-</div>
 {%endblock%}
