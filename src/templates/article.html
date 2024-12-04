@@ -2,30 +2,30 @@
 {% block title %}Article reference{% endblock %}
 {% block content %}
     <div class="ref">
-        <h2 class="ref-header">{{article.title}}</h2>
-        <p class="ref-detail">Author: {{ article.author }}</p>
-        <p class="ref-detail">Journal: {{ article.journal }}</p>
-        <p class="ref-detail">Year: {{ article.year }}</p>
-        <p class="ref-detail">Volume: {{ article.volume or "-"}}</p>
-        <p class="ref-detail">Number: {{ article.number or "-"}}</p>
-        <p class="ref-detail">Pages: {{ article.pages or "-"}}</p>
-        <p class="ref-detail">Month: {{ article.month or "-"}}</p>
-        <p class="ref-detail">Note: {{ article.note or "-"}}</p>
+        <h2 class="ref-header">{{ ref.title }}</h2>
+        <p class="ref-detail">Author: {{ ref.author }}</p>
+        <p class="ref-detail">Journal: {{ ref.journal }}</p>
+        <p class="ref-detail">Year: {{ ref.year }}</p>
+        <p class="ref-detail">Volume: {{ ref.volume or "-"}}</p>
+        <p class="ref-detail">Number: {{ ref.number or "-"}}</p>
+        <p class="ref-detail">Pages: {{ ref.pages or "-"}}</p>
+        <p class="ref-detail">Month: {{ ref.month or "-"}}</p>
+        <p class="ref-detail">Note: {{ ref.note or "-"}}</p>
     </div>
     <div class="ref">
         <h2>LaTeX entry</h2>
         <pre>
 {%raw%}
 @article{your_tag_here,
-    title        = {{%endraw%}{{article.title}}{%raw%}},
-    author       = {{%endraw%}{{article.author}}{%raw%}},
-    journal      = {{%endraw%}{{article.journal}}{%raw%}},
-    year         = {{%endraw%}{{article.year}}{%raw%}},
-    volume       = {{%endraw%}{{article.volume or ""}}{%raw%}},
-    number       = {{%endraw%}{{article.number or ""}}{%raw%}},
-    pages        = {{%endraw%}{{article.pages or ""}}{%raw%}}
-    month        = {{%endraw%}{{article.month or ""}}{%raw%}},
-    note         = {{%endraw%}{{article.note or ""}}{%raw%}}
+    title        = {{%endraw%}{{ref.title}}{%raw%}},
+    author       = {{%endraw%}{{ref.author}}{%raw%}},
+    journal      = {{%endraw%}{{ref.journal}}{%raw%}},
+    year         = {{%endraw%}{{ref.year}}{%raw%}},
+    volume       = {{%endraw%}{{ref.volume or ""}}{%raw%}},
+    number       = {{%endraw%}{{ref.number or ""}}{%raw%}},
+    pages        = {{%endraw%}{{ref.pages or ""}}{%raw%}}
+    month        = {{%endraw%}{{ref.month or ""}}{%raw%}},
+    note         = {{%endraw%}{{ref.note or ""}}{%raw%}}
 }
 {%endraw%}
         </pre>

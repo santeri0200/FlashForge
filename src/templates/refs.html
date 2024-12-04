@@ -10,16 +10,12 @@
         {% endif %}
         {% for ref in references %}
             <div class="ref">
-                <h2 class="ref-header"><a href="/article/{{ ref.id }}">View reference</a></h2>
-                <p class="ref-detail">Author: {{ ref.author }}</p>
-                <p class="ref-detail">Title: {{ ref.title }}</p>
-                <p class="ref-detail">Journal: {{ ref.journal }}</p>
-                <p class="ref-detail">Year: {{ ref.year }}</p>
-                <p class="ref-detail">Volume: {{ ref.volume or ""}}</p>
-                <p class="ref-detail">Number: {{ ref.number or ""}}</p>
-                <p class="ref-detail">Pages: {{ ref.pages or ""}}</p>
-                <p class="ref-detail">Month: {{ ref.month or ""}}</p>
-                <p class="ref-detail">Note: {{ ref.note or ""}}</p>
+                <h2><a href="/{{ ref.type }}/{{ ref.id }}">View reference</a></h2>
+                {% for detail in ref %}
+                    {% if detail != "id" and ref[detail] != None %}
+                        <p class="ref-detail">{{ detail | capitalize }}: {{ ref[detail] or "-" }}</li>
+                    {% endif %}
+                {% endfor %}
             </div>
         {% endfor %}
     {%else%}

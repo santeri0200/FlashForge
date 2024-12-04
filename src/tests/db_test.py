@@ -59,8 +59,6 @@ class TestDatabase(unittest.TestCase):
 
     def test_database_edit_article(self):
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
-            all_articles = database.get_all_articles()
             self.assertTrue(database.edit_article(
                 all_articles[0].id,
                 'Author2',
@@ -81,6 +79,6 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
             all_articles = database.get_all_articles()
-            self.assertTrue(database.delete_article(all_articles[0].id))
+            self.assertTrue(database.delete_reference("article", all_articles[0].id))
             res = database.get_all_articles()
             self.assertEqual(res, [])

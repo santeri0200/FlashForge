@@ -14,3 +14,15 @@ CREATE TABLE IF NOT EXISTS Articles (
 
     UNIQUE (author, title)
 );
+
+CREATE TABLE IF NOT EXISTS Books (
+    id SERIAL PRIMARY KEY,
+    -- Required fields
+    author      TEXT NOT NULL,
+    year        INT  NOT NULL,
+    title       TEXT NOT NULL,
+    publisher   TEXT NOT NULL,
+    address     TEXT NOT NULL,
+
+    UNIQUE (author, title)
+);
