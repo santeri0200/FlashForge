@@ -2,6 +2,7 @@
 # pylint: disable=too-many-arguments, too-many-positional-arguments
 from config import db
 from sqlalchemy import text
+from tests import db_helper
 
 def add_reference(ref_type, *argv):
     if ref_type == "article":
@@ -191,7 +192,4 @@ def search_result(query):
     return articles, books
 
 def reset_db():
-    print("Clearing contents from table articles")
-    sql = text("DELETE FROM articles")
-    db.session.execute(sql)
-    db.session.commit()
+    db_helper.reset_db()

@@ -1,1 +1,2 @@
 DELETE FROM Articles;
+DELETE FROM Books;
