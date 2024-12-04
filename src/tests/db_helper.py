@@ -1,52 +1,39 @@
 from config import app, db
 from sqlalchemy import text
 
-TABLE_NAME = "articles"
-def table_exists(name):
-    sql = text(f"""SELECT EXISTS(SELECT 1 FROM information_schema.tables WHERE table_name = '{name}');""")
-    res = db.session.execute(sql)
+def reset_db():
+    print("""Reseting all tables!""")
+    with open('reset.sql', 'r', encoding='utf-8') as file:
+        sql = text(file.read())
+        res = db.session.execute(sql)
+        if res:
+            db.session.commit()
+        else:
+            db.session.rollback()
 
-    return res.fetchall()[0][0]
+def drop_tables():
+    print("""Dropping all tables!""")
+    with open('drop.sql', 'r', encoding='utf-8') as file:
+        sql = text(file.read())
+        res = db.session.execute(sql)
+        if res:
+            db.session.commit()
+        else:
+            db.session.rollback()
 
-def reset_db(name):
-    sql = text(f"""DELETE FROM {name};""")
-    db.session.execute(sql)
-    db.session.commit()
-
-def drop_table(name):
-    print(f"""Dropping table {name}!""")
-    sql = text(f"""DROP TABLE {name}""")
-    db.session.execute(sql)
-    db.session.commit()
-
-def create_table(name):
-    # pylint: disable=unused-argument
-    print(f"""Creating table {TABLE_NAME}""")
-    sql = text(f"""
-        CREATE TABLE {TABLE_NAME} (
-            id SERIAL PRIMARY KEY,
-            -- Required fields
-            author  TEXT NOT NULL,
-            title   TEXT NOT NULL,
-            journal TEXT NOT NULL,
-            year    INT  NOT NULL,
-            -- Optional fields
-            volume  INT,
-            number  INT,
-            pages   TEXT,
-            month   TEXT,
-            note    TEXT,
-
-            UNIQUE (author, title)
-        )
-    """)
-    db.session.execute(sql)
-    db.session.commit()
+def create_tables():
+    print("""Creating all tables!""")
+    with open('schema.sql', 'r', encoding='utf-8') as file:
+        sql = text(file.read())
+        res = db.session.execute(sql)
+        if res:
+            db.session.commit()
+        else:
+            db.session.rollback()
 
 def setup_db():
-    if table_exists(TABLE_NAME):
-        drop_table(TABLE_NAME)
-    create_table(TABLE_NAME)
+    drop_tables()
+    create_tables()
 
 if __name__ == "__main__":
     with app.app_context():
