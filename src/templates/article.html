@@ -14,7 +14,7 @@
     </div>
     <div class="ref">
         <h2>LaTeX entry</h2>
-        <pre>
+        <pre><div id="latex">
 {%raw%}
 @article{your_tag_here,
     title        = {{%endraw%}{{article.title}}{%raw%}},
@@ -28,15 +28,14 @@
     note         = {{%endraw%}{{article.note or ""}}{%raw%}}
 }
 {%endraw%}
-        </pre>
-    </div>
+    </div></pre>
+    <button id="copy-button">Copy LaTeX</button> <p id="copied" style="display: none; color: lime">Copied!</p>
     <div class="ref">
         <button id="copy-button">Copy LaTeX</button> <p id="copied" style="display: none; color: lime">Copied!</p>
         <hr>
         <h3>Options</h3>
         <a href="/edit/article/{{article.id}}">Edit reference</a> | <a href="/delete/article/{{article.id}}">Delete reference</a>
     </div>
-
     <script>
         const latex = document.getElementById("latex");
         const copyButton = document.getElementById("copy-button");
