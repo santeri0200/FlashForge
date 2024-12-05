@@ -92,19 +92,18 @@ def search_result(query):
             SELECT *
             FROM articles
             WHERE
-                author LIKE :query
-                OR title LIKE :query
-                OR journal LIKE :query
-                OR CAST(year as TEXT) LIKE :query
-                OR volume != NULL
-                OR CAST(volume as TEXT) LIKE :query
-                OR CAST(number as TEXT) LIKE :query
-                OR pages LIKE :query
-                OR month LIKE :query
-                OR note LIKE :query
+                LOWER(author) LIKE LOWER(:query)
+                OR LOWER(title) LIKE LOWER(:query)
+                OR LOWER(journal) LIKE LOWER(:query)
+                OR CAST(year AS TEXT) LIKE :query
+                OR CAST(volume AS TEXT) LIKE :query
+                OR CAST(number AS TEXT) LIKE :query
+                OR LOWER(pages) LIKE LOWER(:query)
+                OR LOWER(month) LIKE LOWER(:query)
+                OR LOWER(note) LIKE LOWER(:query)
             ORDER BY id DESC
         """),
-        { "query": f"%{query}%" }
+        {"query": f"%{query.lower()}%"}
     )
 
     articles = res.fetchall()
