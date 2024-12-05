@@ -86,7 +86,7 @@ def order_references(order):
 def search_results():
     query = request.args.get('query')
     result = database.search_result(query)
-    return render_template("refs.html", references=result, title="Search results")
+    return render_template("refs.html", references=result, query=query, title="Search results")
 
 @app.route("/article/<id>")
 def article_page(id):
@@ -183,16 +183,27 @@ def advanced_search():
 
 @app.route("/generate_bib")
 def generate_bib():
-    refs = database.get_all_articles()
+    query = request.args.get('query')
+    if query:
+        refs = database.search_result(query)
+    else:
+        refs = database.get_all_articles()
     if refs:
         entry = ""
         for ref in refs:
-            entry += f"""@article{{article-{ref.id},\
-            \n\tauthor = {{{ref.author}}},\
-            \n\ttitle = {{{ref.title}}},\
-            \n\tjournal = {{{ref.journal}}},\
-            \n\tyear = {{{ref.year}}}\
-            \n}}\n\n"""
+            entry += (
+                f"@article{{article-{ref.id or ''},\n"
+                f"\tauthor = {{{ref.author or ''}}},\n"
+                f"\ttitle = {{{ref.title or ''}}},\n"
+                f"\tjournal = {{{ref.journal or ''}}},\n"
+                f"\tyear = {{{ref.year or ''}}}"
+                + (f",\n\tvolume = {{{ref.volume}}}" if ref.volume else "")
+                + (f",\n\tnumber = {{{ref.number}}}" if ref.number else "")
+                + (f",\n\tpages = {{{ref.pages}}}" if ref.pages else "")
+                + (f",\n\tmonth = {{{ref.month}}}" if ref.month else "")
+                + (f",\n\tnote = {{{ref.note}}}" if ref.note else "")
+                + "\n}\n\n"
+            )
 
         response = Response(
             entry,
