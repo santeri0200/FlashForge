@@ -3,7 +3,7 @@
 {% block content %}
     {%if references%}
         <div class="bib-section">
-            <a href="/generate_bib" class="generate-bib">Download references here as .bib</a>
+            <a href="/generate_bib{% if query %}?query={{ query }}{% endif %}" class="generate-bib">Download references here as .bib</a>
         </div>
         {% set result_count = references | length %}
         {% if result_count == 1 %}
