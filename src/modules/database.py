@@ -55,6 +55,19 @@ def add_book(ref):
     db.session.commit()
     return True
 
+def add_inproceedings(author, title, booktitle, year, editor, volume, number, series, pages, address, month, organization, publisher):
+    try:
+        sql = text("""
+                   INSERT INTO inproceedings (author, title, booktitle, year, editor, volume, number, series, pages, address, month, organization, publisher)
+                   VALUES (:author, :title, :booktitle, :year, :editor, :volume, :number, :series, :pages, :address, :month, :organization, :publisher)"""
+                   )
+        db.session.execute(sql, {"author": author, "title": title, "booktitle": booktitle, "year": year, "editor": editor, "volume": volume, "number": number, 
+                                 "series": series, "pages": pages, "address": address, "month": month, "organization": organization, "publisher": publisher})
+    except:
+        return False
+    db.session.commit()
+    return True
+
 def edit_ref(ref_type, id, details):
     table_names = {
         "article": "articles",
@@ -177,7 +190,30 @@ def search_result(query):
     )
 
     books = res.fetchall()
-    return articles, books
+
+    res = db.session.execute(
+        text("""
+            SELECT *
+            FROM articles
+            WHERE
+                author LIKE :query
+                OR title LIKE :query
+                OR journal LIKE :query
+                OR CAST(year as TEXT) LIKE :query
+                OR volume != NULL
+                OR CAST(volume as TEXT) LIKE :query
+                OR CAST(number as TEXT) LIKE :query
+                OR pages LIKE :query
+                OR month LIKE :query
+                OR note LIKE :query
+            ORDER BY id DESC
+        """),
+        { "query": f"%{query}%" }
+    )
+
+    inproceedings = res.fetchall()
+
+    return articles, books, inproceedings
 
 def reset_db():
     db_helper.reset_db()

@@ -49,6 +49,28 @@ def validate_ref(ref_type, *argv):
         if year < 1900 or year > 2099:
             failed = True
             message = "Year must be set between 1900 and 2099"
+    
+    if ref_type == "inproceedings":
+        author = argv[0]
+        title = argv[1]
+        booktitle = argv[2]
+        year = argv[3]
+
+        if len(author) > 100:
+            failed = True
+            message = "Name of author cannot exceed 100 characters"
+
+        if len(title) > 500:
+            failed = True
+            message = "Title cannot exceed 500 characters"
+
+        if len(booktitle) > 100:
+            failed = True
+            message = "Name of booktitle cannot exceed 100 characters"
+
+        if year < 1900 or year > 2099:
+            failed = True
+            message = "Year must be set between 1900 and 2099"
 
 
 

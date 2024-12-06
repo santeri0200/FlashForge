@@ -26,3 +26,24 @@ CREATE TABLE IF NOT EXISTS Books (
 
     UNIQUE (author, title)
 );
+
+CREATE TABLE IF NOT EXISTS Inproceedings (
+    id SERIAL PRIMARY KEY,
+    -- Required fields
+    author      TEXT NOT NULL,
+    title       TEXT NOT NULL,
+    booktitle   TEXT NOT NULL,
+    year        INT  NOT NULL,
+    -- Optional fields
+    editor          TEXT,
+    volume          INT,
+    number          INT,
+    series          TEXT,
+    pages           TEXT,
+    address         TEXT
+    month           TEXT,
+    organization    TEXT,
+    publisher       TEXT,
+
+    UNIQUE (author, title)
+);

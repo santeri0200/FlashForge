@@ -2,7 +2,7 @@
 from config import app, test_env
 from flask import render_template, request, redirect, url_for
 from modules import database, validate
-from entities.reference import Article, Book
+from entities.reference import Article, Book, Inproceedings
 
 @app.route("/")
 def index():
@@ -33,6 +33,37 @@ def add_ref(ref_type):
             return render_template("error.html", error="Invalid reference type!")
 
     return redirect(url_for("index"))
+
+    if ref_type == "inproceedings":
+        if request.method == "GET":
+            return render_template("create_reference_inproceedings.html")
+        if request.method == "POST":
+            try:
+                author = request.form.get("author")
+                title = request.form.get("title")
+                booktitle = request.form.get("booktitle")
+                year = int(request.form.get("year"))
+                editor = request.form.get("editor") or None
+                volume = request.form.get("volume") or None
+                volume = int(volume) if volume else volume
+                number = request.form.get("number") or None
+                number = int(number) if number else number
+                series = request.form.get("editor") or None
+                pages = request.form.get("pages") or None
+                month = request.form.get("month") or None
+                organization = request.form.get("organization") or None
+                publisher = request.form.get("publisher") or None
+                
+            except ValueError:
+                return render_template("create_reference_inproceedings.html", error=True, error_message="Invalid details")
+            failed, message = validate.validate_ref("inproceedings", author, title, booktitle, year)
+            if failed:
+                return render_template("create_reference_inproceedings.html", error=True, error_message=message)
+        
+            if database.add_reference(ref_type, author, title, booktitle, year, editor, volume, number, series, pages, month, organization, publisher):
+                return redirect(url_for("index"))
+            else:
+                return render_template("create_reference_inproceedings.html", error=True, error_message="Invalid details")
 
 @app.route("/refs")
 def refs_page():
@@ -91,7 +122,9 @@ def reference_edit(ref_type, id):
                 pages = request.form.get("pages") or None
                 month = request.form.get("month") or None
                 note = request.form.get("note") or None
-                details = {"author": author, "title": title, "journal": journal, "year": year, "volume": volume, "number": number, "pages": pages, "month": month, "note": note}
+                details = {"author": author, "title": title, "journal": journal, "year": year, "volume": volume, 
+                           "number": number, "pages": pages, "month": month, "note": note}
+            
             elif ref_type == "book":
                 author = request.form.get("author")
                 title = request.form.get("title")
@@ -99,6 +132,25 @@ def reference_edit(ref_type, id):
                 year = int(request.form.get("year"))
                 address = request.form.get("address")
                 details = {"author": author, "year": year, "title": title, "publisher": publisher, "address": address}
+            
+            elif ref_type == "inproceedings":
+                author = request.form.get("author")
+                title = request.form.get("title")
+                booktitle = request.form.get("booktitle")
+                year = int(request.form.get("year"))
+                editor = request.form.get("editor") or None
+                volume = request.form.get("volume") or None
+                volume = int(volume) if volume else volume
+                number = request.form.get("number") or None
+                number = int(number) if number else number
+                series = request.form.get("editor") or None
+                pages = request.form.get("pages") or None
+                month = request.form.get("month") or None
+                organization = request.form.get("organization") or None
+                publisher = request.form.get("publisher") or None
+                details = {"author": author, "title": title, "booktitle": booktitle, "year": year, "editor": editor, "volume": volume, "number": number, 
+                           "series": series, "pages": pages, "address": address, "month": month, "organization": organization, "publisher": publisher}
+        
         except ValueError:
             return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
 
@@ -129,6 +181,18 @@ def reference_delete(ref_type, id):
         if request.method == "GET":
             if book:
                 return render_template("delete_ref.html", ref=book)
+            else:
+                return "Book not found", 404
+        if request.method == "POST":
+            if database.delete_reference(ref_type, id):
+                return redirect("/")
+            else:
+                return render_template("error.html", error="Something went wrong.")
+    if ref_type == "inproceedings":
+        inproceedings = Inproceedings(*database.ref_from_id(ref_type, id)).details()
+        if request.method == "GET":
+            if book:
+                return render_template("delete_ref.html", ref=inproceedings)
             else:
                 return "Book not found", 404
         if request.method == "POST":
