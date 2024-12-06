@@ -224,8 +224,8 @@ class TestDatabase(unittest.TestCase):
 
         with self.context:
             self.assertTrue(database.add_inproceedings(ref))
-            
-    def test_database_add_inproceedings(self):
+
+    def test_database_add_duplicate_inproceedings(self):
         ref = Inproceedings(
             author       = 'Author',
             title        = 'Title',
