@@ -90,17 +90,17 @@ class TestDatabase(unittest.TestCase):
 
         with self.context:
             self.assertTrue(database.add_article(ref))
-            (res, _) = database.search_result('Au')
+            (res, _, _) = database.search_result('Au')
 
             expected = ref.details()
             expected["id"] = res[0].id
             self.assertEqual([Article(**val._asdict()).details() for val in res], [expected])
 
-            (res, _) = database.search_result('thor')
+            (res, _, _) = database.search_result('thor')
             expected["id"] = res[0].id
             self.assertEqual([Article(**val._asdict()).details() for val in res], [expected])
 
-            (res, _) = database.search_result('2024')
+            (res, _, _) = database.search_result('2024')
             expected["id"] = res[0].id
             self.assertEqual([Article(**val._asdict()).details() for val in res], [expected])
 
@@ -120,10 +120,10 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             self.assertTrue(database.add_article(ref))
 
-            (res, _) = database.search_result('Invalid')
+            (res, _, _) = database.search_result('Invalid')
             self.assertEqual(res, [])
 
-            (res, _) = database.search_result('1999')
+            (res, _, _) = database.search_result('1999')
             self.assertEqual(res, [])
 
     def test_database_edit_article(self):
