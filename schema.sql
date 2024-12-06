@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS Inproceedings (
     number          INT,
     series          TEXT,
     pages           TEXT,
-    address         TEXT
+    address         TEXT,
     month           TEXT,
     organization    TEXT,
     publisher       TEXT,

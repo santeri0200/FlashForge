@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% block title %}Create article reference{% endblock %}
+{% block title %}Create inproceedings reference{% endblock %}
 {% block content %}
-    <form action="/create_reference/article" method="post">
+    <form action="/create_reference/inproceedings" method="post">
         <h3>Author</h3>
         <textarea name="author" rows="1" cols="50" maxlength="100" required></textarea>
 
@@ -36,7 +36,7 @@
         <textarea name="month" rows="1" cols="100" maxlength="100"></textarea>
 
         <h3>Organization*</h3>
-        <textarea name="ogranization" rows="1" cols="100" maxlength="100"></textarea>
+        <textarea name="organization" rows="1" cols="100" maxlength="100"></textarea>
 
         <h3>Publisher*</h3>
         <textarea name="publisher" rows="1" cols="100" maxlength="100"></textarea>
