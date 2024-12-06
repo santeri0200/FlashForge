@@ -3,7 +3,7 @@ from tests import db_helper
 from modules import database
 from config import app
 
-from entities.reference import Article
+from entities.reference import Article, Book, Inproceedings
 
 class TestDatabase(unittest.TestCase):
     """Class for testing the database"""
@@ -23,7 +23,7 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             db_helper.reset_db()
 
-    def test_database_add(self):
+    def test_database_add_article(self):
         ref = Article(
             author  = 'Author',
             title   = 'Title',
@@ -58,7 +58,7 @@ class TestDatabase(unittest.TestCase):
             ref.fields["id"] = res[0].fields["id"]
             self.assertEqual([val.details() for val in res], [ref.details()])
 
-    def test_database_add_duplicate(self):
+    def test_database_add_duplicate_article(self):
         ref = Article(
             author  = 'Author',
             title   = 'Title',
@@ -179,3 +179,69 @@ class TestDatabase(unittest.TestCase):
             self.assertTrue(database.delete_reference("article", res[0].fields["id"]))
             res = database.get_all_articles()
             self.assertEqual(res, [])
+
+    def test_database_add_book(self):
+        ref = Book(
+            author    = 'Author',
+            year      = 2024,
+            title     = 'Title',
+            publisher = 'Publisher',
+            address   = 'Address',
+    )
+
+        with self.context:
+            self.assertTrue(database.add_book(ref))
+
+    def test_database_add_duplicate_book(self):
+        ref = Book(
+            author    = 'Author',
+            year      = 2024,
+            title     = 'Title',
+            publisher = 'Publisher',
+            address   = 'Address',
+    )
+
+        with self.context:
+            self.assertTrue(database.add_book(ref))
+            self.assertFalse(database.add_book(ref))
+
+    def test_database_add_inproceedings(self):
+        ref = Inproceedings(
+            author       = 'Author',
+            title        = 'Title',
+            booktitle    = 'Booktitle',
+            year         = 2024,
+            editor       = None,
+            volume       = None,
+            number       = None,
+            series       = None,
+            pages        = None,
+            address      = None,
+            organization = None,
+            month        = None,
+            publisher    = None,
+        )
+
+        with self.context:
+            self.assertTrue(database.add_inproceedings(ref))
+            
+    def test_database_add_inproceedings(self):
+        ref = Inproceedings(
+            author       = 'Author',
+            title        = 'Title',
+            booktitle    = 'Booktitle',
+            year         = 2024,
+            editor       = None,
+            volume       = None,
+            number       = None,
+            series       = None,
+            pages        = None,
+            address      = None,
+            organization = None,
+            month        = None,
+            publisher    = None,
+        )
+
+        with self.context:
+            self.assertTrue(database.add_inproceedings(ref))
+            self.assertFalse(database.add_inproceedings(ref))
