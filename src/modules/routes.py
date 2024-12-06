@@ -1,7 +1,7 @@
-# pylint: disable=no-else-return, redefined-builtin, inconsistent-return-statements
+# pylint: disable=no-else-return, redefined-builtin, inconsistent-return-statements, too-many-return-statements, too-many-branches, possibly-used-before-assignment
 from config import app, test_env
 from flask import render_template, request, redirect, url_for
-from modules import database, validate
+from modules import database
 from entities.reference import Article, Book, Inproceedings
 
 @app.route("/")
@@ -18,7 +18,7 @@ def add_ref(ref_type):
             ref = Article(**(request.form))
             if not ref.validate():
                 return render_template("create_reference_article.html", error=True, error_message="Invalid details")
-            elif not database.add_reference(ref_type, ref):
+            elif not database.add_reference(ref):
                 return render_template("create_reference_article.html", error=True, error_message="Invalid details")
         case "book":
             if request.method == "GET":
@@ -27,7 +27,7 @@ def add_ref(ref_type):
             ref = Book(**(request.form))
             if not ref.validate():
                 return render_template("create_reference_book.html", error=True, error_message="Invalid details")
-            elif not database.add_reference(ref_type, ref):
+            elif not database.add_reference(ref):
                 return render_template("create_reference_book.html", error=True, error_message="Invalid details")
         case "inproceedings":
             if request.method == "GET":
@@ -35,10 +35,12 @@ def add_ref(ref_type):
 
             ref = Inproceedings(**(request.form))
             if not ref.validate():
-                return render_template("create_reference_inproceedings.html", error=True, error_message="Invalid details")
-            elif not database.add_reference(ref_type, ref):
-                return render_template("create_reference_inproceedings.html", error=True, error_message="Invalid details")
-        
+                return render_template("create_reference_inproceedings.html",
+                                       error=True, error_message="Invalid details")
+            elif not database.add_reference(ref):
+                return render_template("create_reference_inproceedings.html",
+                                       error=True, error_message="Invalid details")
+
         case _:
             return render_template("error.html", error="Invalid reference type!")
 
@@ -76,7 +78,7 @@ def ref_page(ref_type, id):
         return render_template(f"{ref_type}.html", ref=ref, ref_type=ref_type)
     else:
         return "Reference not found", 404
-    
+
 @app.route("/edit/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_edit(ref_type, id):
     if ref_type == "article":
@@ -94,56 +96,30 @@ def reference_edit(ref_type, id):
     if request.method == "POST":
         try:
             if ref_type == "article":
-                author = request.form.get("author")
-                title = request.form.get("title")
-                journal = request.form.get("journal")
-                year = int(request.form.get("year"))
-                volume = request.form.get("volume") or None
-                volume = int(volume) if volume else volume
-                number = request.form.get("number") or None
-                number = int(number) if number else number
-                pages = request.form.get("pages") or None
-                month = request.form.get("month") or None
-                note = request.form.get("note") or None
-                details = {"author": author, "title": title, "journal": journal, "year": year, "volume": volume, 
-                           "number": number, "pages": pages, "month": month, "note": note}
-            
-            elif ref_type == "book":
-                author = request.form.get("author")
-                title = request.form.get("title")
-                publisher = request.form.get("publisher")
-                year = int(request.form.get("year"))
-                address = request.form.get("address")
-                details = {"author": author, "year": year, "title": title, "publisher": publisher, "address": address}
-            
-            elif ref_type == "inproceedings":
-                author = request.form.get("author")
-                title = request.form.get("title")
-                booktitle = request.form.get("booktitle")
-                year = int(request.form.get("year"))
-                editor = request.form.get("editor") or None
-                volume = request.form.get("volume") or None
-                volume = int(volume) if volume else volume
-                number = request.form.get("number") or None
-                number = int(number) if number else number
-                series = request.form.get("editor") or None
-                pages = request.form.get("pages") or None
-                month = request.form.get("month") or None
-                address = request.form.get("address") or None
-                organization = request.form.get("organization") or None
-                publisher = request.form.get("publisher") or None
-                details = {"author": author, "title": title, "booktitle": booktitle, "year": year, "editor": editor, "volume": volume, "number": number, 
-                           "series": series, "pages": pages, "address": address, "month": month, "organization": organization, "publisher": publisher}
-        
-        except ValueError:
-            return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+                edited_ref = Article(**(request.form), id=int(id))
+                if not edited_ref.validate():
+                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+                if not database.edit_ref(ref_type, id, edited_ref.details()):
+                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+                return redirect(f"/{ref_type}/{id}")
 
-        failed, message = validate.validate_ref(ref_type, *list(details.values()))
-        if failed:
-            return render_template("edit_ref", ref=ref, error=True, error_message=message)
-        if database.edit_ref(ref_type, id, details):
-            return redirect(f"/{ref_type}/{id}")
-        else:
+            if ref_type == "book":
+                edited_ref = Book(**(request.form), id=int(id))
+                if not edited_ref.validate():
+                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+                if not database.edit_ref(ref_type, id, edited_ref.details()):
+                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+                return redirect(f"/{ref_type}/{id}")
+
+            elif ref_type == "inproceedings":
+                edited_ref = Inproceedings(**(request.form), id=int(id))
+                if not edited_ref.validate():
+                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+                if not database.edit_ref(ref_type, id, edited_ref.details()):
+                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+                return redirect(f"/{ref_type}/{id}")
+
+        except ValueError:
             return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
 
 @app.route("/delete/<ref_type>/<id>", methods=["GET", "POST"])

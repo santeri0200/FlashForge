@@ -5,12 +5,12 @@ from sqlalchemy import text
 from tests import db_helper
 from entities.reference import Article, Book, Inproceedings
 
-def add_reference(ref_type, ref):
+def add_reference(ref):
     if ref.type == "article" and add_article(ref):
         return True
-    elif ref.type == "book" and add_book(ref):
+    if ref.type == "book" and add_book(ref):
         return True
-    elif ref.type == "inproceedings" and add_inproceedings(ref):
+    if ref.type == "inproceedings" and add_inproceedings(ref):
         return True
 
     return False
@@ -50,7 +50,9 @@ def edit_article(ref):
 
 def add_book(ref):
     try:
-        sql = text("INSERT INTO books (author, year, title, publisher, address) VALUES (:author, :year, :title, :publisher, :address)")
+        sql = text("""
+                   INSERT INTO books (author, year, title, publisher, address) 
+                   VALUES (:author, :year, :title, :publisher, :address)""")
         db.session.execute(sql, ref.details())
     except:
         return False
@@ -60,8 +62,11 @@ def add_book(ref):
 def add_inproceedings(ref):
     try:
         sql = text("""
-                   INSERT INTO inproceedings (author, title, booktitle, year, editor, volume, number, series, pages, address, month, organization, publisher)
-                   VALUES (:author, :title, :booktitle, :year, :editor, :volume, :number, :series, :pages, :address, :month, :organization, :publisher)"""
+                   INSERT INTO inproceedings
+                   (author, title, booktitle, year, editor, volume,
+                    number, series, pages, address, month, organization, publisher)
+                   VALUES (:author, :title, :booktitle, :year, :editor, :volume, 
+                   :number, :series, :pages, :address, :month, :organization, :publisher)"""
                    )
         db.session.execute(sql, ref.details())
     except:
@@ -76,7 +81,7 @@ def edit_ref(ref_type, id, details):
         "book": "books",
         "inproceedings": "inproceedings"
     }
-
+    del details['type']
     updated_fields = ""
     for key in details:
         updated_fields += key + "=:" + key
@@ -140,7 +145,7 @@ def get_all_books():
         return []
 
     books = [Book(**row._asdict()) for row in res.fetchall()]
-    return books 
+    return books
 
 def get_all_inproceedings():
     sql = text("SELECT * FROM Inproceedings ORDER BY id DESC")

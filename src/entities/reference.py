@@ -1,6 +1,8 @@
+# pylint: disable=redefined-builtin, use-a-generator, multiple-statements, consider-iterating-dictionary
 from abc import ABC, abstractmethod
 
 class Reference(ABC):
+    """Class for references"""
     @abstractmethod
     def validate(self):
         pass
@@ -10,6 +12,7 @@ class Reference(ABC):
         pass
 
 class Article(Reference):
+    """Class for article references"""
     def __init__(self, id=None, **kwargs):
         self.type     = "article"
         self.required = ["author", "title", "journal", "year"]
@@ -41,6 +44,7 @@ class Article(Reference):
         return {key: val if key in self.required else val or None for key, val in self.fields.items()}
 
 class Book(Reference):
+    """Class for book references"""
     def __init__(self, id=None, **kwargs):
         self.type     = "book"
         self.required = ["author", "title", "publisher", "year", "address"]
@@ -72,6 +76,7 @@ class Book(Reference):
         return {key: val if key in self.required else val or None for key, val in self.fields.items()}
 
 class Inproceedings(Reference):
+    """Class for inproceedings references"""
     def __init__(self, id=None, **kwargs):
         self.type     = "inproceedings"
         self.required = ["author", "title", "booktitle", "year"]

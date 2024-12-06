@@ -1,3 +1,4 @@
+# pylint: disable=too-many-branches, too-many-statements
 def validate_ref(ref_type, *argv):
     failed = False
     message = ""
@@ -29,7 +30,7 @@ def validate_ref(ref_type, *argv):
         title = argv[2]
         publisher = argv[3]
         address = argv[4]
-        
+
         if len(author) > 100:
             failed = True
             message = "Name of author cannot exceed 100 characters"
@@ -41,7 +42,7 @@ def validate_ref(ref_type, *argv):
         if len(publisher) > 100:
             failed = True
             message = "Name of publisher cannot exceed 100 characters"
-        
+
         if len(address) > 100:
             failed = True
             message = "Name of address cannot exceed 100 characters"
@@ -49,7 +50,7 @@ def validate_ref(ref_type, *argv):
         if year < 1900 or year > 2099:
             failed = True
             message = "Year must be set between 1900 and 2099"
-    
+
     if ref_type == "inproceedings":
         author = argv[0]
         title = argv[1]
