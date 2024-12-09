@@ -27,8 +27,8 @@ Open And Configure Browser
     Open Browser  browser=${BROWSER}  options=${options}
 
 Main Page Should Be Open
-    Title Should Be  Index
-    Page Should Contain  Welcome page
+    Title Should Be  Reference Database
+    Page Should Contain  Reference Database
 
 Successfully Created Article
     Main Page Should Be Open
