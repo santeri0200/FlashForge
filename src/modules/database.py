@@ -3,7 +3,7 @@
 from config import db
 from sqlalchemy import text
 from tests import db_helper
-from entities.reference import Article, Book, Inproceedings
+from entities.reference import Article, Book, Inproceedings, Manual
 
 def add_reference(ref):
     if ref.type == "article" and add_article(ref):
@@ -11,6 +11,8 @@ def add_reference(ref):
     if ref.type == "book" and add_book(ref):
         return True
     if ref.type == "inproceedings" and add_inproceedings(ref):
+        return True
+    if ref.type == "manual" and add_manual(ref):
         return True
 
     return False
@@ -52,7 +54,8 @@ def add_book(ref):
     try:
         sql = text("""
                    INSERT INTO books (author, year, title, publisher, address) 
-                   VALUES (:author, :year, :title, :publisher, :address)""")
+                   VALUES (:author, :year, :title, :publisher, :address)
+        """)
         db.session.execute(sql, ref.details())
     except:
         return False
@@ -62,18 +65,32 @@ def add_book(ref):
 def add_inproceedings(ref):
     try:
         sql = text("""
-                   INSERT INTO inproceedings
-                   (author, title, booktitle, year, editor, volume,
-                    number, series, pages, address, month, organization, publisher)
-                   VALUES (:author, :title, :booktitle, :year, :editor, :volume, 
-                   :number, :series, :pages, :address, :month, :organization, :publisher)"""
-                   )
+           INSERT INTO inproceedings
+           (author, title, booktitle, year, editor, volume,
+            number, series, pages, address, month, organization, publisher)
+           VALUES (:author, :title, :booktitle, :year, :editor, :volume, 
+           :number, :series, :pages, :address, :month, :organization, :publisher)
+        """)
         db.session.execute(sql, ref.details())
     except:
         print(ref.details())
         return False
     db.session.commit()
     return True
+
+def add_manual(ref):
+    try:
+        sql = text("""
+           INSERT INTO manuals
+           (title, year, author, organization, address, edition, month, note)
+           VALUES (:title, :year, :author, :organization, :address, :edition, :month, :note)
+        """)
+        db.session.execute(sql, ref.details())
+    except:
+        print(ref.details())
+        return False
+    db.session.commit()
+    return True    
 
 def edit_ref(ref_type, id, details):
     table_names = {
@@ -166,7 +183,7 @@ def get_all_manuals():
     if not res:
         return []
 
-    inproceedings = [Manuals(**row._asdict()) for row in res.fetchall()]
+    inproceedings = [Manual(**row._asdict()) for row in res.fetchall()]
     return inproceedings
 
 

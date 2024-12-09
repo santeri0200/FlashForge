@@ -10,6 +10,7 @@ ${RESET_URL}              http://${SERVER}/reset_db
 ${NEW_ARTICLE_URL}        http://${SERVER}/create_reference/article
 ${NEW_BOOK_URL}           http://${SERVER}/create_reference/book
 ${NEW_INPROCEEDINGS_URL}  http://${SERVER}/create_reference/inproceedings
+${NEW_MANUAL_URL}         http://${SERVER}/create_reference/manual
 ${BROWSER}                chrome
 ${HEADLESS}               false
 

@@ -110,7 +110,7 @@ class Inproceedings(Reference):
 class Manual(Reference):
     """Class for manuals references"""
     def __init__(self, id=None, **kwargs):
-        self.type     = "books"
+        self.type     = "manual"
         self.required = ["title", "year"]
         self.special  = { "year": int }
         self.fields   = { "id": id, "type": self.type, **kwargs }
