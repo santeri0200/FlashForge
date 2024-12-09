@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Edit article reference{% endblock %}
+{% block title %}Edit {{ ref.type | capitalize }} reference{% endblock %}
 {% block content %}
     {% set details = ref.details() %}
     <form action="/edit/{{ ref.type }}/{{ ref.id }}" method="post">

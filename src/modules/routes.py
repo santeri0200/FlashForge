@@ -81,9 +81,8 @@ def search_results():
 @app.route("/<ref_type>/<id>")
 def ref_page(ref_type, id):
     ref = database.ref_from_id(ref_type, id)
-    print(ref.id)
     if ref:
-        return render_template(f"{ref.type}.html", ref=ref, ref_type=ref_type)
+        return render_template("view_ref.html", ref=ref)
     else:
         return "Reference not found", 404
 
@@ -143,7 +142,7 @@ def reference_edit(ref_type, id):
 @app.route("/delete/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_delete(ref_type, id):
     if ref_type == "article":
-        article = Article(**database.ref_from_id(ref_type, id)._asdict()).details()
+        article = database.ref_from_id(ref_type, id)
         if request.method == "GET":
             if article:
                 return render_template("delete_ref.html", ref=article)
@@ -155,7 +154,7 @@ def reference_delete(ref_type, id):
             else:
                 return render_template("error.html", error="Something went wrong.")
     elif ref_type == "book":
-        book = Book(**database.ref_from_id(ref_type, id)._asdict()).details()
+        book = database.ref_from_id(ref_type, id)
         if request.method == "GET":
             if book:
                 return render_template("delete_ref.html", ref=book)
@@ -167,7 +166,7 @@ def reference_delete(ref_type, id):
             else:
                 return render_template("error.html", error="Something went wrong.")
     elif ref_type == "inproceedings":
-        inproceedings = Inproceedings(**database.ref_from_id(ref_type, id)._asdict()).details()
+        inproceedings = database.ref_from_id(ref_type, id)
         if request.method == "GET":
             if inproceedings:
                 return render_template("delete_ref.html", ref=inproceedings)
@@ -179,7 +178,7 @@ def reference_delete(ref_type, id):
             else:
                 return render_template("error.html", error="Something went wrong.")
     elif ref_type == "manual":
-        inproceedings = Manual(**database.ref_from_id(ref_type, id)._asdict()).details()
+        inproceedings = database.ref_from_id(ref_type, id)
         if request.method == "GET":
             if manual:
                 return render_template("delete_ref.html", ref=inproceedings)

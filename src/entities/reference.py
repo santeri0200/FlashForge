@@ -43,7 +43,6 @@ class Reference(ABC):
             return cls()
 
         row = res.fetchone()
-        print(row)
         return cls(**row._asdict()) if row else cls()
         
 

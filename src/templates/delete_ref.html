@@ -1,15 +1,14 @@
 {% extends "base.html" %}
-{% block title %}Delete {{ ref.type }} reference{% endblock %}
+{% block title %}Delete {{ ref.type | capitalize }} reference{% endblock %}
 {% block content %}
     <form action="/delete/{{ ref.type }}/{{ ref.id }}" method="post">
     Are you sure you want to delete the reference with the following details?
-        <ul>
-            {% for detail in ref %}
-                {% if detail != "id" and ref[detail] != None %}
-                    <li>{{ detail | capitalize }}: {{ ref[detail] }}</li>
-                {% endif %}
+        <div class="ref">
+            {% set details = ref.details() %}
+            {% for key, val in details.items() %}
+                {% if val != None %}<p class="ref-detail">{{ key | capitalize }}: {{ val }}</p>{% endif %}
             {% endfor %}
-        </ul>
+        </div>
         <input type="submit" value="Delete" style="background:red;"> <input type="button" onclick="location.href='/{{ ref.type }}/{{ ref.id }}';" value="Cancel">
         {%if error%}<p style="color:red">Error: {{ error_message }}</p>{%endif%}
     </form>

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}{{ ref.type | capitalize }} reference{% endblock %}
+{% block content %}
+    {% set details = ref.details() %}
+    <div class="ref">
+        <h2 class="ref-header">{{ details.title }}</h2>
+        {% for key, val in details.items() %}
+          {% if key != "title" %}<p class="ref-detail">{{ key | capitalize }}: {{ val or "-" }}</p>{% endif %}
+        {% endfor %}
+    </div>
+    <div class="ref">
+        <h2>LaTeX entry</h2>
+        <pre>
+@{{ref.type}} {
+  {% for key, val in details.items() %}{{ key }} = {{ val }},
+  {% endfor %}
+}
+        </pre>
+    </div>
+    <div class="ref">
+        <h3>Options</h3>
+        <a href="/edit/{{ref.type}}/{{ref.id}}">Edit reference</a> | <a href="/delete/{{ref.type}}/{{ref.id}}">Delete reference</a>
+    </div>
+{%endblock%}
