@@ -6,28 +6,7 @@ from tests import db_helper
 from entities.reference import Article, Book, Inproceedings, Manual
 
 def add_reference(ref):
-    if ref.type == "article" and add_article(ref):
-        return True
-    if ref.type == "book" and add_book(ref):
-        return True
-    if ref.type == "inproceedings" and add_inproceedings(ref):
-        return True
-    if ref.type == "manual" and add_manual(ref):
-        return True
-
-    return False
-
-def add_article(ref):
-    try:
-        sql = text("""
-            INSERT INTO articles
-            VALUES (DEFAULT, :author, :title, :journal, :year, :volume, :number, :pages, :month, :note)
-        """)
-        db.session.execute(sql, ref.details())
-    except:
-        return False
-    db.session.commit()
-    return True
+    return ref.insert(db)
 
 def edit_article(ref):
     try:
@@ -49,48 +28,6 @@ def edit_article(ref):
         return False
     db.session.commit()
     return True
-
-def add_book(ref):
-    try:
-        sql = text("""
-                   INSERT INTO books (author, year, title, publisher, address) 
-                   VALUES (:author, :year, :title, :publisher, :address)
-        """)
-        db.session.execute(sql, ref.details())
-    except:
-        return False
-    db.session.commit()
-    return True
-
-def add_inproceedings(ref):
-    try:
-        sql = text("""
-           INSERT INTO inproceedings
-           (author, title, booktitle, year, editor, volume,
-            number, series, pages, address, month, organization, publisher)
-           VALUES (:author, :title, :booktitle, :year, :editor, :volume, 
-           :number, :series, :pages, :address, :month, :organization, :publisher)
-        """)
-        db.session.execute(sql, ref.details())
-    except:
-        print(ref.details())
-        return False
-    db.session.commit()
-    return True
-
-def add_manual(ref):
-    try:
-        sql = text("""
-           INSERT INTO manuals
-           (title, year, author, organization, address, edition, month, note)
-           VALUES (:title, :year, :author, :organization, :address, :edition, :month, :note)
-        """)
-        db.session.execute(sql, ref.details())
-    except:
-        print(ref.details())
-        return False
-    db.session.commit()
-    return True    
 
 def edit_ref(ref_type, id, details):
     table_names = {

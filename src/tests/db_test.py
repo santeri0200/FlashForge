@@ -1,7 +1,7 @@
 import unittest
 from tests import db_helper
 from modules import database
-from config import app
+from config import app, db
 
 from entities.reference import Article, Book, Inproceedings, Manual
 
@@ -37,7 +37,7 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_article(ref))
+            self.assertTrue(ref.insert(db))
 
     def test_database_query(self):
         ref = Article(
@@ -53,7 +53,7 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_article(ref))
+            self.assertTrue(ref.insert(db))
             res = database.get_all_articles()
             ref.fields["id"] = res[0].fields["id"]
             self.assertEqual([val.details() for val in res], [ref.details()])
@@ -72,8 +72,8 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_article(ref))
-            self.assertFalse(database.add_article(ref))
+            self.assertTrue(ref.insert(db))
+            self.assertFalse(ref.insert(db))
 
     def test_database_valid_search(self):
         ref = Article(
@@ -89,7 +89,7 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_article(ref))
+            self.assertTrue(ref.insert(db))
             (res, _, _) = database.search_result('Au')
 
             expected = ref.details()
@@ -118,7 +118,7 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_article(ref))
+            self.assertTrue(ref.insert(db))
 
             (res, _, _) = database.search_result('Invalid')
             self.assertEqual(res, [])
@@ -140,7 +140,7 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_article(ref))
+            self.assertTrue(ref.insert(db))
             res = database.get_all_articles()
 
             expected = Article(
@@ -174,7 +174,7 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_article(ref))
+            self.assertTrue(ref.insert(db))
             res = database.get_all_articles()
             self.assertTrue(database.delete_reference("article", res[0].fields["id"]))
             res = database.get_all_articles()
@@ -190,7 +190,7 @@ class TestDatabase(unittest.TestCase):
     )
 
         with self.context:
-            self.assertTrue(database.add_book(ref))
+            self.assertTrue(ref.insert(db))
 
     def test_database_add_duplicate_book(self):
         ref = Book(
@@ -202,8 +202,8 @@ class TestDatabase(unittest.TestCase):
     )
 
         with self.context:
-            self.assertTrue(database.add_book(ref))
-            self.assertFalse(database.add_book(ref))
+            self.assertTrue(ref.insert(db))
+            self.assertFalse(ref.insert(db))
 
     def test_database_add_inproceedings(self):
         ref = Inproceedings(
@@ -223,7 +223,7 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_inproceedings(ref))
+            self.assertTrue(ref.insert(db))
 
     def test_database_add_duplicate_inproceedings(self):
         ref = Inproceedings(
@@ -243,8 +243,8 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_inproceedings(ref))
-            self.assertFalse(database.add_inproceedings(ref))
+            self.assertTrue(ref.insert(db))
+            self.assertFalse(ref.insert(db))
 
     def test_database_add_manual(self):
         ref = Manual(
@@ -259,7 +259,7 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_manual(ref))
+            self.assertTrue(ref.insert(db))
 
     def test_database_add_duplicate_manual(self):
         ref = Manual(
@@ -274,5 +274,5 @@ class TestDatabase(unittest.TestCase):
         )
 
         with self.context:
-            self.assertTrue(database.add_manual(ref))
-            self.assertFalse(database.add_manual(ref))
+            self.assertTrue(ref.insert(db))
+            self.assertFalse(ref.insert(db))
