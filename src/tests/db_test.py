@@ -3,7 +3,7 @@ from tests import db_helper
 from modules import database
 from config import app
 
-from entities.reference import Article, Book, Inproceedings
+from entities.reference import Article, Book, Inproceedings, Manual
 
 class TestDatabase(unittest.TestCase):
     """Class for testing the database"""
@@ -245,3 +245,34 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             self.assertTrue(database.add_inproceedings(ref))
             self.assertFalse(database.add_inproceedings(ref))
+
+    def test_database_add_manual(self):
+        ref = Manual(
+            title        = 'Title',
+            year         = 2024,
+            author       = None,
+            organization = None,
+            address      = None,
+            edition      = None,
+            month        = None,
+            note         = None,
+        )
+
+        with self.context:
+            self.assertTrue(database.add_manual(ref))
+
+    def test_database_add_duplicate_manual(self):
+        ref = Manual(
+            title        = 'Title',
+            year         = 2024,
+            author       = None,
+            organization = None,
+            address      = None,
+            edition      = None,
+            month        = None,
+            note         = None,
+        )
+
+        with self.context:
+            self.assertTrue(database.add_manual(ref))
+            self.assertFalse(database.add_manual(ref))

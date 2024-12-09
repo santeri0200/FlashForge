@@ -158,6 +158,17 @@ def get_all_inproceedings():
     inproceedings = [Inproceedings(**row._asdict()) for row in res.fetchall()]
     return inproceedings
 
+def get_all_manuals():
+    sql = text("SELECT * FROM Manuals ORDER BY id DESC")
+    res = db.session.execute(sql)
+
+    # This should throw
+    if not res:
+        return []
+
+    inproceedings = [Manuals(**row._asdict()) for row in res.fetchall()]
+    return inproceedings
+
 
 def ref_from_id(ref_type, id):
     table_names = {
@@ -236,7 +247,27 @@ def search_result(query):
 
     inproceedings = res.fetchall()
 
-    return articles, books, inproceedings
+    res = db.session.execute(
+        text("""
+            SELECT *
+            FROM manuals
+            WHERE
+                LOWER(title) LIKE LOWER(:query)
+                OR CAST(year AS TEXT) LIKE :query
+                OR LOWER(author) LIKE LOWER(:query)
+                OR LOWER(organization) LIKE LOWER(:query)
+                OR LOWER(address) LIKE LOWER(:query)
+                OR LOWER(edition) LIKE LOWER(:query)
+                OR LOWER(month) LIKE LOWER(:query)
+                OR LOWER(note) LIKE LOWER(:query)
+            ORDER BY id DESC
+        """),
+        {"query": f"%{query.lower()}%"}
+    )
+
+    manuals = res.fetchall()
+
+    return articles, books, inproceedings, manuals
 
 def reset_db():
     db_helper.reset_db()

@@ -2,7 +2,7 @@
 from config import app, test_env
 from flask import render_template, request, redirect, url_for
 from modules import database
-from entities.reference import Article, Book, Inproceedings
+from entities.reference import Article, Book, Inproceedings, Manual
 
 @app.route("/")
 def index():
@@ -17,18 +17,22 @@ def add_ref(ref_type):
 
             ref = Article(**(request.form))
             if not ref.validate():
-                return render_template("create_reference_article.html", error=True, error_message="Invalid details")
+                return render_template("create_reference_article.html",
+                                       error=True, error_message="Invalid details")
             elif not database.add_reference(ref):
-                return render_template("create_reference_article.html", error=True, error_message="Invalid details")
+                return render_template("create_reference_article.html",
+                                       error=True, error_message="Invalid details")
         case "book":
             if request.method == "GET":
                 return render_template("create_reference_book.html")
 
             ref = Book(**(request.form))
             if not ref.validate():
-                return render_template("create_reference_book.html", error=True, error_message="Invalid details")
+                return render_template("create_reference_book.html",
+                                       error=True, error_message="Invalid details")
             elif not database.add_reference(ref):
-                return render_template("create_reference_book.html", error=True, error_message="Invalid details")
+                return render_template("create_reference_book.html",
+                                       error=True, error_message="Invalid details")
         case "inproceedings":
             if request.method == "GET":
                 return render_template("create_reference_inproceedings.html")
@@ -39,6 +43,17 @@ def add_ref(ref_type):
                                        error=True, error_message="Invalid details")
             elif not database.add_reference(ref):
                 return render_template("create_reference_inproceedings.html",
+                                       error=True, error_message="Invalid details")
+        case "manual":
+            if request.method == "GET":
+                return render_template("create_reference_manual.html")
+
+            ref = Manual(**(request.form))
+            if not ref.validate():
+                return render_template("create_reference_manual.html",
+                                       error=True, error_message="Invalid details")
+            elif not database.add_reference(ref):
+                return render_template("create_reference_manual.html",
                                        error=True, error_message="Invalid details")
 
         case _:
@@ -65,10 +80,11 @@ if test_env:
 @app.route("/result")
 def search_results():
     query = request.args.get('query')
-    articles, books, inproceedings = database.search_result(query)
+    articles, books, inproceedings, manuals = database.search_result(query)
     books = [Book(**params._asdict()).details() for params in books]
     articles = [Article(**params._asdict()).details() for params in articles]
     inproceedings = [Inproceedings(**params._asdict()).details() for params in inproceedings]
+    manuals = [Manual(**params._asdict()).details() for params in manuals]
     return render_template("refs.html", references=books+articles+inproceedings, title="Search results")
 
 @app.route("/<ref_type>/<id>")
@@ -87,6 +103,8 @@ def reference_edit(ref_type, id):
         ref = Book(**database.ref_from_id(ref_type, id)._asdict()).details()
     elif ref_type == "inproceedings":
         ref = Inproceedings(**database.ref_from_id(ref_type, id)._asdict()).details()
+    elif ref_type == "manual":
+        ref = Manual(**database.ref_from_id(ref_type, id)._asdict()).details()
 
     if request.method == "GET":
         if ref:
@@ -103,7 +121,7 @@ def reference_edit(ref_type, id):
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
                 return redirect(f"/{ref_type}/{id}")
 
-            if ref_type == "book":
+            elif ref_type == "book":
                 edited_ref = Book(**(request.form), id=int(id))
                 if not edited_ref.validate():
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
@@ -113,6 +131,14 @@ def reference_edit(ref_type, id):
 
             elif ref_type == "inproceedings":
                 edited_ref = Inproceedings(**(request.form), id=int(id))
+                if not edited_ref.validate():
+                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+                if not database.edit_ref(ref_type, id, edited_ref.details()):
+                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+                return redirect(f"/{ref_type}/{id}")
+
+            elif ref_type == "manual":
+                edited_ref = Manual(**(request.form), id=int(id))
                 if not edited_ref.validate():
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
                 if not database.edit_ref(ref_type, id, edited_ref.details()):
@@ -136,7 +162,7 @@ def reference_delete(ref_type, id):
                 return redirect("/")
             else:
                 return render_template("error.html", error="Something went wrong.")
-    if ref_type == "book":
+    elif ref_type == "book":
         book = Book(**database.ref_from_id(ref_type, id)._asdict()).details()
         if request.method == "GET":
             if book:
@@ -148,10 +174,22 @@ def reference_delete(ref_type, id):
                 return redirect("/")
             else:
                 return render_template("error.html", error="Something went wrong.")
-    if ref_type == "inproceedings":
+    elif ref_type == "inproceedings":
         inproceedings = Inproceedings(**database.ref_from_id(ref_type, id)._asdict()).details()
         if request.method == "GET":
             if inproceedings:
+                return render_template("delete_ref.html", ref=inproceedings)
+            else:
+                return "Inproceedings reference not found", 404
+        if request.method == "POST":
+            if database.delete_reference(ref_type, id):
+                return redirect("/")
+            else:
+                return render_template("error.html", error="Something went wrong.")
+    elif ref_type == "manual":
+        inproceedings = Manual(**database.ref_from_id(ref_type, id)._asdict()).details()
+        if request.method == "GET":
+            if manual:
                 return render_template("delete_ref.html", ref=inproceedings)
             else:
                 return "Inproceedings reference not found", 404
