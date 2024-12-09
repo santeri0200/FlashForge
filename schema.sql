@@ -60,4 +60,6 @@ CREATE TABLE IF NOT EXISTS Manuals (
     edition      TEXT,
     month        TEXT,
     note         TEXT,
+
+    UNIQUE (title)
 );
