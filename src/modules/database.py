@@ -110,6 +110,18 @@ def search_result(query):
     articles = res.fetchall()
     return articles
 
+def order_references(order):
+    if order == 'old_to_new':
+        sql = text("SELECT * FROM articles ORDER BY year")
+        res = db.session.execute(sql)
+        articles = res.fetchall()
+    if order == 'new_to_old':
+        sql = text("SELECT * FROM articles ORDER BY year DESC")
+        res = db.session.execute(sql)
+        articles = res.fetchall()
+    return articles
+
+
 def reset_db():
     print("Clearing contents from table articles")
     sql = text("DELETE FROM articles")

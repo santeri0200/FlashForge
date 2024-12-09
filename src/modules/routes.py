@@ -77,6 +77,11 @@ if test_env:
         database.reset_db()
         return "db reset", 200
 
+@app.route("/order_references/<order>")
+def order_references(order):
+    refs=database.order_references(order)
+    return render_template("refs.html", references=refs)
+
 @app.route("/result")
 def search_results():
     query = request.args.get('query')

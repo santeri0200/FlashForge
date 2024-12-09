@@ -9,6 +9,13 @@
         {% else %}
             <p>Found {{ result_count }} references:</p>
         {% endif %}
+        <div class="dropdown">
+            <button>Järjestä</button>
+            <div class="dropdown-content">
+                <a href="/order_references/new_to_old">Uusimmasta vanhimpaan</a>
+                <a href="/order_references/old_to_new">Vanhimmasta uusimpaan</a>
+            </div>
+        </div>
         {% for ref in references %}
             <div class="ref">
                 <h2 class="ref-header"><a href="/article/{{ ref.id }}" name="article">View reference</a></h2>

@@ -99,3 +99,12 @@ class TestDatabase(unittest.TestCase):
             self.assertEqual(res, [expected])
             res = database.advanced_search_result('year', '1999')
             self.assertEqual(res, [])
+
+    def test_order_references_by_year(self):
+        with self.context:
+            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
+            self.assertTrue(database.add_article('Author2', 'Title2', 'Journal2', 2023, None, None, None, None, None))
+            ordered_references_old_to_new = database.order_references('old_to_new')
+            self.assertEqual(ordered_references_old_to_new[0][1], 'Author2')
+            ordered_references_new_to_old = database.order_references('new_to_old')
+            self.assertEqual(ordered_references_new_to_old[0][1], 'Author')
