@@ -11,10 +11,9 @@
     <div class="ref">
         <h2>LaTeX entry</h2>
         <pre>
-@{{ref.type}} {
-  {% for key, val in details.items() %}{{ key }} = {{ val }},
-  {% endfor %}
-}
+@{{ref.type}} {your_tag_here,
+  {% for key, val in details.items() %}{% if val %}{{ key }} = "{{ val }}",
+  {% endif %}{% endfor %}}
         </pre>
     </div>
     <div class="ref">
