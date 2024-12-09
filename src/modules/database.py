@@ -49,19 +49,8 @@ def edit_ref(ref_type, id, details):
     db.session.commit()
     return True
 
-def delete_reference(ref_type, id):
-    table_names = {
-        "article": "Articles",
-        "book": "Books",
-        "inproceedings": "inproceedings"
-    }
-    try:
-        sql = text(f"DELETE FROM {table_names[ref_type]} WHERE id=:id")
-        db.session.execute(sql, {"id":id})
-    except:
-        return False
-    db.session.commit()
-    return True
+def delete_reference(ref):
+    return ref.delete(db)
 
 def get_all_references():
     return [

@@ -149,7 +149,7 @@ def reference_delete(ref_type, id):
             else:
                 return "Article not found", 404
         if request.method == "POST":
-            if database.delete_reference(ref_type, id):
+            if database.delete_reference(article):
                 return redirect("/")
             else:
                 return render_template("error.html", error="Something went wrong.")
@@ -161,7 +161,7 @@ def reference_delete(ref_type, id):
             else:
                 return "Book not found", 404
         if request.method == "POST":
-            if database.delete_reference(ref_type, id):
+            if database.delete_reference(book):
                 return redirect("/")
             else:
                 return render_template("error.html", error="Something went wrong.")
@@ -173,19 +173,19 @@ def reference_delete(ref_type, id):
             else:
                 return "Inproceedings reference not found", 404
         if request.method == "POST":
-            if database.delete_reference(ref_type, id):
+            if database.delete_reference(inproceedings):
                 return redirect("/")
             else:
                 return render_template("error.html", error="Something went wrong.")
     elif ref_type == "manual":
-        inproceedings = database.ref_from_id(ref_type, id)
+        manual = database.ref_from_id(ref_type, id)
         if request.method == "GET":
             if manual:
-                return render_template("delete_ref.html", ref=inproceedings)
+                return render_template("delete_ref.html", ref=manual)
             else:
                 return "Inproceedings reference not found", 404
         if request.method == "POST":
-            if database.delete_reference(ref_type, id):
+            if database.delete_reference(manual):
                 return redirect("/")
             else:
                 return render_template("error.html", error="Something went wrong.")

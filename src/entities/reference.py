@@ -76,6 +76,16 @@ class Reference(ABC):
         db.session.commit()
         return True
 
+    def delete(self, db) -> bool:
+        sql = text(f"DELETE FROM {self.table} WHERE id=:id")
+        try:
+            db.session.execute(sql, {"id": self.id})
+        except:
+            return False
+        
+        db.session.commit()
+        return True
+
 class Article(Reference):
     """Class for article references"""
     type     = "article"
