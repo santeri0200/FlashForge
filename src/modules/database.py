@@ -35,7 +35,6 @@ def edit_ref(ref_type, id, details):
         "book": "books",
         "inproceedings": "inproceedings"
     }
-    del details['type']
     updated_fields = ""
     for key in details:
         updated_fields += key + "=:" + key
