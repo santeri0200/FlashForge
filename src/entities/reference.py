@@ -33,13 +33,16 @@ class Reference(ABC):
         return required_fields and typed_fields
 
     def details(self):
-        return {key: val if key in self.required else val or None for key, val in self.fields.items()}
+        default   = {key: None for key in self.required + self.optional}
+        populated = {key: val for key, val in self.fields.items()}
+        return {**default, **populated}
 
 class Article(Reference):
     """Class for article references"""
     def __init__(self, id=None, **kwargs):
         self.type     = "article"
         self.required = ["author", "title", "journal", "year"]
+        self.optional = ["volume", "number", "pages", "month", "note"]
         self.special  = { "year": int, "volume": int, "number": int }
         self.fields   = { "id": id, "type": self.type, **kwargs }
 
@@ -48,6 +51,7 @@ class Book(Reference):
     def __init__(self, id=None, **kwargs):
         self.type     = "book"
         self.required = ["author", "title", "publisher", "year", "address"]
+        self.optional = []
         self.special  = { "year": int }
         self.fields   = { "id": id, "type": self.type, **kwargs }
 
@@ -56,6 +60,8 @@ class Inproceedings(Reference):
     def __init__(self, id=None, **kwargs):
         self.type     = "inproceedings"
         self.required = ["author", "title", "booktitle", "year"]
+        self.optional = ["editor", "volume", "number", "series", "pages",
+                            "address", "month", "organization", "publisher"]
         self.special  = { "year": int, "volume": int, "number": int }
         self.fields   = { "id": id, "type": self.type, **kwargs }
 
@@ -64,5 +70,7 @@ class Manual(Reference):
     def __init__(self, id=None, **kwargs):
         self.type     = "manual"
         self.required = ["title", "year"]
+        self.optional = ["author", "organization", "address", "edition",
+                            "month", "note"]
         self.special  = { "year": int }
         self.fields   = { "id": id, "type": self.type, **kwargs }    

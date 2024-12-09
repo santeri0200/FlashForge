@@ -191,8 +191,10 @@ def ref_from_id(ref_type, id):
     table_names = {
         "article": "Articles",
         "book": "Books",
-        "inproceedings": "inproceedings"
+        "inproceedings": "Inproceedings",
+        "manual": "Manual",
     }
+
     sql = text(f"SELECT * FROM {table_names[ref_type]} WHERE id={id} LIMIT 1")
     res = db.session.execute(sql)
     ref = res.fetchone()
