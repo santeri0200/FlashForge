@@ -1,16 +1,14 @@
 {% extends "base.html" %}
 {% block title %}Edit article reference{% endblock %}
 {% block content %}
+    {% set details = ref.details() %}
     <form action="/edit/{{ ref.type }}/{{ ref.id }}" method="post">
-        {% for detail in ref %}
-            {% if detail != "id" and detail != "year" and detail != "type" %}
-                <h3>{{ detail | capitalize }}</h3>
-                <textarea name="{{ detail }}" rows="1" cols="50" maxlength="100" {% if ref[detail].required %}required{% endif %}>{{ref[detail] or ""}}</textarea>
+        {% for key, val in details.items() %}
+            {% if key != "id" and key != "type" %}
+                <h3>{{ key | capitalize }}</h3>
+                <textarea name="{{ key }}" rows="1" cols="50" maxlength="100" {% if key in ref.required %}required{% endif %}>{{val or ""}}</textarea>
             {% endif %}
         {% endfor%}
-        <h3>Year</h3>
-        <input type="number" name="year" step="1" min="1900" max="2099" value="{{ ref.year }}" required></input>
-        <br>
         <br>
         <input type="submit" value="Save changes"> <input type="button" onclick="location.href='/{{ ref.type }}/{{ ref.id }}';" value="Cancel">
         {%if error%}<p style="color:red">Error: {{ error_message }}</p>{%endif%}

@@ -3,7 +3,7 @@
 from config import db
 from sqlalchemy import text
 from tests import db_helper
-from entities.reference import Article, Book, Inproceedings, Manual
+from entities.reference import Reference, Article, Book, Inproceedings, Manual
 
 def add_reference(ref):
     return ref.insert(db)
@@ -64,78 +64,51 @@ def delete_reference(ref_type, id):
     db.session.commit()
     return True
 
+def get_all_references():
+    return [
+        *get_all_articles(),
+        *get_all_books(),
+        *get_all_inproceedings(),
+        *get_all_manuals(),
+    ]
+
 def get_all_articles():
-    sql = text("""
-        SELECT *
-        FROM articles
-        ORDER BY id DESC
-    """)
-    res = db.session.execute(sql)
-
-    # This should throw
-    if not res:
-        return []
-
-    articles = [Article(**row._asdict()) for row in res.fetchall()]
-    return articles
-
-def article_from_id(id):
-    sql = text("""
-        SELECT *
-        FROM articles
-        WHERE id=:id LIMIT 1
-    """)
-    res = db.session.execute(sql, { "id": id })
-
-    article = Article(**res.fetchone()._asdict())
-    return article
+    return Reference.get_all(db, Article)
 
 def get_all_books():
-    sql = text("SELECT * FROM Books ORDER BY id DESC")
-    res = db.session.execute(sql)
-
-    # This should throw
-    if not res:
-        return []
-
-    books = [Book(**row._asdict()) for row in res.fetchall()]
-    return books
+    return Reference.get_all(db, Book)
 
 def get_all_inproceedings():
-    sql = text("SELECT * FROM Inproceedings ORDER BY id DESC")
-    res = db.session.execute(sql)
-
-    # This should throw
-    if not res:
-        return []
-
-    inproceedings = [Inproceedings(**row._asdict()) for row in res.fetchall()]
-    return inproceedings
+    return Reference.get_all(db, Inproceedings)
 
 def get_all_manuals():
-    sql = text("SELECT * FROM Manuals ORDER BY id DESC")
-    res = db.session.execute(sql)
+    return Reference.get_all(db, Manual)
 
-    # This should throw
-    if not res:
-        return []
+def article_from_id(id):
+    return Reference.from_id(db, id, Article)
 
-    inproceedings = [Manual(**row._asdict()) for row in res.fetchall()]
-    return inproceedings
+def book_from_id(id):
+    return Reference.from_id(db, id, Book)
 
+def inproceedings_from_id(id):
+    return Reference.from_id(db, id, Inproceedings)
+
+def manual_from_id(id):
+    return Reference.from_id(db, id, Manual)
 
 def ref_from_id(ref_type, id):
-    table_names = {
-        "article": "Articles",
-        "book": "Books",
-        "inproceedings": "Inproceedings",
-        "manual": "Manual",
-    }
+    match ref_type:
+        case "article":
+            return article_from_id(id)
+        case "book":
+            return book_from_id(id)
+        case "inproceedings":
+            return inproceedings_from_id(id)
+        case "manual":
+            return manual_from_id(id)
 
-    sql = text(f"SELECT * FROM {table_names[ref_type]} WHERE id={id} LIMIT 1")
-    res = db.session.execute(sql)
-    ref = res.fetchone()
-    return ref
+        case _:
+            return None
 
 def search_result(query):
     if query is None:
@@ -160,7 +133,7 @@ def search_result(query):
         {"query": f"%{query.lower()}%"}
     )
 
-    articles = res.fetchall()
+    articles = [Article(**row._asdict()) for row in res.fetchall()]
 
     res = db.session.execute(
         text("""
@@ -177,7 +150,7 @@ def search_result(query):
          { "query": f"%{query.lower()}%" }
     )
 
-    books = res.fetchall()
+    books = [Book(**row._asdict()) for row in res.fetchall()]
 
     res = db.session.execute(
         text("""
@@ -201,7 +174,7 @@ def search_result(query):
         {"query": f"%{query.lower()}%"}
     )
 
-    inproceedings = res.fetchall()
+    inproceedings = [Inproceedings(**row._asdict()) for row in res.fetchall()]
 
     res = db.session.execute(
         text("""
@@ -221,9 +194,9 @@ def search_result(query):
         {"query": f"%{query.lower()}%"}
     )
 
-    manuals = res.fetchall()
+    manuals = [Manual(**row._asdict()) for row in res.fetchall()]
 
-    return articles, books, inproceedings, manuals
+    return articles + books + inproceedings + manuals
 
 def reset_db():
     db_helper.reset_db()

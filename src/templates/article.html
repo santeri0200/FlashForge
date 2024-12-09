@@ -1,37 +1,38 @@
 {% extends "base.html" %}
 {% block title %}Article reference{% endblock %}
 {% block content %}
+    {% set details = ref.details() %}
     <div class="ref">
-        <h2 class="ref-header">{{ ref.title }}</h2>
-        <p class="ref-detail">Author: {{ ref.author }}</p>
-        <p class="ref-detail">Journal: {{ ref.journal }}</p>
-        <p class="ref-detail">Year: {{ ref.year }}</p>
-        <p class="ref-detail">Volume: {{ ref.volume or "-"}}</p>
-        <p class="ref-detail">Number: {{ ref.number or "-"}}</p>
-        <p class="ref-detail">Pages: {{ ref.pages or "-"}}</p>
-        <p class="ref-detail">Month: {{ ref.month or "-"}}</p>
-        <p class="ref-detail">Note: {{ ref.note or "-"}}</p>
+        <h2 class="ref-header">{{ details.title }}</h2>
+        <p class="ref-detail">Author: {{ details.author }}</p>
+        <p class="ref-detail">Journal: {{ details.journal }}</p>
+        <p class="ref-detail">Year: {{ details.year }}</p>
+        <p class="ref-detail">Volume: {{ details.volume or "-"}}</p>
+        <p class="ref-detail">Number: {{ details.number or "-"}}</p>
+        <p class="ref-detail">Pages: {{ details.pages or "-"}}</p>
+        <p class="ref-detail">Month: {{ details.month or "-"}}</p>
+        <p class="ref-detail">Note: {{ details.note or "-"}}</p>
     </div>
     <div class="ref">
         <h2>LaTeX entry</h2>
         <pre>
 {%raw%}
 @article{your_tag_here,
-    title        = {{%endraw%}{{ref.title}}{%raw%}},
-    author       = {{%endraw%}{{ref.author}}{%raw%}},
-    journal      = {{%endraw%}{{ref.journal}}{%raw%}},
-    year         = {{%endraw%}{{ref.year}}{%raw%}},
-    volume       = {{%endraw%}{{ref.volume or ""}}{%raw%}},
-    number       = {{%endraw%}{{ref.number or ""}}{%raw%}},
-    pages        = {{%endraw%}{{ref.pages or ""}}{%raw%}}
-    month        = {{%endraw%}{{ref.month or ""}}{%raw%}},
-    note         = {{%endraw%}{{ref.note or ""}}{%raw%}}
+    title        = {{%endraw%}{{details.title}}{%raw%}},
+    author       = {{%endraw%}{{details.author}}{%raw%}},
+    journal      = {{%endraw%}{{details.journal}}{%raw%}},
+    year         = {{%endraw%}{{details.year}}{%raw%}},
+    volume       = {{%endraw%}{{details.volume or ""}}{%raw%}},
+    number       = {{%endraw%}{{details.number or ""}}{%raw%}},
+    pages        = {{%endraw%}{{details.pages or ""}}{%raw%}}
+    month        = {{%endraw%}{{details.month or ""}}{%raw%}},
+    note         = {{%endraw%}{{details.note or ""}}{%raw%}}
 }
 {%endraw%}
         </pre>
     </div>
     <div class="ref">
         <h3>Options</h3>
-        <a href="/edit/article/{{ref.id}}">Edit reference</a> | <a href="/delete/article/{{ref.id}}">Delete reference</a>
+        <a href="/edit/{{ref.type}}/{{ref.id}}">Edit reference</a> | <a href="/delete/{{ref.type}}/{{ref.id}}">Delete reference</a>
     </div>
 {%endblock%}

@@ -63,13 +63,7 @@ def add_ref(ref_type):
 
 @app.route("/refs")
 def refs_page():
-    articles = [ref.details() for ref in database.get_all_articles()]
-    books    = [ref.details() for ref in database.get_all_books()]
-    inproceedings = [ref.details() for ref in database.get_all_inproceedings()]
-    manuals = [ref.details() for ref in database.get_all_manuals()]
-
-    refs = articles + books + inproceedings + manuals
-    return render_template("refs.html", references=refs)
+    return render_template("refs.html", references=database.get_all_references())
 
 if test_env:
     print("should be here!!!")
@@ -81,31 +75,28 @@ if test_env:
 @app.route("/result")
 def search_results():
     query = request.args.get('query')
-    articles, books, inproceedings, manuals = database.search_result(query)
-    books = [Book(**params._asdict()).details() for params in books]
-    articles = [Article(**params._asdict()).details() for params in articles]
-    inproceedings = [Inproceedings(**params._asdict()).details() for params in inproceedings]
-    manuals = [Manual(**params._asdict()).details() for params in manuals]
-    return render_template("refs.html", references=books+articles+inproceedings, title="Search results")
+    refs = database.search_result(query)
+    return render_template("refs.html", references=refs, title="Search results")
 
 @app.route("/<ref_type>/<id>")
 def ref_page(ref_type, id):
     ref = database.ref_from_id(ref_type, id)
+    print(ref.id)
     if ref:
-        return render_template(f"{ref_type}.html", ref=ref, ref_type=ref_type)
+        return render_template(f"{ref.type}.html", ref=ref, ref_type=ref_type)
     else:
         return "Reference not found", 404
 
 @app.route("/edit/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_edit(ref_type, id):
     if ref_type == "article":
-        ref = Article(**database.ref_from_id(ref_type, id)._asdict()).details()
+        ref = database.ref_from_id(ref_type, id)
     elif ref_type == "book":
-        ref = Book(**database.ref_from_id(ref_type, id)._asdict()).details()
+        ref = database.ref_from_id(ref_type, id)
     elif ref_type == "inproceedings":
-        ref = Inproceedings(**database.ref_from_id(ref_type, id)._asdict()).details()
+        ref = database.ref_from_id(ref_type, id)
     elif ref_type == "manual":
-        ref = Manual(**database.ref_from_id(ref_type, id)._asdict()).details()
+        ref = database.ref_from_id(ref_type, id)
 
     if request.method == "GET":
         if ref:

@@ -4,14 +4,6 @@ from sqlalchemy import text
 
 class Reference(ABC):
     """Class for references"""
-    @abstractmethod
-    def validate(self):
-        pass
-
-    @abstractmethod
-    def details(self):
-        pass
-
     def validate(self):
         required_fields = all([
             required in self.fields.keys()
@@ -38,12 +30,43 @@ class Reference(ABC):
         populated = {key: val or None for key, val in self.fields.items()}
         return {**default, **populated}
 
+    def from_id(db, id, cls):
+        sql = f"""
+            SELECT * FROM {cls.table} WHERE id = :id
+        """
+
+        print(id, sql)
+
+        try:
+            res = db.session.execute(text(sql), { "id": id })
+        except:
+            return cls()
+
+        row = res.fetchone()
+        print(row)
+        return cls(**row._asdict()) if row else cls()
+        
+
+    def get_all(db, cls):
+        sql = f"""
+            SELECT * FROM {cls.table}
+        """
+
+        try:
+            res = db.session.execute(text(sql))
+        except:
+            return []
+
+        return [cls(**row._asdict()) for row in res.fetchall()]
+
     def insert(self, db) -> bool:
         details = self.details()
         fields  = [key for key in details.keys()]
         sql = f"""
             INSERT INTO {self.table} ({", ".join(fields)}) VALUES ({", ".join([f":{key}" for key in fields])})
         """
+
+        print(sql, details)
 
         try:
             res = db.session.execute(text(sql), details)
@@ -56,42 +79,49 @@ class Reference(ABC):
 
 class Article(Reference):
     """Class for article references"""
+    type     = "article"
+    table    = "Articles"
+    required = ["author", "title", "journal", "year"]
+    optional = ["volume", "number", "pages", "month", "note"]
+    special  = { "year": int, "volume": int, "number": int }
+
     def __init__(self, id=None, **kwargs):
-        self.type     = "article"
-        self.table    = "Articles"
-        self.required = ["author", "title", "journal", "year"]
-        self.optional = ["volume", "number", "pages", "month", "note"]
-        self.special  = { "year": int, "volume": int, "number": int }
-        self.fields   = { **kwargs }
+        self.id     = id
+        self.fields = { **kwargs }    
 
 class Book(Reference):
     """Class for book references"""
+    type     = "book"
+    table    = "Books"
+    required = ["author", "title", "publisher", "year", "address"]
+    optional = []
+    special  = { "year": int }
+
     def __init__(self, id=None, **kwargs):
-        self.type     = "book"
-        self.table    = "Books"
-        self.required = ["author", "title", "publisher", "year", "address"]
-        self.optional = []
-        self.special  = { "year": int }
-        self.fields   = { **kwargs }
+        self.id     = id
+        self.fields = { **kwargs }    
 
 class Inproceedings(Reference):
     """Class for inproceedings references"""
+    type     = "inproceedings"
+    table    = "Inproceedings"
+    required = ["author", "title", "booktitle", "year"]
+    optional = ["editor", "volume", "number", "series", "pages", "address",
+                "month", "organization", "publisher"]
+    special  = { "year": int, "volume": int, "number": int }
+
     def __init__(self, id=None, **kwargs):
-        self.type     = "inproceedings"
-        self.table    = "Inproceedings"
-        self.required = ["author", "title", "booktitle", "year"]
-        self.optional = ["editor", "volume", "number", "series", "pages",
-                            "address", "month", "organization", "publisher"]
-        self.special  = { "year": int, "volume": int, "number": int }
-        self.fields   = { **kwargs }
+        self.id     = id
+        self.fields = { **kwargs }    
 
 class Manual(Reference):
     """Class for manuals references"""
+    type     = "manual"
+    table    = "Manuals"
+    required = ["title", "year"]
+    optional = ["author", "organization", "address", "edition", "month", "note"]
+    special  = { "year": int }
+
     def __init__(self, id=None, **kwargs):
-        self.type     = "manual"
-        self.table    = "Manuals"
-        self.required = ["title", "year"]
-        self.optional = ["author", "organization", "address", "edition",
-                            "month", "note"]
-        self.special  = { "year": int }
-        self.fields   = { **kwargs }    
+        self.id     = id
+        self.fields = { **kwargs }    
