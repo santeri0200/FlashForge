@@ -8,46 +8,8 @@ from entities.reference import Reference, Article, Book, Inproceedings, Manual
 def add_reference(ref):
     return ref.insert(db)
 
-def edit_article(ref):
-    try:
-        sql = text("""
-            UPDATE articles
-            SET author=:author,
-                title=:title,
-                journal=:journal,
-                year=:year,
-                volume=:volume,
-                number=:number,
-                pages=:pages,
-                month=:month,
-                note=:note
-            WHERE id=:id
-        """)
-        db.session.execute(sql, ref.details())
-    except:
-        return False
-    db.session.commit()
-    return True
-
-def edit_ref(ref_type, id, details):
-    table_names = {
-        "article": "articles",
-        "book": "books",
-        "inproceedings": "inproceedings"
-    }
-    updated_fields = ""
-    for key in details:
-        updated_fields += key + "=:" + key
-        if key != list(details.keys())[-1]:
-            updated_fields += ", "
-
-    try:
-        sql = text(f"UPDATE {table_names[ref_type]} SET {updated_fields} WHERE id={id}")
-        db.session.execute(sql, details)
-    except:
-        return False
-    db.session.commit()
-    return True
+def edit_ref(ref):
+    return ref.update(db)
 
 def delete_reference(ref):
     return ref.delete(db)

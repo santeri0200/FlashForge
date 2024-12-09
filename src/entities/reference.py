@@ -85,6 +85,16 @@ class Reference(ABC):
         
         db.session.commit()
         return True
+    
+    def update(self, db) -> bool:   
+        updated_fields = ", ".join(f"{key}=:{key}" for key in self.details())
+        try:
+            sql = text(f"UPDATE {self.table} SET {updated_fields} WHERE id={self.id}")
+            db.session.execute(sql, self.details())
+        except:
+            return False
+        db.session.commit()
+        return True
 
 class Article(Reference):
     """Class for article references"""

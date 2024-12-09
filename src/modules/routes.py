@@ -108,7 +108,7 @@ def reference_edit(ref_type, id):
                 edited_ref = Article(**(request.form), id=int(id))
                 if not edited_ref.validate():
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                if not database.edit_ref(ref_type, id, edited_ref.details()):
+                if not database.edit_ref(edited_ref):
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
                 return redirect(f"/{ref_type}/{id}")
 
@@ -116,7 +116,7 @@ def reference_edit(ref_type, id):
                 edited_ref = Book(**(request.form), id=int(id))
                 if not edited_ref.validate():
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                if not database.edit_ref(ref_type, id, edited_ref.details()):
+                if not database.edit_ref(edited_ref):
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
                 return redirect(f"/{ref_type}/{id}")
 
@@ -124,7 +124,7 @@ def reference_edit(ref_type, id):
                 edited_ref = Inproceedings(**(request.form), id=int(id))
                 if not edited_ref.validate():
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                if not database.edit_ref(ref_type, id, edited_ref.details()):
+                if not database.edit_ref(edited_ref):
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
                 return redirect(f"/{ref_type}/{id}")
 
@@ -132,7 +132,7 @@ def reference_edit(ref_type, id):
                 edited_ref = Manual(**(request.form), id=int(id))
                 if not edited_ref.validate():
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                if not database.edit_ref(ref_type, id, edited_ref.details()):
+                if not database.edit_ref(edited_ref):
                     return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
                 return redirect(f"/{ref_type}/{id}")
 
