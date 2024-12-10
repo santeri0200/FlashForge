@@ -152,8 +152,8 @@ class Reference:
 
     def generate(self):
         header = f"{self.type}-{self.id}"
-        fields = [f"\t{key} = {{{val}}}," for key, val in self.fields.items() if val]
-        return f"@{self.type}{{{header},\n{"\n".join(fields)}\n}}\n"
+        fields = "\n".join([f"\t{key} = {{{val}}}," for key, val in self.fields.items() if val])
+        return f"@{self.type}{{{header},\n{fields}\n}}\n"
 
 class Article(Reference):
     """Class for article references"""
