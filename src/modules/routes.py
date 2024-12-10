@@ -10,36 +10,29 @@ def index():
 
 @app.route("/create_reference/<ref_type>", methods=["GET", "POST"])
 def add_ref(ref_type):
+    ref = None
+    match ref_type:
+        case "article":
+            ref_template = Article()
+            ref = Article(**(request.form))
+        case "book":
+            ref_template = Book()
+            ref = Book(**(request.form))
+        case "inproceedings":
+            ref_template = Inproceedings()
+            ref = Inproceedings(**(request.form))
+        case "manuals":
+            ref_template = Manual()
+            ref = Manual(**(request.form))
+        case _:
+            return render_template("error.html", error="Invalid reference type!")
+
     if request.method == "GET":
-        match ref_type:
-            case "article":
-                ref_template = Article()
-            case "book":
-                ref_template = Book()
-            case "inproceedings":
-                ref_template = Inproceedings()
-            case "manuals":
-                ref_template = Manual()
-            case _:
-                return render_template("error.html", error="Invalid reference type!")
-
         return render_template("create_ref.html", ref=ref_template)
-    elif request.method == "POST":
-        match ref_type:
-            case "article":
-                ref = Article(**(request.form))
-            case "book":
-                ref = Book(**(request.form))
-            case "inproceedings":
-                ref = Inproceedings(**(request.form))
-            case "manual":
-                ref = Manual(**(request.form))
-            case _:
-                return render_template("error.html", error="Invalid reference type!")
 
-        if not ref.validate() or not database.add_reference(ref):
-            return render_template("create_ref.html",
-                                   error=True, error_message="Invalid details")
+    if not ref.validate() or not database.add_reference(ref):
+        return render_template("create_ref.html", ref=ref_template,
+                               error="Invalid details")
 
     return redirect(url_for("index"))
 
@@ -92,11 +85,11 @@ def reference_edit(ref_type, id):
                 return "Reference not found", 404
 
         if not edited_ref.validate() or not database.edit_ref(edited_ref):
-            return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+            return render_template("edit_ref.html", ref=ref, error="Invalid details")
         return redirect(f"/{ref_type}/{id}")
 
     except ValueError:
-        return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+        return render_template("edit_ref.html", ref=ref, error="Invalid details")
 
 @app.route("/delete/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_delete(ref_type, id):

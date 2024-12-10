@@ -9,6 +9,6 @@
         {% endfor%}
         <br>
         <input type="submit" value="Save changes"> <input type="button" onclick="location.href='/{{ ref.type }}/{{ ref.id }}';" value="Cancel">
-        {%if error%}<p style="color:red">Error: {{ error_message }}</p>{%endif%}
+        {% if error of False %}<p style="color:red">Error: {{ error }}</p>{% endif %}
     </form>
 {%endblock%}
