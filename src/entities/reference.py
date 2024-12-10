@@ -1,9 +1,16 @@
-# pylint: disable=redefined-builtin, use-a-generator, multiple-statements, consider-iterating-dictionary
-from abc import ABC, abstractmethod
+# pylint: disable=bare-except, redefined-builtin, use-a-generator, multiple-statements, consider-iterating-dictionary
 from sqlalchemy import text
 
-class Reference(ABC):
+class Reference:
     """Class for references"""
+    type     = "generic_reference"
+    table    = ""
+    required = []
+    optional = []
+    special  = {}
+    id       = None
+    fields   = {}
+
     def validate(self):
         required_fields = all([
             required in self.fields.keys()
@@ -18,9 +25,9 @@ class Reference(ABC):
                 return False
 
         typed_fields = all([
-            canbe(self.special[field], self.fields[field])
-            for field in self.fields
-            if field in self.special.keys()
+            canbe(self.special[key], val)
+            for key, val in self.fields.items()
+            if key in self.special.keys()
         ])
 
         return required_fields and typed_fields
@@ -30,6 +37,7 @@ class Reference(ABC):
         populated = {key: val or None for key, val in self.fields.items()}
         return {**default, **populated}
 
+    # pylint: disable=no-self-argument
     def from_id(db, id, cls):
         sql = f"""
             SELECT * FROM {cls.table} WHERE id = :id
@@ -38,26 +46,29 @@ class Reference(ABC):
         print(id, sql)
 
         try:
+            # pylint: disable=no-member
             res = db.session.execute(text(sql), { "id": id })
         except:
             return cls()
 
         row = res.fetchone()
         return cls(**row._asdict()) if row else cls()
-        
 
+    # pylint: disable=no-self-argument
     def get_all(db, cls):
         sql = f"""
             SELECT * FROM {cls.table}
         """
 
         try:
+            # pylint: disable=no-member
             res = db.session.execute(text(sql))
         except:
             return []
 
         return [cls(**row._asdict()) for row in res.fetchall()]
 
+    # pylint: disable=no-self-argument
     def get_like(db, query, cls):
         fields = [f"CAST({key} AS TEXT) ILIKE :query" for key in cls.required + cls.optional]
         sql = f"""
@@ -67,12 +78,14 @@ class Reference(ABC):
         """
 
         try:
+            # pylint: disable=no-member
             res = db.session.execute(text(sql), {"query": f"%{query}%"})
         except:
             return []
 
         return [cls(**row._asdict()) for row in res.fetchall()]
 
+    # pylint: disable=no-self-argument
     def get_by_field(db, field, query, cls):
         sql = f"""
             SELECT *
@@ -81,16 +94,16 @@ class Reference(ABC):
         """
 
         try:
+            # pylint: disable=no-member
             res = db.session.execute(text(sql), {"query": f"%{query}%"})
         except:
             return []
 
         return [cls(**row._asdict()) for row in res.fetchall()]
-        
 
     def insert(self, db) -> bool:
         details = self.details()
-        fields  = [key for key in details.keys()]
+        fields  = details.keys()
         sql = f"""
             INSERT INTO {self.table} ({", ".join(fields)}) VALUES ({", ".join([f":{key}" for key in fields])})
         """
@@ -98,7 +111,7 @@ class Reference(ABC):
         print(sql, details)
 
         try:
-            res = db.session.execute(text(sql), details)
+            db.session.execute(text(sql), details)
         except:
             db.session.rollback()
             return False
@@ -115,7 +128,7 @@ class Reference(ABC):
         """
 
         try:
-            res = db.session.execute(text(sql), {"id": self.id, **details})
+            db.session.execute(text(sql), {"id": self.id, **details})
         except:
             db.session.rollback()
             return False
@@ -129,7 +142,7 @@ class Reference(ABC):
         """
 
         try:
-            res = db.session.execute(text(sql), {"id": self.id})
+            db.session.execute(text(sql), {"id": self.id})
         except:
             db.session.rollback()
             return False
@@ -147,7 +160,7 @@ class Article(Reference):
 
     def __init__(self, id=None, **kwargs):
         self.id     = id
-        self.fields = { **kwargs }    
+        self.fields = { **kwargs }
 
 class Book(Reference):
     """Class for book references"""
@@ -159,7 +172,7 @@ class Book(Reference):
 
     def __init__(self, id=None, **kwargs):
         self.id     = id
-        self.fields = { **kwargs }    
+        self.fields = { **kwargs }
 
 class Inproceedings(Reference):
     """Class for inproceedings references"""
@@ -172,7 +185,7 @@ class Inproceedings(Reference):
 
     def __init__(self, id=None, **kwargs):
         self.id     = id
-        self.fields = { **kwargs }    
+        self.fields = { **kwargs }
 
 class Manual(Reference):
     """Class for manuals references"""
@@ -184,4 +197,4 @@ class Manual(Reference):
 
     def __init__(self, id=None, **kwargs):
         self.id     = id
-        self.fields = { **kwargs }    
+        self.fields = { **kwargs }
