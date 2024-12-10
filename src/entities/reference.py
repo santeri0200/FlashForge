@@ -73,6 +73,21 @@ class Reference(ABC):
 
         return [cls(**row._asdict()) for row in res.fetchall()]
 
+    def get_by_field(db, field, query, cls):
+        sql = f"""
+            SELECT *
+            FROM {cls.table}
+            WHERE CAST({field} AS TEXT) ILIKE :query
+        """
+
+        try:
+            res = db.session.execute(text(sql), {"query": f"%{query}%"})
+        except:
+            return []
+
+        return [cls(**row._asdict()) for row in res.fetchall()]
+        
+
     def insert(self, db) -> bool:
         details = self.details()
         fields  = [key for key in details.keys()]

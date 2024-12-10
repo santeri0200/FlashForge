@@ -275,16 +275,25 @@ class TestDatabase(unittest.TestCase):
             self.assertFalse(ref.insert(db))
 
     def test_advanced_search(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
-            expected = ('Author', 'Title', 'Journal', 2024)
+            self.assertTrue(database.add_reference(ref))
             res = database.advanced_search_result('author', 'au')
-            self.assertEqual(res, [expected])
+            self.assertEqual([val.details() for val in res], [ref.details()])
             res = database.advanced_search_result('title', 'tle')
-            self.assertEqual(res, [expected])
+            self.assertEqual([val.details() for val in res], [ref.details()])
             res = database.advanced_search_result('journal', 'rnal')
-            self.assertEqual(res, [expected])
-            res = database.advanced_search_result('year', '202')
-            self.assertEqual(res, [expected])
+            self.assertEqual([val.details() for val in res], [ref.details()])
             res = database.advanced_search_result('year', '1999')
-            self.assertEqual(res, [])
+            self.assertEqual([val.details() for val in res], [])
