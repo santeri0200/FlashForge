@@ -10,55 +10,36 @@ def index():
 
 @app.route("/create_reference/<ref_type>", methods=["GET", "POST"])
 def add_ref(ref_type):
-    match ref_type:
-        case "article":
-            if request.method == "GET":
+    if request.method == "GET":
+        match ref_type:
+            case "article":
                 ref_template = Article()
-                return render_template("create_ref.html", ref=ref_template)
+            case "book":
+                ref_template = Book()
+            case "inproceedings":
+                ref_template = Inproceedings()
+            case "manuals":
+                ref_template = Manual()
+            case _:
+                return render_template("error.html", error="Invalid reference type!")
 
-            ref = Article(**(request.form))
-            if not ref.validate():
-                return render_template("create_reference_article.html",
-                                       error=True, error_message="Invalid details")
-            elif not database.add_reference(ref):
-                return render_template("create_reference_article.html",
-                                       error=True, error_message="Invalid details")
-        case "book":
-            if request.method == "GET":
-                return render_template("create_reference_book.html")
+        return render_template("create_ref.html", ref=ref_template)
+    elif request.method == "POST":
+        match ref_type:
+            case "article":
+                ref = Article(**(request.form))
+            case "book":
+                ref = Book(**(request.form))
+            case "inproceedings":
+                ref = Inproceedings(**(request.form))
+            case "manual":
+                ref = Manual(**(request.form))
+            case _:
+                return render_template("error.html", error="Invalid reference type!")
 
-            ref = Book(**(request.form))
-            if not ref.validate():
-                return render_template("create_reference_book.html",
-                                       error=True, error_message="Invalid details")
-            elif not database.add_reference(ref):
-                return render_template("create_reference_book.html",
-                                       error=True, error_message="Invalid details")
-        case "inproceedings":
-            if request.method == "GET":
-                return render_template("create_reference_inproceedings.html")
-
-            ref = Inproceedings(**(request.form))
-            if not ref.validate():
-                return render_template("create_reference_inproceedings.html",
-                                       error=True, error_message="Invalid details")
-            elif not database.add_reference(ref):
-                return render_template("create_reference_inproceedings.html",
-                                       error=True, error_message="Invalid details")
-        case "manual":
-            if request.method == "GET":
-                return render_template("create_reference_manual.html")
-
-            ref = Manual(**(request.form))
-            if not ref.validate():
-                return render_template("create_reference_manual.html",
-                                       error=True, error_message="Invalid details")
-            elif not database.add_reference(ref):
-                return render_template("create_reference_manual.html",
-                                       error=True, error_message="Invalid details")
-
-        case _:
-            return render_template("error.html", error="Invalid reference type!")
+        if not ref.validate() or not database.add_reference(ref):
+            return render_template("create_ref.html",
+                                   error=True, error_message="Invalid details")
 
     return redirect(url_for("index"))
 
