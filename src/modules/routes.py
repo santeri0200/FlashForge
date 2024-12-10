@@ -21,7 +21,7 @@ def add_ref(ref_type):
         case "inproceedings":
             ref_template = Inproceedings()
             ref = Inproceedings(**(request.form))
-        case "manuals":
+        case "manual":
             ref_template = Manual()
             ref = Manual(**(request.form))
         case _:
