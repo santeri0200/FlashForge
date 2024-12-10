@@ -21,17 +21,14 @@
             </div>
         </div>
         {% for ref in references %}
+            {% set details = ref.details() %}
             <div class="ref">
-                <h2 class="ref-header"><a href="/article/{{ ref.id }}" name="article" style="text-decoration: underline;">View reference</a></h2>
-                <p class="ref-detail">Author: {{ ref.author }}</p>
-                <p class="ref-detail">Title: {{ ref.title }}</p>
-                <p class="ref-detail">Journal: {{ ref.journal }}</p>
-                <p class="ref-detail">Year: {{ ref.year }}</p>
-                <p class="ref-detail">Volume: {{ ref.volume or ""}}</p>
-                <p class="ref-detail">Number: {{ ref.number or ""}}</p>
-                <p class="ref-detail">Pages: {{ ref.pages or ""}}</p>
-                <p class="ref-detail">Month: {{ ref.month or ""}}</p>
-                <p class="ref-detail">Note: {{ ref.note or ""}}</p>
+                <h2><a href="/{{ ref.type }}/{{ ref.id }}">View reference</a></h2>
+                {% for key, val in details.items() %}
+                    {% if key != "id" and key != "type" and val != None %}
+                        <p class="ref-key">{{ key | capitalize }}: {{ val or "-" }}</li>
+                    {% endif %}
+                {% endfor %}
             </div>
         {% endfor %}
     {%else%}

@@ -1,74 +1,44 @@
-# pylint: disable=no-else-return, redefined-builtin, inconsistent-return-statements
+# pylint: disable=no-else-return, redefined-builtin, inconsistent-return-statements, too-many-return-statements, too-many-branches, possibly-used-before-assignment
 from config import app, test_env
 from flask import render_template, request, redirect, url_for, Response
 from modules import database
+from entities.reference import Article, Book, Inproceedings, Manual
 
 @app.route("/")
 def index():
     return render_template("index.html")
 
-@app.route("/create_reference/article", methods=["GET", "POST"])
-def add_ref():
-    # pylint: disable=possibly-used-before-assignment
+@app.route("/create_reference/<ref_type>", methods=["GET", "POST"])
+def add_ref(ref_type):
+    ref = None
+    match ref_type:
+        case "article":
+            ref_template = Article()
+            ref = Article(**(request.form))
+        case "book":
+            ref_template = Book()
+            ref = Book(**(request.form))
+        case "inproceedings":
+            ref_template = Inproceedings()
+            ref = Inproceedings(**(request.form))
+        case "manual":
+            ref_template = Manual()
+            ref = Manual(**(request.form))
+        case _:
+            return render_template("error.html", error="Invalid reference type!")
+
     if request.method == "GET":
-        return render_template("create_reference_article.html")
-    if request.method == "POST":
-        failed = False
-        try:
-            author = request.form.get("author")
-            title = request.form.get("title")
-            journal = request.form.get("journal")
-            year = int(request.form.get("year"))
+        return render_template("create_ref.html", ref=ref_template)
 
-        except ValueError:
-            return render_template("create_reference_article.html", error=True, error_message="Invalid details")
+    if not ref.validate() or not database.add_reference(ref):
+        return render_template("create_ref.html", ref=ref_template,
+                               error="Invalid details")
 
-        try:
-            volume = request.form.get("volume") or None
-            volume = int(volume) if volume else volume
-            number = request.form.get("number") or None
-            number = int(number) if number else number
-            pages = request.form.get("pages") or None
-            month = request.form.get("month") or None
-            note = request.form.get("note") or None
-
-        except ValueError:
-            return render_template(
-                "create_reference_article.html",
-                error=True,
-                error_message="Invalid optional details"
-            )
-
-        if len(author) > 100:
-            failed = True
-            message = "Name of author cannot exceed 100 characters"
-
-        if len(title) > 500:
-            failed = True
-            message = "Title cannot exceed 500 characters"
-
-        if len(journal) > 100:
-            failed = True
-            message = "Name of journal cannot exceed 100 characters"
-
-        if year < 1900 or year > 2099:
-            failed = True
-            message = "Year must be set between 1900 and 2099"
-
-
-
-        if failed:
-            return render_template("create_reference_article.html", error=True, error_message=message)
-
-        if database.add_article(author, title, journal, year, volume, number, pages, month, note):
-            return redirect(url_for("index"))
-        else:
-            return render_template("create_reference_article.html", error=True, error_message="Invalid details")
+    return redirect(url_for("index"))
 
 @app.route("/refs")
 def refs_page():
-    refs=database.get_all_articles()
-    return render_template("refs.html", references=refs)
+    return render_template("refs.html", references=database.get_all_references())
 
 if test_env:
     print("should be here!!!")
@@ -85,91 +55,59 @@ def order_references(order):
 @app.route("/result")
 def search_results():
     query = request.args.get('query')
-    result = database.search_result(query)
-    return render_template("refs.html", references=result, query=query, title="Search results")
+    refs = database.search_result(query)
+    return render_template("refs.html", references=refs, query=query, title="Search results")
 
-@app.route("/article/<id>")
-def article_page(id):
-    article = database.article_from_id(id)
-    if article:
-        return render_template("article.html", article=article)
+@app.route("/<ref_type>/<id>")
+def ref_page(ref_type, id):
+    ref = database.ref_from_id(ref_type, id)
+    if ref:
+        return render_template("view_ref.html", ref=ref)
     else:
-        return "Article not found", 404
+        return "Reference not found", 404
 
-@app.route("/edit/article/<id>", methods=["GET", "POST"])
-def article_edit(id):
-    # pylint: disable=possibly-used-before-assignment
-    # pylint: disable=too-many-return-statements, too-many-branches
-    article = database.article_from_id(id)
+@app.route("/edit/<ref_type>/<id>", methods=["GET", "POST"])
+def reference_edit(ref_type, id):
+    ref = database.ref_from_id(ref_type, id)
+    if not ref:
+        return "Reference not found", 404
+
     if request.method == "GET":
-        if article:
-            return render_template("edit_article.html", article=article)
-        else:
-            return "Article not found", 404
-    if request.method == "POST":
-        failed = False
-        try:
-            author = request.form.get("author")
-            title = request.form.get("title")
-            journal = request.form.get("journal")
-            year = int(request.form.get("year"))
+        return render_template("edit_ref.html", ref=ref)
+    try:
+        edited_ref = None
+        match ref_type:
+            case "article":
+                edited_ref = Article(**(request.form), id=int(id))
+            case "book":
+                edited_ref = Book(**(request.form), id=int(id))
+            case "inproceedings":
+                edited_ref = Inproceedings(**(request.form), id=int(id))
+            case "manual":
+                edited_ref = Manual(**(request.form), id=int(id))
+            case _:
+                return "Reference not found", 404
 
-        except ValueError:
-            return render_template("edit_article.html", error=True, error_message="Invalid details")
+        if not edited_ref.validate() or not database.edit_ref(edited_ref):
+            return render_template("edit_ref.html", ref=ref, error="Invalid details")
+        return redirect(f"/{ref_type}/{id}")
 
-        try:
-            volume = request.form.get("volume") or None
-            volume = int(volume) if volume else volume
-            number = request.form.get("number") or None
-            number = int(number) if number else number
-            pages = request.form.get("pages") or None
-            month = request.form.get("month") or None
-            note = request.form.get("note") or None
+    except ValueError:
+        return render_template("edit_ref.html", ref=ref, error="Invalid details")
 
-        except ValueError:
-            return render_template(
-                "create_reference_article.html",
-                error=True,
-                error_message="Invalid optional details"
-            )
+@app.route("/delete/<ref_type>/<id>", methods=["GET", "POST"])
+def reference_delete(ref_type, id):
+    ref = database.ref_from_id(ref_type, id)
+    if not ref:
+        return "Reference not found", 404
 
-        if len(author) > 100:
-            failed = True
-            message = "Name of author cannot exceed 100 characters"
-
-        if len(title) > 500:
-            failed = True
-            message = "Title cannot exceed 500 characters"
-
-        if len(journal) > 100:
-            failed = True
-            message = "Name of journal cannot exceed 100 characters"
-
-        if year < 1900 or year > 2099:
-            failed = True
-            message = "Year must be set between 1900 and 2099"
-
-        if failed:
-            return render_template("edit_article.html", article=article, error=True, error_message=message)
-
-        if database.edit_article(id, author, title, journal, year, volume, number, pages, month, note):
-            return redirect(f"/article/{id}")
-        else:
-            return render_template("edit_article.html",article=article, error=True, error_message="Invalid details")
-
-@app.route("/delete/article/<id>", methods=["GET", "POST"])
-def article_delete(id):
-    article = database.article_from_id(id)
     if request.method == "GET":
-        if article:
-            return render_template("delete_article.html", article=article)
-        else:
-            return "Article not found", 404
-    if request.method == "POST":
-        if database.delete_article(id):
-            return redirect("/")
-        else:
-            return render_template("error.html", error="Something went wrong.")
+        return render_template("delete_ref.html", ref=ref)
+
+    if not database.delete_reference(ref):
+        return render_template("error.html", error="Something went wrong.")
+
+    return redirect("/")
 
 @app.route("/advanced_search", methods=["GET", "POST"])
 def advanced_search():
@@ -191,19 +129,7 @@ def generate_bib():
     if refs:
         entry = ""
         for ref in refs:
-            entry += (
-                f"@article{{article-{ref.id or ''},\n"
-                f"\tauthor = {{{ref.author or ''}}},\n"
-                f"\ttitle = {{{ref.title or ''}}},\n"
-                f"\tjournal = {{{ref.journal or ''}}},\n"
-                f"\tyear = {{{ref.year or ''}}}"
-                + (f",\n\tvolume = {{{ref.volume}}}" if ref.volume else "")
-                + (f",\n\tnumber = {{{ref.number}}}" if ref.number else "")
-                + (f",\n\tpages = {{{ref.pages}}}" if ref.pages else "")
-                + (f",\n\tmonth = {{{ref.month}}}" if ref.month else "")
-                + (f",\n\tnote = {{{ref.note}}}" if ref.note else "")
-                + "\n}\n\n"
-            )
+            entry += ref.generate()
 
         response = Response(
             entry,

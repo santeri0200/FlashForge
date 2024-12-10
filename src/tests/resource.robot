@@ -2,14 +2,17 @@
 Library  SeleniumLibrary
 
 *** Variables ***
-${SERVER}             localhost:5000
-${DELAY}              0.5 seconds
-${HOME_URL}           http://${SERVER}
-${REFS_URL}           http://${SERVER}/refs
-${RESET_URL}          http://${SERVER}/reset_db
-${NEW_ARTICLE_URL}    http://${SERVER}/create_reference/article
-${BROWSER}            chrome
-${HEADLESS}           false
+${SERVER}                 localhost:5000
+${DELAY}                  0.5 seconds
+${HOME_URL}               http://${SERVER}
+${REFS_URL}               http://${SERVER}/refs
+${RESET_URL}              http://${SERVER}/reset_db
+${NEW_ARTICLE_URL}        http://${SERVER}/create_reference/article
+${NEW_BOOK_URL}           http://${SERVER}/create_reference/book
+${NEW_INPROCEEDINGS_URL}  http://${SERVER}/create_reference/inproceedings
+${NEW_MANUAL_URL}         http://${SERVER}/create_reference/manual
+${BROWSER}                chrome
+${HEADLESS}               false
 
 *** Keywords ***
 Open And Configure Browser
@@ -34,7 +37,7 @@ Successfully Created Article
     Main Page Should Be Open
 
 Failed To Create Article
-    Title Should Be  Create article reference
+    Title Should Be  Create Article reference
     Page Should Contain  Invalid details
 
 

@@ -1,7 +1,9 @@
 import unittest
 from tests import db_helper
 from modules import database
-from config import app
+from config import app, db
+
+from entities.reference import Article, Book, Inproceedings, Manual
 
 class TestDatabase(unittest.TestCase):
     """Class for testing the database"""
@@ -21,90 +23,309 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             db_helper.reset_db()
 
-    def test_database_add(self):
+    def test_database_add_article(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
+            self.assertTrue(ref.insert(db))
 
     def test_database_query(self):
-        with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
-            res = database.get_all_articles()
-            expected = [(res[0].id, 'Author', 'Title', 'Journal', 2024, None, None, None, None, None)]
-            self.assertEqual(res, expected)
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
 
-    def test_database_add_duplicate(self):
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
-            self.assertFalse(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
+            self.assertTrue(ref.insert(db))
+            res = database.get_all_articles()
+            ref.id = res[0].id
+            self.assertEqual([val.details() for val in res], [ref.details()])
+
+    def test_database_add_duplicate_article(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
+        with self.context:
+            self.assertTrue(ref.insert(db))
+            self.assertFalse(ref.insert(db))
 
     def test_database_valid_search(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
         with self.context:
-            expected = ('Author', 'Title', 'Journal', 2024, None, None, None, None, None)
-            self.assertTrue(database.add_article(*expected))
+            self.assertTrue(ref.insert(db))
             res = database.search_result('Au')
-            print(res)
-            self.assertEqual(res, [(res[0].id, *expected)])
+
+            expected = ref.details()
+            self.assertEqual([val.details() for val in res], [expected])
+
             res = database.search_result('thor')
-            self.assertEqual(res, [(res[0].id, *expected)])
+            self.assertEqual([val.details() for val in res], [expected])
+
             res = database.search_result('2024')
-            self.assertEqual(res, [(res[0].id, *expected)])
+            self.assertEqual([val.details() for val in res], [expected])
 
     def test_database_invalid_search(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
+            self.assertTrue(ref.insert(db))
+
             res = database.search_result('Invalid')
             self.assertEqual(res, [])
+
             res = database.search_result('1999')
             self.assertEqual(res, [])
 
     def test_database_edit_article(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
-            all_articles = database.get_all_articles()
-            self.assertTrue(database.edit_article(
-                all_articles[0].id,
-                'Author2',
-                'Title2',
-                'Journal2',
-                2022,
-                None,
-                None,
-                None,
-                None,
-                None,
-            ))
-            expected = (all_articles[0].id, 'Author2', 'Title2', 'Journal2', 2022, None, None, None, None, None)
-            res = database.article_from_id(all_articles[0].id)
-            self.assertEqual(res, expected)
+            self.assertTrue(ref.insert(db))
+            res = database.get_all_articles()
+
+            expected = Article(
+                id      = res[0].id,
+                author  = 'Author',
+                title   = 'Title',
+                journal = 'Journal',
+                year    = 2024,
+                volume  = None,
+                number  = None,
+                pages   = None,
+                month   = None,
+                note    = None,
+            )
+
+            self.assertTrue(database.edit_ref(expected))
+            res = database.article_from_id(expected.id)
+            self.assertEqual(res.details(), expected.details())
 
     def test_database_delete_article(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
-            all_articles = database.get_all_articles()
-            self.assertTrue(database.delete_article(all_articles[0].id))
+            self.assertTrue(ref.insert(db))
+            res = database.get_all_articles()
+            self.assertTrue(database.delete_reference(res[0]))
             res = database.get_all_articles()
             self.assertEqual(res, [])
 
-    def test_advanced_search(self):
+    def test_database_add_book(self):
+        ref = Book(
+            author    = 'Author',
+            year      = 2024,
+            title     = 'Title',
+            publisher = 'Publisher',
+            address   = 'Address',
+    )
+
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
-            expected = ('Author', 'Title', 'Journal', 2024)
+            self.assertTrue(ref.insert(db))
+
+    def test_database_add_duplicate_book(self):
+        ref = Book(
+            author    = 'Author',
+            year      = 2024,
+            title     = 'Title',
+            publisher = 'Publisher',
+            address   = 'Address',
+    )
+
+        with self.context:
+            self.assertTrue(ref.insert(db))
+            self.assertFalse(ref.insert(db))
+
+    def test_database_add_inproceedings(self):
+        ref = Inproceedings(
+            author       = 'Author',
+            title        = 'Title',
+            booktitle    = 'Booktitle',
+            year         = 2024,
+            editor       = None,
+            volume       = None,
+            number       = None,
+            series       = None,
+            pages        = None,
+            address      = None,
+            organization = None,
+            month        = None,
+            publisher    = None,
+        )
+
+        with self.context:
+            self.assertTrue(ref.insert(db))
+
+    def test_database_add_duplicate_inproceedings(self):
+        ref = Inproceedings(
+            author       = 'Author',
+            title        = 'Title',
+            booktitle    = 'Booktitle',
+            year         = 2024,
+            editor       = None,
+            volume       = None,
+            number       = None,
+            series       = None,
+            pages        = None,
+            address      = None,
+            organization = None,
+            month        = None,
+            publisher    = None,
+        )
+
+        with self.context:
+            self.assertTrue(ref.insert(db))
+            self.assertFalse(ref.insert(db))
+
+    def test_database_add_manual(self):
+        ref = Manual(
+            title        = 'Title',
+            year         = 2024,
+            author       = None,
+            organization = None,
+            address      = None,
+            edition      = None,
+            month        = None,
+            note         = None,
+        )
+
+        with self.context:
+            self.assertTrue(ref.insert(db))
+
+    def test_database_add_duplicate_manual(self):
+        ref = Manual(
+            title        = 'Title',
+            year         = 2024,
+            author       = None,
+            organization = None,
+            address      = None,
+            edition      = None,
+            month        = None,
+            note         = None,
+        )
+
+        with self.context:
+            self.assertTrue(ref.insert(db))
+            self.assertFalse(ref.insert(db))
+
+    def test_advanced_search(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
+        with self.context:
+            self.assertTrue(database.add_reference(ref))
             res = database.advanced_search_result('author', 'au')
-            self.assertEqual(res, [expected])
+            self.assertEqual([val.details() for val in res], [ref.details()])
             res = database.advanced_search_result('title', 'tle')
-            self.assertEqual(res, [expected])
+            self.assertEqual([val.details() for val in res], [ref.details()])
             res = database.advanced_search_result('journal', 'rnal')
-            self.assertEqual(res, [expected])
-            res = database.advanced_search_result('year', '202')
-            self.assertEqual(res, [expected])
+            self.assertEqual([val.details() for val in res], [ref.details()])
             res = database.advanced_search_result('year', '1999')
-            self.assertEqual(res, [])
+            self.assertEqual([val.details() for val in res], [])
 
     def test_order_references_by_year(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+        ref2 = Article(
+            author  = 'Author2',
+            title   = 'Title2',
+            journal = 'Journal2',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
         with self.context:
-            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
-            self.assertTrue(database.add_article('Author2', 'Title2', 'Journal2', 2023, None, None, None, None, None))
-            ordered_references_old_to_new = database.order_references('old_to_new')
-            self.assertEqual(ordered_references_old_to_new[0][1], 'Author2')
-            ordered_references_new_to_old = database.order_references('new_to_old')
-            self.assertEqual(ordered_references_new_to_old[0][1], 'Author')
+            self.assertTrue(database.add_reference(ref))
+            self.assertTrue(database.add_reference(ref2))
+            res = database.order_references('old_to_new')
+            self.assertEqual(res[0].author, 'Author2')
+            res = database.order_references('new_to_old')
+            self.assertEqual(res[0].author, 'Author')
