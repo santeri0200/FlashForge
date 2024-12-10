@@ -58,7 +58,8 @@ def search_results():
         refs = database.search_result(query)
     else:
         refs = database.get_all_references()
-    return render_template("refs.html", references=refs, field=field, query=query, advanced_query=advanced_query, title="Search results")
+    return render_template("refs.html", references=refs, field=field,
+                           query=query, advanced_query=advanced_query, title="Search results")
 
 @app.route("/<ref_type>/<id>")
 def ref_page(ref_type, id):
@@ -119,7 +120,8 @@ def advanced_search():
         field = request.form.get("field")
         query = request.form.get("advanced_query")
         result = database.advanced_search_result(field, query)
-        return render_template("refs.html", references=result, field=field, advanced_query=query, title="Search results")
+        return render_template("refs.html", references=result, field=field,
+                               advanced_query=query, title="Search results")
 
 @app.route("/generate_bib")
 def generate_bib():
