@@ -3,10 +3,10 @@
 {% block content %}
     {%if references%}
         <div class="bib-section">
-            <a href="/generate_bib{% if query %}?query={{ query }}{% endif %}" class="generate-bib">Download references here as .bib</a>
+            <a href="/generate_bib{% if query or advanced_query or field %}?{% endif %}{% if query %}query={{ query }}{% if advanced_query or field %}&{% endif %}{% endif %}{% if advanced_query %}advanced_query={{ advanced_query }}{% if field %}&{% endif %}{% endif %}{% if field %}field={{ field }}{% endif %}" class="generate-bib">Download references here as .bib</a>
         </div>
         {% set result_count = references | length %}
-        {% if result_count == 1 %}
+        {% if result_count == 1 %} 
             <p>Found 1 reference:</p>
         {% else %}
             <p>Found {{ result_count }} references:</p>
@@ -14,11 +14,11 @@
         {% for ref in references %}
             {% set details = ref.details() %}
             <div class="ref">
-                <h2><a href="/{{ ref.type }}/{{ ref.id }}">{{details.title or details.booktitle}}</a></h2>
-                {%if details.author%}{{ details.author }}, {%endif%}<i>{{ details.journal or details.publisher or details.booktitle }}</i> {%if details.address%} - {{details.address}} {%endif%} ({{ details.year }})
+                <h2><a href="/{{ ref.type }}/{{ ref.id }}">{{details.title}}</a></h2>
+                {%if details.author%}{{ details.author }}, {%endif%}<i>{{ details.journal or details.publisher or details.booktitle or ""}}</i> {%if details.address%} - {{details.address}} {%endif%} ({{ details.year }})
                 {% set optional_fields = [] %}
                 {% for key, val in details.items()  %}
-                    {% if key in details.optional and val != None %}
+                    {% if key in ref.optional and val != None %}
                         {% set _ = optional_fields.append((key, val)) %}
                     {% endif %}
                 {% endfor %}
@@ -28,7 +28,7 @@
                     <details>
                         <summary>View more details</summary>
                         {% for key, val in details.items() %}
-                            {% if key in details.optional and val != None %}
+                            {% if key in ref.optional and val != None %}
                                 <p class="ref-key">{{ key | capitalize }}: {{ val or "-" }}</li>
                             {% endif %}
                         {% endfor %}
