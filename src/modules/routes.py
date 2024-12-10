@@ -128,8 +128,6 @@ def generate_bib():
     field = request.args.get('field')
     if field and advanced_query:
         refs = database.advanced_search_result(field, advanced_query)
-        print("adv:", advanced_query)
-        print("field:", field)
     elif query:
         refs = database.search_result(query)
     else:
