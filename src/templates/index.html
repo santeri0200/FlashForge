@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Reference Database{% endblock %}
 {% block content %}
+  <p style="color: lime" class="main-page-title">{% if message == "createsuccess"%}Reference was created successfully.{% elif message == "deletesuccess"%}Reference was deleted successfully.{%endif%}</p>
   <h1 class="main-page-title">Reference Database</h1>
   <div class="main-page-buttons">
     <div class="main-button">

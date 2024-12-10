@@ -6,7 +6,7 @@
         {% for key, _ in details.items() %}
             <h3>{{ key | capitalize }}{%if key in ref.required%}<div style="color: red; display: inline;"> *</div>{%endif%}</h3>
             {%if key in ref.special%}
-                <input type="number" name="{{ key }}" min="0" max="2099" {% if key in ref.required %}required="true"{% endif %}>{{val or ""}}</textarea>
+                <input type="number" name="{{ key }}" min="0" max="2099" {% if key in ref.required %}required="true"{% endif %}>{{val or ""}}</input>
             {%else%}
                 <textarea name="{{ key }}" rows="1" cols="50" maxlength="500" {% if key in ref.required %}required="true"{% endif %}>{{val or ""}}</textarea>
             {%endif%}

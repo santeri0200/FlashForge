@@ -6,7 +6,8 @@ from entities.reference import Article, Book, Inproceedings, Manual
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    message = request.args.get("message", None)
+    return render_template("index.html", message=message)
 
 @app.route("/create_reference/<ref_type>", methods=["GET", "POST"])
 def add_ref(ref_type):
@@ -34,7 +35,7 @@ def add_ref(ref_type):
         return render_template("create_ref.html", ref=ref_template,
                                error="Invalid details")
 
-    return redirect(url_for("index"))
+    return redirect(url_for("index", message="createsuccess"))
 
 @app.route("/refs")
 def refs_page():
@@ -110,7 +111,7 @@ def reference_delete(ref_type, id):
     if not database.delete_reference(ref):
         return render_template("error.html", error="Something went wrong.")
 
-    return redirect("/")
+    return redirect(url_for("index", message="deletesuccess"))
 
 @app.route("/advanced_search", methods=["GET", "POST"])
 def advanced_search():
