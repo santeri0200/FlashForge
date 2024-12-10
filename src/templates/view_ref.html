@@ -10,11 +10,7 @@
     </div>
     <div class="ref">
         <h2>LaTeX entry</h2>
-        <pre>
-@{{ref.type}} {your_tag_here,
-  {% for key, val in details.items() %}{% if val %}{{ key }} = "{{ val }}",
-  {% endif %}{% endfor %}}
-        </pre>
+        <pre>{{ ref.generate() }}</pre>
     </div>
     <div class="ref">
         <h3>Options</h3>
