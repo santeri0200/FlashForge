@@ -124,19 +124,7 @@ def generate_bib():
     if refs:
         entry = ""
         for ref in refs:
-            entry += (
-                f"@article{{article-{ref.id or ''},\n"
-                f"\tauthor = {{{ref.author or ''}}},\n"
-                f"\ttitle = {{{ref.title or ''}}},\n"
-                f"\tjournal = {{{ref.journal or ''}}},\n"
-                f"\tyear = {{{ref.year or ''}}}"
-                + (f",\n\tvolume = {{{ref.volume}}}" if ref.volume else "")
-                + (f",\n\tnumber = {{{ref.number}}}" if ref.number else "")
-                + (f",\n\tpages = {{{ref.pages}}}" if ref.pages else "")
-                + (f",\n\tmonth = {{{ref.month}}}" if ref.month else "")
-                + (f",\n\tnote = {{{ref.note}}}" if ref.note else "")
-                + "\n}\n\n"
-            )
+            entry += ref.generate()
 
         response = Response(
             entry,

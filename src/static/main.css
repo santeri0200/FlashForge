@@ -163,7 +163,7 @@ header::after {
   cursor: pointer;
 }
 
-.main-button a{
+.main-button a {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,11 +180,11 @@ header::after {
   background-color: #004085;
 }
 
-.main-page-title{
+.main-page-title {
   text-align: center;
 }
 
-.bib-section{
+.bib-section {
   display: flex;
 }
 
@@ -195,8 +195,9 @@ header::after {
   background: green;
   margin: auto;
   text-align: center;
+}
 
-pre{
+pre {
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-wrap: break-word;
