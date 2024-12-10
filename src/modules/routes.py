@@ -64,12 +64,11 @@ def ref_page(ref_type, id):
 @app.route("/edit/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_edit(ref_type, id):
     ref = database.ref_from_id(ref_type, id)
+    if not ref:
+        return "Reference not found", 404
 
     if request.method == "GET":
-        if ref:
-            return render_template("edit_ref.html", ref=ref)
-        else:
-            return "Reference not found", 404
+        return render_template("edit_ref.html", ref=ref)
     try:
         edited_ref = None
         match ref_type:
@@ -94,47 +93,13 @@ def reference_edit(ref_type, id):
 @app.route("/delete/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_delete(ref_type, id):
     ref = database.ref_from_id(ref_type, id)
-    if ref_type == "article":
-        if request.method == "GET":
-            if ref:
-                return render_template("delete_ref.html", ref=ref)
-            else:
-                return "Article not found", 404
-        if request.method == "POST":
-            if database.delete_reference(ref):
-                return redirect("/")
-            else:
-                return render_template("error.html", error="Something went wrong.")
-    elif ref_type == "book":
-        if request.method == "GET":
-            if ref:
-                return render_template("delete_ref.html", ref=ref)
-            else:
-                return "Book not found", 404
-        if request.method == "POST":
-            if database.delete_reference(ref):
-                return redirect("/")
-            else:
-                return render_template("error.html", error="Something went wrong.")
-    elif ref_type == "inproceedings":
-        if request.method == "GET":
-            if ref:
-                return render_template("delete_ref.html", ref=ref)
-            else:
-                return "Inproceedings reference not found", 404
-        if request.method == "POST":
-            if database.delete_reference(ref):
-                return redirect("/")
-            else:
-                return render_template("error.html", error="Something went wrong.")
-    elif ref_type == "manual":
-        if request.method == "GET":
-            if ref:
-                return render_template("delete_ref.html", ref=ref)
-            else:
-                return "Manual reference not found", 404
-        if request.method == "POST":
-            if database.delete_reference(ref):
-                return redirect("/")
-            else:
-                return render_template("error.html", error="Something went wrong.")
+    if not ref:
+        return "Reference not found", 404
+
+    if request.method == "GET":
+        return render_template("delete_ref.html", ref=ref)
+
+    if not database.delete_reference(ref):
+        return render_template("error.html", error="Something went wrong.")
+
+    return redirect("/")
