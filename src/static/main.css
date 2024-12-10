@@ -46,7 +46,7 @@ body {
 input,
 textarea {
   padding: 0.5em;
-
+  color: white;
   border: 1px solid var(--border-color-light);
   border-radius: 0.375em;
   background: var(--background);
@@ -128,9 +128,9 @@ header::after {
 .ref {
   margin: 0.5em 0;
   padding: 1em 2em;
-
   border-radius: 0.375em;
   background: var(--background-light);
+  word-wrap: break-word;
 }
 
 .ref-header {
@@ -195,4 +195,9 @@ header::after {
   background: green;
   margin: auto;
   text-align: center;
+
+pre{
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }

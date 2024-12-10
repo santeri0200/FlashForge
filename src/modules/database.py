@@ -1,148 +1,82 @@
-# pylint: disable=redefined-builtin, bare-except
+# pylint: disable=redefined-builtin
 # pylint: disable=too-many-arguments, too-many-positional-arguments
 from config import db
-from sqlalchemy import text
+from tests import db_helper
+from entities.reference import Reference, Article, Book, Inproceedings, Manual
 
-def add_article(author, title, journal, year, volume, number, pages, month, note):
-    try:
-        sql = text("""
-            INSERT INTO articles
-            VALUES (DEFAULT, :author, :title, :journal, :year, :volume, :number, :pages, :month, :note)
-        """)
-        db.session.execute(sql, {
-            "author": author,
-            "title": title,
-            "journal": journal,
-            "year": year,
-            "volume": volume,
-            "number": number,
-            "pages": pages,
-            "month": month,
-            "note":note
-        })
-    except:
-        return False
-    db.session.commit()
-    return True
+def add_reference(ref):
+    return ref.insert(db)
 
-def edit_article(id, author, title, journal, year, volume, number, pages, month, note):
-    try:
-        sql = text("""
-            UPDATE articles
-            SET author=:author,
-                title=:title,
-                journal=:journal,
-                year=:year,
-                volume=:volume,
-                number=:number,
-                pages=:pages,
-                month=:month,
-                note=:note
-            WHERE id=:id
-        """)
-        db.session.execute(sql, {
-            "author": author,
-            "title": title,
-            "journal": journal,
-            "year": year,
-            "volume": volume,
-            "number": number,
-            "pages": pages,
-            "month": month,
-            "note":note,
-            "id":id
-        })
-    except:
-        return False
-    db.session.commit()
-    return True
+def edit_ref(ref):
+    return ref.update(db)
 
-def delete_article(id):
-    try:
-        sql = text("DELETE FROM articles WHERE id=:id")
-        db.session.execute(sql, {"id":id})
-    except:
-        return False
-    db.session.commit()
-    return True
+def delete_reference(ref):
+    return ref.delete(db)
 
 def get_all_articles():
-    sql = text("SELECT * FROM articles ORDER BY id DESC")
-    res = db.session.execute(sql)
+    return Reference.get_all(db, Article)
 
-    articles = res.fetchall()
-    return articles
+def get_all_books():
+    return Reference.get_all(db, Book)
+
+def get_all_inproceedings():
+    return Reference.get_all(db, Inproceedings)
+
+def get_all_manuals():
+    return Reference.get_all(db, Manual)
+
+def get_all_references():
+    return [
+        *get_all_articles(),
+        *get_all_books(),
+        *get_all_inproceedings(),
+        *get_all_manuals(),
+    ]
 
 def article_from_id(id):
-    sql = text("""
-        SELECT id, author, title, journal, year, volume, number, pages, month, note
-        FROM articles
-        WHERE id=:id LIMIT 1
-    """)
-    res = db.session.execute(sql, { "id": id })
-    article = res.fetchone()
-    return article
+    return Reference.from_id(db, id, Article)
+
+def book_from_id(id):
+    return Reference.from_id(db, id, Book)
+
+def inproceedings_from_id(id):
+    return Reference.from_id(db, id, Inproceedings)
+
+def manual_from_id(id):
+    return Reference.from_id(db, id, Manual)
+
+def ref_from_id(ref_type, id):
+    match ref_type:
+        case "article":
+            return article_from_id(id)
+        case "book":
+            return book_from_id(id)
+        case "inproceedings":
+            return inproceedings_from_id(id)
+        case "manual":
+            return manual_from_id(id)
+
+        case _:
+            return None
 
 def search_result(query):
-    if query is None:
-        return []
-
-    res = db.session.execute(
-        text("""
-            SELECT *
-            FROM articles
-            WHERE
-                LOWER(author) LIKE LOWER(:query)
-                OR LOWER(title) LIKE LOWER(:query)
-                OR LOWER(journal) LIKE LOWER(:query)
-                OR CAST(year AS TEXT) LIKE :query
-                OR CAST(volume AS TEXT) LIKE :query
-                OR CAST(number AS TEXT) LIKE :query
-                OR LOWER(pages) LIKE LOWER(:query)
-                OR LOWER(month) LIKE LOWER(:query)
-                OR LOWER(note) LIKE LOWER(:query)
-            ORDER BY id DESC
-        """),
-        {"query": f"%{query.lower()}%"}
-    )
-
-    articles = res.fetchall()
-    return articles
+    return [
+        *Reference.get_like(db, query, Article),
+        *Reference.get_like(db, query, Book),
+        *Reference.get_like(db, query, Inproceedings),
+        *Reference.get_like(db, query, Manual),
+    ]
 
 def reset_db():
-    print("Clearing contents from table articles")
-    sql = text("DELETE FROM articles")
-    db.session.execute(sql)
-    db.session.commit()
+    db_helper.reset_db()
 
 def advanced_search_result(field, query):
-    if query == "":
-        return []
+    if field == "all_fields":
+        return search_result(query)
 
-    if field=="all_fields":
-        res = db.session.execute(
-        text("""
-            SELECT author, title, journal, year
-            FROM articles
-            WHERE
-                author ILIKE :query
-                OR title ILIKE :query
-                OR journal ILIKE :query
-                OR CAST(year as TEXT) LIKE :query
-            ORDER BY id DESC
-        """),
-        { "query": f"%{query}%" }
-    )
-    else:
-        res = db.session.execute(
-            text(f"""
-                SELECT author, title, journal, year
-                FROM articles
-                WHERE CAST({field} as TEXT) ILIKE :query
-                ORDER BY id DESC
-            """),
-            {"query": f"%{query}%" }
-        )
-
-    articles = res.fetchall()
-    return articles
+    return [
+        *Reference.get_by_field(db, field, query, Article),
+        *Reference.get_by_field(db, field, query, Book),
+        *Reference.get_by_field(db, field, query, Inproceedings),
+        *Reference.get_by_field(db, field, query, Manual),
+    ]
