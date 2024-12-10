@@ -1,7 +1,6 @@
-# pylint: disable=redefined-builtin, bare-except
+# pylint: disable=redefined-builtin
 # pylint: disable=too-many-arguments, too-many-positional-arguments
 from config import db
-from sqlalchemy import text
 from tests import db_helper
 from entities.reference import Reference, Article, Book, Inproceedings, Manual
 
