@@ -82,6 +82,7 @@ class Reference:
             res = db.session.execute(text(sql), {"query": f"%{query}%"})
             return [cls(**row._asdict()) for row in res.fetchall()]
         except:
+            # pylint: disable=no-member
             db.session.rollback()
             return []
 
@@ -95,9 +96,11 @@ class Reference:
         """
 
         try:
+            # pylint: disable=no-member
             res = db.session.execute(text(sql), {"query": f"%{query}%"})
             return [cls(**row._asdict()) for row in res.fetchall()]
         except:
+            # pylint: disable=no-member
             db.session.rollback()
             return []
 
