@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Create {{ ref.type }} reference{% endblock %}
+{% block content %}
+    <form action="/create_reference/{{ ref.type }}" method="post">
+        {% set details = ref.details() %}
+        {% for key, _ in details.items() %}
+            <h3>{{ key | capitalize }}</h3>
+            <textarea name="{{ key }}" rows="1" cols="50" maxlength="100" {% if key in ref.required %}required="true"{% endif %}>{{val or ""}}</textarea>
+        {% endfor %}
+
+        <h3>Year</h3>
+        <input type="number" name="year" step="1" min="1900" max="2099" required></input>
+
+        <br>
+        <br>
+        <input type="submit" value="Create">
+        {%if error%}<p style="color:red">Error: {{ error_message }}</p>{%endif%}
+    </form>
+{%endblock%}
