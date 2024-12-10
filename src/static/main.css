@@ -145,3 +145,9 @@ header::after {
   margin: 0;
   padding: 0.5em;
 }
+
+pre{
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
