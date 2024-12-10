@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Create article reference{% endblock %}
+{% block content %}
+    <form action="/create_reference/article" method="post">
+        <h2>Required fields</h2>
+        <h3>Author<div style="color: red; display: inline;"> *</div></h3>
+        <textarea name="author" rows="1" cols="100" maxlength="100" required></textarea>
+
+        <h3>Title<div style="color: red; display: inline;"> *</div></h3>
+        <textarea name="title" rows="3" cols="100" maxlength="300" required></textarea>
+
+        <h3>Journal<div style="color: red; display: inline;"> *</div></h3>
+        <textarea name="journal" rows="1" cols="100" maxlength="100" required></textarea>
+
+        <h3>Year<div style="color: red; display: inline;"> *</div></h3>
+        <input type="number" name="year" step="1" min="1900" max="2099" required></input>
+
+        <h2>Optional fields</h2>
+        <h3>Volume</h3>
+        <input type="number" name="volume" min="0" max="2099"></input>
+
+        <h3>Number</h3>
+        <input type="number" name="number" min="0" max="2099"></input>
+
+        <h3>Pages</h3>
+        <textarea name="pages" rows="1" cols="100" maxlength="100"></textarea>
+
+        <h3>Month</h3>
+        <textarea name="month" rows="1" cols="100" maxlength="100"></textarea>
+
+        <h3>Note</h3>
+        <textarea name="note" rows="1" cols="100" maxlength="100"></textarea>
+
+        <br>
+        <br>
+        <input type="submit" value="Create">
+        {%if error%}<p style="color:red">Error: {{ error_message }}</p>{%endif%}
+    </form>
+{%endblock%}

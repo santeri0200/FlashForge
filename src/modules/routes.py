@@ -1,6 +1,6 @@
 # pylint: disable=no-else-return, redefined-builtin, inconsistent-return-statements, too-many-return-statements, too-many-branches, possibly-used-before-assignment
 from config import app, test_env
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, Response
 from modules import database
 from entities.reference import Article, Book, Inproceedings, Manual
 
@@ -51,7 +51,7 @@ if test_env:
 def search_results():
     query = request.args.get('query')
     refs = database.search_result(query)
-    return render_template("refs.html", references=refs, title="Search results")
+    return render_template("refs.html", references=refs, query=query, title="Search results")
 
 @app.route("/<ref_type>/<id>")
 def ref_page(ref_type, id):
@@ -103,3 +103,47 @@ def reference_delete(ref_type, id):
         return render_template("error.html", error="Something went wrong.")
 
     return redirect("/")
+
+@app.route("/advanced_search", methods=["GET", "POST"])
+def advanced_search():
+    if request.method == "GET":
+        return render_template("advanced_search.html")
+    if request.method == "POST":
+        field = request.form.get("field")
+        query = request.form.get("advanced_query")
+        result = database.advanced_search_result(field, query)
+        return render_template("refs.html", references = result)
+
+@app.route("/generate_bib")
+def generate_bib():
+    query = request.args.get('query')
+    if query:
+        refs = database.search_result(query)
+    else:
+        refs = database.get_all_articles()
+    if refs:
+        entry = ""
+        for ref in refs:
+            entry += (
+                f"@article{{article-{ref.id or ''},\n"
+                f"\tauthor = {{{ref.author or ''}}},\n"
+                f"\ttitle = {{{ref.title or ''}}},\n"
+                f"\tjournal = {{{ref.journal or ''}}},\n"
+                f"\tyear = {{{ref.year or ''}}}"
+                + (f",\n\tvolume = {{{ref.volume}}}" if ref.volume else "")
+                + (f",\n\tnumber = {{{ref.number}}}" if ref.number else "")
+                + (f",\n\tpages = {{{ref.pages}}}" if ref.pages else "")
+                + (f",\n\tmonth = {{{ref.month}}}" if ref.month else "")
+                + (f",\n\tnote = {{{ref.note}}}" if ref.note else "")
+                + "\n}\n\n"
+            )
+
+        response = Response(
+            entry,
+            mimetype="application/x-bibtex",
+            content_type="application/x-bibtex; charset=utf-8",
+            headers={"Content-Disposition": "attachment;filename=references.bib"}
+        )
+        return response
+    else:
+        return render_template("error.html", error="No references found.")

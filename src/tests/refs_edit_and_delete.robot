@@ -29,5 +29,5 @@ Setup References
     Input Text  year  1989
     Click Button  Create
     Main Page Should Be Open
-    Click Link  References list
+    Click Link  List of References
     Click Link  View reference

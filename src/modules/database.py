@@ -70,3 +70,14 @@ def search_result(query):
 
 def reset_db():
     db_helper.reset_db()
+
+def advanced_search_result(field, query):
+    if field == "all_fields":
+        return search_result(query)
+
+    return [
+        *Reference.get_by_field(db, field, query, Article),
+        *Reference.get_by_field(db, field, query, Book),
+        *Reference.get_by_field(db, field, query, Inproceedings),
+        *Reference.get_by_field(db, field, query, Manual),
+    ]
