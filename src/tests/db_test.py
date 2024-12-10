@@ -55,8 +55,7 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             self.assertTrue(ref.insert(db))
             res = database.get_all_articles()
-            ref.fields["id"] = res[0].id
-            res[0].fields["id"] = res[0].id
+            ref.id = res[0].id
             self.assertEqual([val.details() for val in res], [ref.details()])
 
     def test_database_add_duplicate_article(self):
@@ -94,13 +93,13 @@ class TestDatabase(unittest.TestCase):
             res = database.search_result('Au')
 
             expected = ref.details()
-            self.assertEqual([res[0].details()], [expected])
+            self.assertEqual([val.details() for val in res], [expected])
 
             res = database.search_result('thor')
-            self.assertEqual([res[0].details()], [expected])
+            self.assertEqual([val.details() for val in res], [expected])
 
             res = database.search_result('2024')
-            self.assertEqual([res[0].details()], [expected])
+            self.assertEqual([val.details() for val in res], [expected])
 
     def test_database_invalid_search(self):
         ref = Article(
@@ -155,7 +154,7 @@ class TestDatabase(unittest.TestCase):
             )
 
             self.assertTrue(database.edit_ref(expected))
-            res = database.article_from_id(res[0].id)
+            res = database.article_from_id(expected.id)
             self.assertEqual(res.details(), expected.details())
 
     def test_database_delete_article(self):

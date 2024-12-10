@@ -58,6 +58,21 @@ class Reference(ABC):
 
         return [cls(**row._asdict()) for row in res.fetchall()]
 
+    def get_like(db, query, cls):
+        fields = [f"CAST({key} AS TEXT) ILIKE :query" for key in cls.required + cls.optional]
+        sql = f"""
+            SELECT *
+            FROM {cls.table}
+            WHERE {" OR ".join(fields)}
+        """
+
+        try:
+            res = db.session.execute(text(sql), {"query": f"%{query}%"})
+        except:
+            return []
+
+        return [cls(**row._asdict()) for row in res.fetchall()]
+
     def insert(self, db) -> bool:
         details = self.details()
         fields  = [key for key in details.keys()]
@@ -76,23 +91,34 @@ class Reference(ABC):
         db.session.commit()
         return True
 
-    def delete(self, db) -> bool:
-        sql = text(f"DELETE FROM {self.table} WHERE id=:id")
+    def update(self, db) -> bool:
+        details = self.details()
+        sql = f"""
+            UPDATE {self.table}
+            SET {", ".join([f"{key}=:{key}" for key in details.keys()])}
+            WHERE id = :id
+        """
+
         try:
-            db.session.execute(sql, {"id": self.id})
+            res = db.session.execute(text(sql), {"id": self.id, **details})
         except:
+            db.session.rollback()
             return False
-        
+
         db.session.commit()
         return True
-    
-    def update(self, db) -> bool:   
-        updated_fields = ", ".join(f"{key}=:{key}" for key in self.details())
+
+    def delete(self, db) -> bool:
+        sql = f"""
+            DELETE FROM {self.table} where id=:id
+        """
+
         try:
-            sql = text(f"UPDATE {self.table} SET {updated_fields} WHERE id={self.id}")
-            db.session.execute(sql, self.details())
+            res = db.session.execute(text(sql), {"id": self.id})
         except:
+            db.session.rollback()
             return False
+
         db.session.commit()
         return True
 

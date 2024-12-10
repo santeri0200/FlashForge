@@ -37,7 +37,7 @@ Successfully Created Article
     Main Page Should Be Open
 
 Failed To Create Article
-    Title Should Be  Create article reference
+    Title Should Be  Create Article reference
     Page Should Contain  Invalid details
 
 

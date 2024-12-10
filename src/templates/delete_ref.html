@@ -10,6 +10,6 @@
             {% endfor %}
         </div>
         <input type="submit" value="Delete" style="background:red;"> <input type="button" onclick="location.href='/{{ ref.type }}/{{ ref.id }}';" value="Cancel">
-        {%if error%}<p style="color:red">Error: {{ error_message }}</p>{%endif%}
+        {% if error or False %}<p style="color:red">Error: {{ error_message }}</p>{% endif %}
     </form>
 {%endblock%}

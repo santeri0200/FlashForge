@@ -10,54 +10,29 @@ def index():
 
 @app.route("/create_reference/<ref_type>", methods=["GET", "POST"])
 def add_ref(ref_type):
+    ref = None
     match ref_type:
         case "article":
-            if request.method == "GET":
-                return render_template("create_reference_article.html")
-
+            ref_template = Article()
             ref = Article(**(request.form))
-            if not ref.validate():
-                return render_template("create_reference_article.html",
-                                       error=True, error_message="Invalid details")
-            elif not database.add_reference(ref):
-                return render_template("create_reference_article.html",
-                                       error=True, error_message="Invalid details")
         case "book":
-            if request.method == "GET":
-                return render_template("create_reference_book.html")
-
+            ref_template = Book()
             ref = Book(**(request.form))
-            if not ref.validate():
-                return render_template("create_reference_book.html",
-                                       error=True, error_message="Invalid details")
-            elif not database.add_reference(ref):
-                return render_template("create_reference_book.html",
-                                       error=True, error_message="Invalid details")
         case "inproceedings":
-            if request.method == "GET":
-                return render_template("create_reference_inproceedings.html")
-
+            ref_template = Inproceedings()
             ref = Inproceedings(**(request.form))
-            if not ref.validate():
-                return render_template("create_reference_inproceedings.html",
-                                       error=True, error_message="Invalid details")
-            elif not database.add_reference(ref):
-                return render_template("create_reference_inproceedings.html",
-                                       error=True, error_message="Invalid details")
         case "manual":
-            if request.method == "GET":
-                return render_template("create_reference_manual.html")
-
+            ref_template = Manual()
             ref = Manual(**(request.form))
-            if not ref.validate():
-                return render_template("create_reference_manual.html",
-                                       error=True, error_message="Invalid details")
-            elif not database.add_reference(ref):
-                return render_template("create_reference_manual.html",
-                                       error=True, error_message="Invalid details")
-
         case _:
             return render_template("error.html", error="Invalid reference type!")
+
+    if request.method == "GET":
+        return render_template("create_ref.html", ref=ref_template)
+
+    if not ref.validate() or not database.add_reference(ref):
+        return render_template("create_ref.html", ref=ref_template,
+                               error="Invalid details")
 
     return redirect(url_for("index"))
 
@@ -88,104 +63,43 @@ def ref_page(ref_type, id):
 
 @app.route("/edit/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_edit(ref_type, id):
-    if ref_type == "article":
-        ref = database.ref_from_id(ref_type, id)
-    elif ref_type == "book":
-        ref = database.ref_from_id(ref_type, id)
-    elif ref_type == "inproceedings":
-        ref = database.ref_from_id(ref_type, id)
-    elif ref_type == "manual":
-        ref = database.ref_from_id(ref_type, id)
+    ref = database.ref_from_id(ref_type, id)
+    if not ref:
+        return "Reference not found", 404
 
     if request.method == "GET":
-        if ref:
-            return render_template("edit_ref.html", ref=ref)
-        else:
-            return "Reference not found", 404
-    if request.method == "POST":
-        try:
-            if ref_type == "article":
+        return render_template("edit_ref.html", ref=ref)
+    try:
+        edited_ref = None
+        match ref_type:
+            case "article":
                 edited_ref = Article(**(request.form), id=int(id))
-                if not edited_ref.validate():
-                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                if not database.edit_ref(edited_ref):
-                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                return redirect(f"/{ref_type}/{id}")
-
-            elif ref_type == "book":
+            case "book":
                 edited_ref = Book(**(request.form), id=int(id))
-                if not edited_ref.validate():
-                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                if not database.edit_ref(edited_ref):
-                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                return redirect(f"/{ref_type}/{id}")
-
-            elif ref_type == "inproceedings":
+            case "inproceedings":
                 edited_ref = Inproceedings(**(request.form), id=int(id))
-                if not edited_ref.validate():
-                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                if not database.edit_ref(edited_ref):
-                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                return redirect(f"/{ref_type}/{id}")
-
-            elif ref_type == "manual":
+            case "manual":
                 edited_ref = Manual(**(request.form), id=int(id))
-                if not edited_ref.validate():
-                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                if not database.edit_ref(edited_ref):
-                    return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
-                return redirect(f"/{ref_type}/{id}")
+            case _:
+                return "Reference not found", 404
 
-        except ValueError:
-            return render_template("edit_ref.html", ref=ref, error=True, error_message="Invalid details")
+        if not edited_ref.validate() or not database.edit_ref(edited_ref):
+            return render_template("edit_ref.html", ref=ref, error="Invalid details")
+        return redirect(f"/{ref_type}/{id}")
+
+    except ValueError:
+        return render_template("edit_ref.html", ref=ref, error="Invalid details")
 
 @app.route("/delete/<ref_type>/<id>", methods=["GET", "POST"])
 def reference_delete(ref_type, id):
-    if ref_type == "article":
-        article = database.ref_from_id(ref_type, id)
-        if request.method == "GET":
-            if article:
-                return render_template("delete_ref.html", ref=article)
-            else:
-                return "Article not found", 404
-        if request.method == "POST":
-            if database.delete_reference(article):
-                return redirect("/")
-            else:
-                return render_template("error.html", error="Something went wrong.")
-    elif ref_type == "book":
-        book = database.ref_from_id(ref_type, id)
-        if request.method == "GET":
-            if book:
-                return render_template("delete_ref.html", ref=book)
-            else:
-                return "Book not found", 404
-        if request.method == "POST":
-            if database.delete_reference(book):
-                return redirect("/")
-            else:
-                return render_template("error.html", error="Something went wrong.")
-    elif ref_type == "inproceedings":
-        inproceedings = database.ref_from_id(ref_type, id)
-        if request.method == "GET":
-            if inproceedings:
-                return render_template("delete_ref.html", ref=inproceedings)
-            else:
-                return "Inproceedings reference not found", 404
-        if request.method == "POST":
-            if database.delete_reference(inproceedings):
-                return redirect("/")
-            else:
-                return render_template("error.html", error="Something went wrong.")
-    elif ref_type == "manual":
-        manual = database.ref_from_id(ref_type, id)
-        if request.method == "GET":
-            if manual:
-                return render_template("delete_ref.html", ref=manual)
-            else:
-                return "Inproceedings reference not found", 404
-        if request.method == "POST":
-            if database.delete_reference(manual):
-                return redirect("/")
-            else:
-                return render_template("error.html", error="Something went wrong.")
+    ref = database.ref_from_id(ref_type, id)
+    if not ref:
+        return "Reference not found", 404
+
+    if request.method == "GET":
+        return render_template("delete_ref.html", ref=ref)
+
+    if not database.delete_reference(ref):
+        return render_template("error.html", error="Something went wrong.")
+
+    return redirect("/")
