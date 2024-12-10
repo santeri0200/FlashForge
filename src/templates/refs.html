@@ -10,10 +10,12 @@
             <p>Found {{ result_count }} references:</p>
         {% endif %}
         <div class="dropdown">
-            <button>Järjestä</button>
+            <button>Sort</button>
             <div class="dropdown-content">
-                <a href="/order_references/new_to_old">Uusimmasta vanhimpaan</a>
-                <a href="/order_references/old_to_new">Vanhimmasta uusimpaan</a>
+                <a href="/order_references/new_to_old">Year New To Old</a>
+                <a href="/order_references/old_to_new">Year Old To New</a>
+                <a href="/order_references/author_a_to_z">Author (a-z)</a>
+                <a href="/order_references/author_z_to_a">Author (z-a)</a>
             </div>
         </div>
         {% for ref in references %}
