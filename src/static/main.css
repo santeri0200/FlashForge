@@ -131,9 +131,9 @@ header::after {
 .ref {
   margin: 0.5em 0;
   padding: 1em 2em;
-
   border-radius: 0.375em;
   background: var(--background-light);
+  word-wrap: break-word;
 }
 
 .ref-header {
