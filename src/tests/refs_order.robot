@@ -23,6 +23,15 @@ Creating references and order them by year
     Wait Until Element Is Visible    ${LINK_OLD_TO_NEW}
     Click Element    ${LINK_OLD_TO_NEW}
 
+Creating references and order them by author
+    Mouse Over    ${SORT_BUTTON}
+    Wait Until Element Is Visible    ${LINK_AUTHOR_A_TO_Z}
+    Click Element    ${LINK_AUTHOR_A_TO_Z}
+
+    Mouse Over    ${SORT_BUTTON}
+    Wait Until Element Is Visible    ${LINK_AUTHOR_Z_TO_A}
+    Click Element    ${LINK_AUTHOR_Z_TO_A}
+
 *** Keywords ***
 Setup Order
     Reset Articles

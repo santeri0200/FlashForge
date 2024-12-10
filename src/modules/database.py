@@ -110,12 +110,21 @@ def search_result(query):
     return articles
 
 def order_references(order):
+    articles = None
     if order == 'old_to_new':
         sql = text("SELECT * FROM articles ORDER BY year")
         res = db.session.execute(sql)
         articles = res.fetchall()
     if order == 'new_to_old':
         sql = text("SELECT * FROM articles ORDER BY year DESC")
+        res = db.session.execute(sql)
+        articles = res.fetchall()
+    if order == 'author_a_to_z':
+        sql = text("SELECT * FROM articles ORDER BY author")
+        res = db.session.execute(sql)
+        articles = res.fetchall()
+    if order == 'author_z_to_a':
+        sql = text("SELECT * FROM articles ORDER BY author DESC")
         res = db.session.execute(sql)
         articles = res.fetchall()
     return articles
