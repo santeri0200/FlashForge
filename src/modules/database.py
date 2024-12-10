@@ -73,8 +73,6 @@ def reset_db():
 def advanced_search_result(field, query):
     if field == "all_fields":
         return search_result(query)
-    
-    print(*Reference.get_by_field(db, "booktitle", "su", Inproceedings))
 
     return [
         *Reference.get_by_field(db, field, query, Article),
