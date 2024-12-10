@@ -3,10 +3,10 @@
 {% block content %}
     {%if references%}
         <div class="bib-section">
-            <a href="/generate_bib{% if query %}?query={{ query }}{% endif %}" class="generate-bib">Download references here as .bib</a>
+            <a href="/generate_bib{% if query or advanced_query or field %}?{% endif %}{% if query %}query={{ query }}{% if advanced_query or field %}&{% endif %}{% endif %}{% if advanced_query %}advanced_query={{ advanced_query }}{% if field %}&{% endif %}{% endif %}{% if field %}field={{ field }}{% endif %}" class="generate-bib">Download references here as .bib</a>
         </div>
         {% set result_count = references | length %}
-        {% if result_count == 1 %}
+        {% if result_count == 1 %} 
             <p>Found 1 reference:</p>
         {% else %}
             <p>Found {{ result_count }} references:</p>

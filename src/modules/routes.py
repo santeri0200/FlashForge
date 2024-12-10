@@ -50,8 +50,15 @@ if test_env:
 @app.route("/result")
 def search_results():
     query = request.args.get('query')
-    refs = database.search_result(query)
-    return render_template("refs.html", references=refs, query=query, title="Search results")
+    advanced_query = request.args.get('advanced_query')
+    field = request.args.get('field')
+    if field and advanced_query:
+        refs = database.advanced_search_result(field, advanced_query)
+    elif query:
+        refs = database.search_result(query)
+    else:
+        refs = database.get_all_references()
+    return render_template("refs.html", references=refs, field=field, query=query, advanced_query=advanced_query, title="Search results")
 
 @app.route("/<ref_type>/<id>")
 def ref_page(ref_type, id):
@@ -112,12 +119,18 @@ def advanced_search():
         field = request.form.get("field")
         query = request.form.get("advanced_query")
         result = database.advanced_search_result(field, query)
-        return render_template("refs.html", references = result)
+        return render_template("refs.html", references=result, field=field, advanced_query=query, title="Search results")
 
 @app.route("/generate_bib")
 def generate_bib():
     query = request.args.get('query')
-    if query:
+    advanced_query = request.args.get('advanced_query')
+    field = request.args.get('field')
+    if field and advanced_query:
+        refs = database.advanced_search_result(field, advanced_query)
+        print("adv:", advanced_query)
+        print("field:", field)
+    elif query:
         refs = database.search_result(query)
     else:
         refs = database.get_all_references()
