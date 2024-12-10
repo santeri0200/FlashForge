@@ -2,6 +2,9 @@
 {% block title %}{{ title or "References" }}{% endblock %}
 {% block content %}
     {%if references%}
+        <div class="bib-section">
+            <a href="/generate_bib{% if query %}?query={{ query }}{% endif %}" class="generate-bib">Download references here as .bib</a>
+        </div>
         {% set result_count = references | length %}
         {% if result_count == 1 %}
             <p>Found 1 reference:</p>

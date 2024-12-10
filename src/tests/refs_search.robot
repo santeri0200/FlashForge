@@ -44,7 +44,7 @@ Setup Search
     Reset Articles
     Go To  ${HOME_URL}
     Main Page Should Be Open
-    Click Link  Create article reference
+    Click Link  Create Reference
     Input Text  author  Matti
     Input Text  title  Tutkimusartikkeli
     Input Text  journal  Scientific American

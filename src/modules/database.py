@@ -70,3 +70,35 @@ def search_result(query):
 
 def reset_db():
     db_helper.reset_db()
+
+def advanced_search_result(field, query):
+    if query == "":
+        return []
+
+    if field=="all_fields":
+        res = db.session.execute(
+        text("""
+            SELECT author, title, journal, year
+            FROM articles
+            WHERE
+                author ILIKE :query
+                OR title ILIKE :query
+                OR journal ILIKE :query
+                OR CAST(year as TEXT) LIKE :query
+            ORDER BY id DESC
+        """),
+        { "query": f"%{query}%" }
+    )
+    else:
+        res = db.session.execute(
+            text(f"""
+                SELECT author, title, journal, year
+                FROM articles
+                WHERE CAST({field} as TEXT) ILIKE :query
+                ORDER BY id DESC
+            """),
+            {"query": f"%{query}%" }
+        )
+
+    articles = res.fetchall()
+    return articles

@@ -273,3 +273,18 @@ class TestDatabase(unittest.TestCase):
         with self.context:
             self.assertTrue(ref.insert(db))
             self.assertFalse(ref.insert(db))
+
+    def test_advanced_search(self):
+        with self.context:
+            self.assertTrue(database.add_article('Author', 'Title', 'Journal', 2024, None, None, None, None, None))
+            expected = ('Author', 'Title', 'Journal', 2024)
+            res = database.advanced_search_result('author', 'au')
+            self.assertEqual(res, [expected])
+            res = database.advanced_search_result('title', 'tle')
+            self.assertEqual(res, [expected])
+            res = database.advanced_search_result('journal', 'rnal')
+            self.assertEqual(res, [expected])
+            res = database.advanced_search_result('year', '202')
+            self.assertEqual(res, [expected])
+            res = database.advanced_search_result('year', '1999')
+            self.assertEqual(res, [])
