@@ -14,12 +14,26 @@
         {% for ref in references %}
             {% set details = ref.details() %}
             <div class="ref">
-                <h2><a href="/{{ ref.type }}/{{ ref.id }}">View reference</a></h2>
-                {% for key, val in details.items() %}
-                    {% if key != "id" and key != "type" and val != None %}
-                        <p class="ref-key">{{ key | capitalize }}: {{ val or "-" }}</li>
+                <h2><a href="/{{ ref.type }}/{{ ref.id }}">{{details.title or details.booktitle}}</a></h2>
+                {%if details.auhtor%}{{ details.author }}, {%endif%}<i>{{ details.journal or details.publisher or details.booktitle }}</i> {%if details.address%} - {{details.address}} {%endif%} ({{ details.year }})
+                {% set optional_fields = [] %}
+                {% for key, val in details.items()  %}
+                    {% if key not in ["id", "type", "title", "author", "journal", "year"] and val != None %}
+                        {% set _ = optional_fields.append((key, val)) %}
                     {% endif %}
                 {% endfor %}
+                {% if optional_fields %}
+                <br>
+                <br>
+                    <details>
+                        <summary>View more details</summary>
+                        {% for key, val in details.items() %}
+                            {% if key not in ["id", "type", "title", "author", "journal", "year"] and val != None %}
+                                <p class="ref-key">{{ key | capitalize }}: {{ val or "-" }}</li>
+                            {% endif %}
+                        {% endfor %}
+                    </details>
+                {%endif%}
             </div>
         {% endfor %}
     {%else%}

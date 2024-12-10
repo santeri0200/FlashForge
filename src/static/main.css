@@ -195,9 +195,18 @@ header::after {
   background: green;
   margin: auto;
   text-align: center;
+}
 
 pre{
   white-space: pre-wrap;
   overflow-wrap: break-word;
   word-wrap: break-word;
+}
+
+summary{
+  cursor: pointer;
+}
+
+.ref h2{
+  text-decoration: underline;
 }
