@@ -120,7 +120,7 @@ def generate_bib():
     if query:
         refs = database.search_result(query)
     else:
-        refs = database.get_all_articles()
+        refs = database.get_all_references()
     if refs:
         entry = ""
         for ref in refs:

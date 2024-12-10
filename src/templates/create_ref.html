@@ -4,7 +4,7 @@
     <form action="/create_reference/{{ ref.type }}" method="post">
         {% set details = ref.details() %}
         {% for key, _ in details.items() %}
-            <h3>{{ key | capitalize }}</h3>
+            <h3>{{ key | capitalize }}{%if key in ref.required%}<div style="color: red; display: inline;"> *</div>{%endif%}</h3>
             <textarea name="{{ key }}" rows="1" cols="50" maxlength="100" {% if key in ref.required %}required="true"{% endif %}>{{val or ""}}</textarea>
         {% endfor %}
         <!-- Should integers be assigned from numbre input field? -->

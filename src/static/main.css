@@ -202,3 +202,11 @@ pre {
   overflow-wrap: break-word;
   word-wrap: break-word;
 }
+
+summary{
+  cursor: pointer;
+}
+
+.ref h2{
+  text-decoration: underline;
+}
