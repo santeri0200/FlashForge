@@ -15,7 +15,7 @@
             {% set details = ref.details() %}
             <div class="ref">
                 <h2><a href="/{{ ref.type }}/{{ ref.id }}">{{details.title or details.booktitle}}</a></h2>
-                {%if details.auhtor%}{{ details.author }}, {%endif%}<i>{{ details.journal or details.publisher or details.booktitle }}</i> {%if details.address%} - {{details.address}} {%endif%} ({{ details.year }})
+                {%if details.author%}{{ details.author }}, {%endif%}<i>{{ details.journal or details.publisher or details.booktitle }}</i> {%if details.address%} - {{details.address}} {%endif%} ({{ details.year }})
                 {% set optional_fields = [] %}
                 {% for key, val in details.items()  %}
                     {% if key not in ["id", "type", "title", "author", "journal", "year"] and val != None %}
