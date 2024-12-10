@@ -18,7 +18,7 @@
                 {%if details.author%}{{ details.author }}, {%endif%}<i>{{ details.journal or details.publisher or details.booktitle }}</i> {%if details.address%} - {{details.address}} {%endif%} ({{ details.year }})
                 {% set optional_fields = [] %}
                 {% for key, val in details.items()  %}
-                    {% if key not in ["id", "type", "title", "author", "journal", "year"] and val != None %}
+                    {% if key in details.optional and val != None %}
                         {% set _ = optional_fields.append((key, val)) %}
                     {% endif %}
                 {% endfor %}
@@ -28,7 +28,7 @@
                     <details>
                         <summary>View more details</summary>
                         {% for key, val in details.items() %}
-                            {% if key not in ["id", "type", "title", "author", "journal", "year"] and val != None %}
+                            {% if key in details.optional and val != None %}
                                 <p class="ref-key">{{ key | capitalize }}: {{ val or "-" }}</li>
                             {% endif %}
                         {% endfor %}
