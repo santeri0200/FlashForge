@@ -6,7 +6,7 @@ OHTU miniprojekti
 [SPRINT BACKLOG](https://github.com/users/santeri0200/projects/3)
 
 ## Running the project
-Run the project with `sh run_setup.sh`.
+Run the project with `sh scripts/setup.sh`.
 The script uses database `ohtu` which is the same as the default used without `.env`-file.
 
 or
@@ -30,7 +30,7 @@ Run pylint with command: `poetry run pylint src`
 
 ### Robot tests
 
-Run Robot tests with command: `sh run_robot_tests.sh`
+Run Robot tests with command: `sh scripts/ci_robot_tests.sh`
 
 ## Definition of Done
 - All subtasks marked on the task are done.
