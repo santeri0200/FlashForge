@@ -23,7 +23,7 @@
         {% for ref in references %}
             {% set details = ref.details() %}
             <div class="ref">
-                <h2><a href="/{{ ref.type }}/{{ ref.id }}">{{details.title}}</a></h2>
+                <h2><a href="/{{ ref.type }}/{{ ref.id }}" name="article">{{details.title}}</a></h2>
                 {%if details.author%}{{ details.author }}, {%endif%}<i>{{ details.journal or details.publisher or details.booktitle or ""}}</i> {%if details.address%} - {{details.address}} {%endif%} ({{ details.year }})
                 {% set optional_fields = [] %}
                 {% for key, val in details.items()  %}

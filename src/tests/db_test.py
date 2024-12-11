@@ -51,12 +51,56 @@ class TestDatabase(unittest.TestCase):
             month   = None,
             note    = None,
         )
+        ref1 = Book(
+            author    = 'Author',
+            year      = 2024,
+            title     = 'Title',
+            publisher = 'Publisher',
+            address   = 'Address',
+        )
+        ref2 = Inproceedings(
+            author       = 'Author',
+            title        = 'Title',
+            booktitle    = 'Booktitle',
+            year         = 2024,
+            editor       = None,
+            volume       = None,
+            number       = None,
+            series       = None,
+            pages        = None,
+            address      = None,
+            organization = None,
+            month        = None,
+            publisher    = None,
+        )
+        ref3 = Manual(
+            title        = 'Title',
+            year         = 2024,
+            author       = None,
+            organization = None,
+            address      = None,
+            edition      = None,
+            month        = None,
+            note         = None,
+        )
 
         with self.context:
             self.assertTrue(ref.insert(db))
+            self.assertTrue(ref1.insert(db))
+            self.assertTrue(ref2.insert(db))
+            self.assertTrue(ref3.insert(db))
             res = database.get_all_articles()
             ref.id = res[0].id
             self.assertEqual([val.details() for val in res], [ref.details()])
+            res = database.get_all_books()
+            ref1.id = res[0].id
+            self.assertEqual([val.details() for val in res], [ref1.details()])
+            res = database.get_all_inproceedings()
+            ref2.id = res[0].id
+            self.assertEqual([val.details() for val in res], [ref2.details()])
+            res = database.get_all_manuals()
+            ref3.id = res[0].id
+            self.assertEqual([val.details() for val in res], [ref3.details()])
 
     def test_database_add_duplicate_article(self):
         ref = Article(
@@ -297,6 +341,8 @@ class TestDatabase(unittest.TestCase):
             self.assertEqual([val.details() for val in res], [ref.details()])
             res = database.advanced_search_result('year', '1999')
             self.assertEqual([val.details() for val in res], [])
+            res = database.advanced_search_result('all_fields', 'au')
+            self.assertEqual([val.details() for val in res], [ref.details()])
 
     def test_order_references_by_year(self):
         ref = Article(
