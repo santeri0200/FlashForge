@@ -2,7 +2,7 @@
 from sqlalchemy import text
 
 class Reference:
-    """Class for references"""
+    """Default class for references"""
     type     = "generic_reference"
     table    = ""
     required = []
@@ -10,6 +10,10 @@ class Reference:
     special  = {}
     id       = None
     fields   = {}
+
+    def __init__(self, id=None, **kwargs):
+        self.id     = id
+        self.fields = { **kwargs }
 
     def validate(self):
         required_fields = all(
@@ -153,10 +157,6 @@ class Article(Reference):
     optional = ["volume", "number", "pages", "month", "note"]
     special  = { "year": int, "volume": int, "number": int }
 
-    def __init__(self, id=None, **kwargs):
-        self.id     = id
-        self.fields = { **kwargs }
-
 class Book(Reference):
     """Class for book references"""
     type     = "book"
@@ -164,10 +164,6 @@ class Book(Reference):
     required = ["author", "title", "publisher", "year", "address"]
     optional = []
     special  = { "year": int }
-
-    def __init__(self, id=None, **kwargs):
-        self.id     = id
-        self.fields = { **kwargs }
 
 class Inproceedings(Reference):
     """Class for inproceedings references"""
@@ -178,10 +174,6 @@ class Inproceedings(Reference):
                 "month", "organization", "publisher"]
     special  = { "year": int, "volume": int, "number": int }
 
-    def __init__(self, id=None, **kwargs):
-        self.id     = id
-        self.fields = { **kwargs }
-
 class Manual(Reference):
     """Class for manuals references"""
     type     = "manual"
@@ -189,7 +181,3 @@ class Manual(Reference):
     required = ["title", "year"]
     optional = ["author", "organization", "address", "edition", "month", "note"]
     special  = { "year": int }
-
-    def __init__(self, id=None, **kwargs):
-        self.id     = id
-        self.fields = { **kwargs }
