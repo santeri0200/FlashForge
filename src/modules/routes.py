@@ -42,10 +42,10 @@ def refs_page():
     return render_template("refs.html", references=database.get_all_references())
 
 if test_env:
-    print("should be here!!!")
     @app.route("/reset_db")
     def reset_database():
-        database.reset_db()
+        from tests import db_helper
+        db_helper.reset_db()
         return "db reset", 200
 
 @app.route("/order_references/<order>")

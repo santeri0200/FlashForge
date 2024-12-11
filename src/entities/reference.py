@@ -1,4 +1,4 @@
-# pylint: disable=bare-except, redefined-builtin, use-a-generator, multiple-statements, consider-iterating-dictionary
+# pylint: disable=bare-except, redefined-builtin
 from sqlalchemy import text
 
 class Reference:
@@ -12,23 +12,24 @@ class Reference:
     fields   = {}
 
     def validate(self):
-        required_fields = all([
-            required in self.fields.keys()
+        required_fields = all(
+            required in self.fields
             for required in self.required
-        ])
+        )
 
-        def canbe(type, field):
+        def can_convert_to(type, field):
             try:
-                if field: type(field)
-                return True
+                if field and type(field):
+                    pass
             except ValueError:
                 return False
+            return True
 
-        typed_fields = all([
-            canbe(self.special[key], val)
+        typed_fields = all(
+            can_convert_to(self.special[key], val)
             for key, val in self.fields.items()
-            if key in self.special.keys()
-        ])
+            if key in self.special
+        )
 
         return required_fields and typed_fields
 
@@ -37,70 +38,58 @@ class Reference:
         populated = {key: val or None for key, val in self.fields.items()}
         return {**default, **populated}
 
-    # pylint: disable=no-self-argument
-    def from_id(db, id, cls):
+    def from_id(self, db):
         sql = f"""
-            SELECT * FROM {cls.table} WHERE id = :id
+            SELECT * FROM {self.table} WHERE id = :id
         """
 
-        print(id, sql)
-
         try:
-            # pylint: disable=no-member
-            res = db.session.execute(text(sql), { "id": id })
+            res = db.session.execute(text(sql), { "id": self.id })
         except:
-            return cls()
+            return self.__class__()
 
         row = res.fetchone()
-        return cls(**row._asdict()) if row else cls()
+        return self.__class__(**row._asdict()) if row else None
 
-    # pylint: disable=no-self-argument
-    def get_all(db, cls):
+    def get_all(self, db):
         sql = f"""
-            SELECT * FROM {cls.table}
+            SELECT * FROM {self.table}
         """
 
         try:
-            # pylint: disable=no-member
             res = db.session.execute(text(sql))
         except:
             return []
 
-        return [cls(**row._asdict()) for row in res.fetchall()]
+        return [self.__class__(**row._asdict()) for row in res.fetchall()]
 
-    # pylint: disable=no-self-argument
-    def get_like(db, query, cls):
-        fields = [f"CAST({key} AS TEXT) ILIKE :query" for key in cls.required + cls.optional]
+    def get_like(self, db, query):
+        fields = [f"CAST({key} AS TEXT) ILIKE :query" for key in self.required + self.optional]
         sql = f"""
             SELECT *
-            FROM {cls.table}
+            FROM {self.table}
             WHERE {" OR ".join(fields)}
         """
 
         try:
-            # pylint: disable=no-member
             res = db.session.execute(text(sql), {"query": f"%{query}%"})
-            return [cls(**row._asdict()) for row in res.fetchall()]
+            return [self.__class__(**row._asdict()) for row in res.fetchall()]
         except:
-            # pylint: disable=no-member
             db.session.rollback()
             return []
 
 
-    # pylint: disable=no-self-argument
-    def get_by_field(db, field, query, cls):
+    def get_by_field(self, db, field, query):
         sql = f"""
             SELECT *
-            FROM {cls.table}
+            FROM {self.table}
             WHERE CAST({field} AS TEXT) ILIKE :query
         """
 
         try:
-            # pylint: disable=no-member
             res = db.session.execute(text(sql), {"query": f"%{query}%"})
-            return [cls(**row._asdict()) for row in res.fetchall()]
+            return [self.__class__(**row._asdict()) for row in res.fetchall()]
         except:
-            # pylint: disable=no-member
             db.session.rollback()
             return []
 
@@ -110,8 +99,6 @@ class Reference:
         sql = f"""
             INSERT INTO {self.table} ({", ".join(fields)}) VALUES ({", ".join([f":{key}" for key in fields])})
         """
-
-        print(sql, details)
 
         try:
             db.session.execute(text(sql), details)

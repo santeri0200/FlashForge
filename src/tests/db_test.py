@@ -198,7 +198,7 @@ class TestDatabase(unittest.TestCase):
             )
 
             self.assertTrue(database.edit_ref(expected))
-            res = database.article_from_id(expected.id)
+            res = database.ref_from_id("article", expected.id)
             self.assertEqual(res.details(), expected.details())
 
     def test_database_delete_article(self):
