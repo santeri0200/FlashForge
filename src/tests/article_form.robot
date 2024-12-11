@@ -53,6 +53,6 @@ The article bibtex can be copied to clipboard
     Successfully Created Article
     Go To  ${REFS_URL}
     Click Link  article
-    Click Button  Copy LaTeX
+    Click Button  Copy BibTeX
     Page Should Contain  Copied!
 
