@@ -44,7 +44,10 @@ def refs_page():
 if test_env:
     @app.route("/reset_db")
     def reset_database():
+        # This is the only import from tests
+        # pylint: disable=import-outside-toplevel
         from tests import db_helper
+
         db_helper.reset_db()
         return "db reset", 200
 

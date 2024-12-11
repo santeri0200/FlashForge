@@ -5,6 +5,7 @@ from config import app, db
 
 from entities.reference import Article, Book, Inproceedings, Manual
 
+# pylint: disable=too-many-public-methods
 class TestDatabase(unittest.TestCase):
     """Class for testing the database"""
 
