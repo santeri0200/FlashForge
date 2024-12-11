@@ -343,3 +343,35 @@ class TestDatabase(unittest.TestCase):
             self.assertEqual([val.details() for val in res], [])
             res = database.advanced_search_result('all_fields', 'au')
             self.assertEqual([val.details() for val in res], [ref.details()])
+
+    def test_order_references_by_year(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+        ref2 = Article(
+            author  = 'Author2',
+            title   = 'Title2',
+            journal = 'Journal2',
+            year    = 2022,
+            volume  = None,
+            number  = None,
+            pages   = None,
+            month   = None,
+            note    = None,
+        )
+
+        with self.context:
+            self.assertTrue(database.add_reference(ref))
+            self.assertTrue(database.add_reference(ref2))
+            res = database.order_references('old_to_new')
+            self.assertEqual(res[0].details().get("author"), 'Author2')
+            res = database.order_references('new_to_old')
+            self.assertEqual(res[0].details().get("author"), 'Author')

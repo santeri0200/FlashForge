@@ -197,6 +197,53 @@ header::after {
   text-align: center;
 }
 
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown button {
+  background: var(--background-light);
+  color: var(--text);
+  padding: 0.5em 1em;
+  border: 1px solid var(--border-color-light);
+  border-radius: 0.375em;
+  cursor: pointer;
+}
+
+.dropdown button:hover {
+  background: var(--accent-color);
+  color: var(--text-bright);
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background: var(--background-light);
+  color: var(--text-toned);
+  min-width: 150px;
+  border: 1px solid var(--border-color);
+  border-radius: 0.375em;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: var(--text-toned);
+  padding: 0.5em 1em;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background: var(--accent-color);
+  color: var(--text-bright);
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
 pre {
   white-space: pre-wrap;
   overflow-wrap: break-word;

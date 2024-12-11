@@ -67,6 +67,21 @@ def search_result(query):
         *Reference.get_like(db, query, Manual),
     ]
 
+def order_references(order):
+    match order:
+        case "old_to_new":
+            return sorted(get_all_references(), key=lambda ref: ref.details().get("year") or "")
+        case "new_to_old":
+            return order_references("old_to_new")[::-1]
+        case "author_a_to_z":
+            return sorted(get_all_references(), key=lambda ref: ref.details().get("author") or "")
+        case "author_z_to_a":
+            return order_references("author_a_to_z")[::-1]
+
+        case _:
+            return []
+
+
 def reset_db():
     db_helper.reset_db()
 
