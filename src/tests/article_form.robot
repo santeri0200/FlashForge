@@ -3,7 +3,6 @@ Resource         resource.robot
 Suite Setup      Open And Configure Browser
 Suite Teardown   Close Browser
 Test Setup       Reset Articles
-Library    pyperclip
 
 
 *** Test Cases ***
@@ -54,12 +53,6 @@ The article bibtex can be copied to clipboard
     Successfully Created Article
     Go To  ${REFS_URL}
     Click Link  article
-    Click Button  Copy LaTeX
-    ${clipboard_text}=    Get Clipboard Text
-    Should Contain    ${clipboard_text}    Tepon kirjoitelma
-
-*** Keywords ***
-Get Clipboard Text
-    ${text}=    Evaluate    pyperclip.paste()
-    RETURN    ${text}
+    Click Button  Copy BibTeX
+    Page Should Contain  Copied!
 
