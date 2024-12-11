@@ -50,7 +50,7 @@ if test_env:
 
 @app.route("/order_references/<order>")
 def order_references(order):
-    refs=database.order_references(order)
+    refs = database.order_references(order)
     return render_template("refs.html", references=refs)
 
 @app.route("/result")

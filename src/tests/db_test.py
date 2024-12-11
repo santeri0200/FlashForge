@@ -314,7 +314,7 @@ class TestDatabase(unittest.TestCase):
             author  = 'Author2',
             title   = 'Title2',
             journal = 'Journal2',
-            year    = 2024,
+            year    = 2022,
             volume  = None,
             number  = None,
             pages   = None,
@@ -326,6 +326,6 @@ class TestDatabase(unittest.TestCase):
             self.assertTrue(database.add_reference(ref))
             self.assertTrue(database.add_reference(ref2))
             res = database.order_references('old_to_new')
-            self.assertEqual(res[0].author, 'Author2')
+            self.assertEqual(res[0].details().get("author"), 'Author2')
             res = database.order_references('new_to_old')
-            self.assertEqual(res[0].author, 'Author')
+            self.assertEqual(res[0].details().get("author"), 'Author')

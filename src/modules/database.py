@@ -71,20 +71,20 @@ def order_references(order):
     articles = None
     if order == 'old_to_new':
         refs = get_all_references()
-        key = lambda ref: ref.year
-        return sorted(refs, key)
+        key = lambda ref: ref.details().get("year")
+        return sorted(refs, key=key)
     if order == 'new_to_old':
         refs = get_all_references()
-        key = lambda ref: ref.year
-        return sorted(refs, key, reverse=True)
+        key = lambda ref: ref.details().get("year")
+        return sorted(refs, key=key, reverse=True)
     if order == 'author_a_to_z':
         refs = get_all_references()
-        key = lambda ref: ref.author
-        return sorted(refs, key)
+        key = lambda ref: ref.details().get("author")
+        return sorted(refs, key=key)
     if order == 'author_z_to_a':
         refs = get_all_references()
-        key = lambda ref: ref.author
-        return sorted(refs, key, reverse=True)
+        key = lambda ref: ref.details().get("author")
+        return sorted(refs, key=key, reverse=True)
     return articles
 
 
