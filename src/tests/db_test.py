@@ -17,91 +17,72 @@ class TestDatabase(unittest.TestCase):
             db_helper.setup_db()
 
     def setUp(self):
-        pass
+        self.article_ref = Article(
+             author   = 'Article Author',
+             title    = 'Article Title',
+             journal  = 'Article Journal',
+             year     = 2024
+        )
+        self.book_ref = Book(
+            author    = 'Book Author',
+            title     = 'Book Title',
+            publisher = 'Book Publisher',
+            year      = 2022,
+            address   = 'Book Address'
+        )
+        self.inproceedings_ref = Inproceedings(
+            author    = 'Inproceedings Author',
+            title     = 'Inproceedings Title',
+            booktitle = 'Inproceedings Booktitle',
+            year      = 2023,
+        )
+        self.manual_ref = Manual(
+            title     = 'Manual Title',
+            year      = 2021,
+        )
 
     def tearDown(self):
         with self.context:
             db_helper.reset_db()
 
     def test_database_add_article(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.article_ref.insert(db))
 
     def test_database_query(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-        ref1 = Book(
-            author    = 'Author',
-            year      = 2024,
-            title     = 'Title',
-            publisher = 'Publisher',
-            address   = 'Address',
-        )
-        ref2 = Inproceedings(
-            author       = 'Author',
-            title        = 'Title',
-            booktitle    = 'Booktitle',
-            year         = 2024,
-        )
-        ref3 = Manual(
-            title        = 'Title',
-            year         = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
-            self.assertTrue(ref1.insert(db))
-            self.assertTrue(ref2.insert(db))
-            self.assertTrue(ref3.insert(db))
+            self.assertTrue(self.article_ref.insert(db))
+            self.assertTrue(self.book_ref.insert(db))
+            self.assertTrue(self.inproceedings_ref.insert(db))
+            self.assertTrue(self.manual_ref.insert(db))
+
             res = database.get_all_articles()
-            ref.id = res[0].id
-            self.assertEqual([val.details() for val in res], [ref.details()])
+            self.article_ref.id = res[0].id
+            self.assertEqual([val.details() for val in res], [self.article_ref.details()])
+
             res = database.get_all_books()
-            ref1.id = res[0].id
-            self.assertEqual([val.details() for val in res], [ref1.details()])
+            self.book_ref.id = res[0].id
+            self.assertEqual([val.details() for val in res], [self.book_ref.details()])
+
             res = database.get_all_inproceedings()
-            ref2.id = res[0].id
-            self.assertEqual([val.details() for val in res], [ref2.details()])
+            self.inproceedings_ref.id = res[0].id
+            self.assertEqual([val.details() for val in res], [self.inproceedings_ref.details()])
+
             res = database.get_all_manuals()
-            ref3.id = res[0].id
-            self.assertEqual([val.details() for val in res], [ref3.details()])
+            self.manual_ref.id = res[0].id
+            self.assertEqual([val.details() for val in res], [self.manual_ref.details()])
 
     def test_database_add_duplicate_article(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
-            self.assertFalse(ref.insert(db))
+            self.assertTrue(self.article_ref.insert(db))
+            self.assertFalse(self.article_ref.insert(db))
 
     def test_database_valid_search(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.article_ref.insert(db))
             res = database.search_result('Au')
 
-            expected = ref.details()
+            expected = self.article_ref.details()
             self.assertEqual([val.details() for val in res], [expected])
 
             res = database.search_result('thor')
@@ -111,15 +92,8 @@ class TestDatabase(unittest.TestCase):
             self.assertEqual([val.details() for val in res], [expected])
 
     def test_database_invalid_search(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.article_ref.insert(db))
 
             res = database.search_result('Invalid')
             self.assertEqual(res, [])
@@ -128,241 +102,131 @@ class TestDatabase(unittest.TestCase):
             self.assertEqual(res, [])
 
     def test_database_edit_article(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.article_ref.insert(db))
             res = database.get_all_articles()
-            ref.id = res[0].id
+            self.article_ref.id = res[0].id
 
-            self.assertTrue(database.edit_ref(ref))
-            res = database.ref_from_id(ref.type, ref.id)
-            self.assertEqual(res.details(), ref.details())
+            self.assertTrue(database.edit_ref(self.article_ref))
+            res = database.ref_from_id(self.article_ref.type, self.article_ref.id)
+            self.assertEqual(res.details(), self.article_ref.details())
 
     def test_database_edit_book(self):
-        ref = Book(
-            author  = 'Author',
-            title   = 'Title',
-            publisher = 'Publisher',
-            year    = 2024,
-            address = 'Address',
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.book_ref.insert(db))
             res = database.get_all_books()
-            ref.id = res[0].id
+            self.book_ref.id = res[0].id
 
-            self.assertTrue(database.edit_ref(ref))
-            res = database.ref_from_id(ref.type, ref.id)
-            self.assertEqual(res.details(), ref.details())
+            self.assertTrue(database.edit_ref(self.book_ref))
+            res = database.ref_from_id(self.book_ref.type, self.book_ref.id)
+            self.assertEqual(res.details(), self.book_ref.details())
 
     def test_database_edit_inproceedings(self):
-        ref = Inproceedings(
-            author  = 'Author',
-            title   = 'Title',
-            booktitle = 'Booktitle',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.inproceedings_ref.insert(db))
             res = database.get_all_inproceedings()
-            ref.id = res[0].id
+            self.inproceedings_ref.id = res[0].id
 
-            self.assertTrue(database.edit_ref(ref))
-            res = database.ref_from_id(ref.type, ref.id)
-            self.assertEqual(res.details(), ref.details())
+            self.assertTrue(database.edit_ref(self.inproceedings_ref))
+            res = database.ref_from_id(self.inproceedings_ref.type, self.inproceedings_ref.id)
+            self.assertEqual(res.details(), self.inproceedings_ref.details())
 
     def test_database_edit_manual(self):
-        ref = Manual(
-            title   = 'Title',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.manual_ref.insert(db))
             res = database.get_all_manuals()
-            ref.id = res[0].id
+            self.manual_ref.id = res[0].id
 
-            self.assertTrue(database.edit_ref(ref))
-            res = database.ref_from_id(ref.type, ref.id)
-            self.assertEqual(res.details(), ref.details())
+            self.assertTrue(database.edit_ref(self.manual_ref))
+            res = database.ref_from_id(self.manual_ref.type, self.manual_ref.id)
+            self.assertEqual(res.details(), self.manual_ref.details())
 
     def test_database_edit_invalid(self):
-        ref = Manual(
-            id      = 0,
-            title   = 'Title',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(database.edit_ref(ref))
-            res = database.ref_from_id("invalid", ref.id)
+            self.manual_ref.id = 0
+            self.assertTrue(database.edit_ref(self.manual_ref))
+            res = database.ref_from_id("invalid", self.manual_ref.id)
             self.assertEqual(res, None)
 
     def test_database_delete_article(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.article_ref.insert(db))
             res = database.get_all_articles()
             self.assertTrue(database.delete_reference(res[0]))
             res = database.get_all_articles()
             self.assertEqual(res, [])
 
     def test_database_add_book(self):
-        ref = Book(
-            author    = 'Author',
-            year      = 2024,
-            title     = 'Title',
-            publisher = 'Publisher',
-            address   = 'Address',
-    )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.book_ref.insert(db))
 
     def test_database_add_duplicate_book(self):
-        ref = Book(
-            author    = 'Author',
-            year      = 2024,
-            title     = 'Title',
-            publisher = 'Publisher',
-            address   = 'Address',
-    )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
-            self.assertFalse(ref.insert(db))
+            self.assertTrue(self.book_ref.insert(db))
+            self.assertFalse(self.book_ref.insert(db))
 
     def test_database_add_inproceedings(self):
-        ref = Inproceedings(
-            author       = 'Author',
-            title        = 'Title',
-            booktitle    = 'Booktitle',
-            year         = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.inproceedings_ref.insert(db))
 
     def test_database_add_duplicate_inproceedings(self):
-        ref = Inproceedings(
-            author       = 'Author',
-            title        = 'Title',
-            booktitle    = 'Booktitle',
-            year         = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
-            self.assertFalse(ref.insert(db))
+            self.assertTrue(self.inproceedings_ref.insert(db))
+            self.assertFalse(self.inproceedings_ref.insert(db))
 
     def test_database_add_manual(self):
-        ref = Manual(
-            title        = 'Title',
-            year         = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
+            self.assertTrue(self.manual_ref.insert(db))
 
     def test_database_add_duplicate_manual(self):
-        ref = Manual(
-            title        = 'Title',
-            year         = 2024,
-        )
-
         with self.context:
-            self.assertTrue(ref.insert(db))
-            self.assertFalse(ref.insert(db))
+            self.assertTrue(self.manual_ref.insert(db))
+            self.assertFalse(self.manual_ref.insert(db))
 
     def test_advanced_search(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(database.add_reference(ref))
+            self.assertTrue(database.add_reference(self.article_ref))
+
             res = database.advanced_search_result('author', 'au')
-            self.assertEqual([val.details() for val in res], [ref.details()])
+            self.assertEqual([val.details() for val in res], [self.article_ref.details()])
+
             res = database.advanced_search_result('title', 'tle')
-            self.assertEqual([val.details() for val in res], [ref.details()])
+            self.assertEqual([val.details() for val in res], [self.article_ref.details()])
+
             res = database.advanced_search_result('journal', 'rnal')
-            self.assertEqual([val.details() for val in res], [ref.details()])
+            self.assertEqual([val.details() for val in res], [self.article_ref.details()])
+
             res = database.advanced_search_result('year', '1999')
             self.assertEqual([val.details() for val in res], [])
+
             res = database.advanced_search_result('all_fields', 'au')
-            self.assertEqual([val.details() for val in res], [ref.details()])
+            self.assertEqual([val.details() for val in res], [self.article_ref.details()])
 
     def test_order_references_by_year(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-        ref2 = Article(
-            author  = 'Author2',
-            title   = 'Title2',
-            journal = 'Journal2',
-            year    = 2022,
-        )
-
         with self.context:
-            self.assertTrue(database.add_reference(ref))
-            self.assertTrue(database.add_reference(ref2))
+            self.assertTrue(database.add_reference(self.article_ref))
+            self.assertTrue(database.add_reference(self.book_ref))
+
             res = database.order_references('old_to_new')
-            self.assertEqual(res[0].details().get("author"), 'Author2')
+            self.assertEqual(res[0].details().get("author"), self.book_ref.details().get("author"))
+
             res = database.order_references('new_to_old')
-            self.assertEqual(res[0].details().get("author"), 'Author')
+            self.assertEqual(res[0].details().get("author"), self.article_ref.details().get("author"))
 
     def test_order_references_by_author(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-        ref2 = Article(
-            author  = 'Author2',
-            title   = 'Title2',
-            journal = 'Journal2',
-            year    = 2022,
-        )
-
         with self.context:
-            self.assertTrue(database.add_reference(ref))
-            self.assertTrue(database.add_reference(ref2))
+            self.assertTrue(database.add_reference(self.article_ref))
+            self.assertTrue(database.add_reference(self.book_ref))
+
             res = database.order_references('author_a_to_z')
-            self.assertEqual(res[0].details().get("author"), 'Author')
+            self.assertEqual(res[0].details().get("author"), self.article_ref.details().get("author"))
+
             res = database.order_references('author_z_to_a')
-            self.assertEqual(res[0].details().get("author"), 'Author2')
+            self.assertEqual(res[0].details().get("author"), self.book_ref.details().get("author"))
 
     def test_order_references_by_invalid(self):
-        ref = Article(
-            author  = 'Author',
-            title   = 'Title',
-            journal = 'Journal',
-            year    = 2024,
-        )
-
         with self.context:
-            self.assertTrue(database.add_reference(ref))
+            self.assertTrue(database.add_reference(self.article_ref))
             self.assertEqual([
                 val.details() for val in database.order_references('invalid')
             ], [
