@@ -80,10 +80,12 @@ class Reference:
         try:
             # pylint: disable=no-member
             res = db.session.execute(text(sql), {"query": f"%{query}%"})
+            return [cls(**row._asdict()) for row in res.fetchall()]
         except:
+            # pylint: disable=no-member
+            db.session.rollback()
             return []
 
-        return [cls(**row._asdict()) for row in res.fetchall()]
 
     # pylint: disable=no-self-argument
     def get_by_field(db, field, query, cls):
@@ -96,10 +98,11 @@ class Reference:
         try:
             # pylint: disable=no-member
             res = db.session.execute(text(sql), {"query": f"%{query}%"})
+            return [cls(**row._asdict()) for row in res.fetchall()]
         except:
+            # pylint: disable=no-member
+            db.session.rollback()
             return []
-
-        return [cls(**row._asdict()) for row in res.fetchall()]
 
     def insert(self, db) -> bool:
         details = self.details()

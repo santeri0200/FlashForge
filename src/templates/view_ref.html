@@ -10,10 +10,30 @@
     </div>
     <div class="ref">
         <h2>LaTeX entry</h2>
-        <pre>{{ ref.generate() }}</pre>
+        <pre><div id="latex">{{ ref.generate() }}</div></pre>
+        <button id="copy-button">Copy LaTeX</button>
+        <br>
+        <br>
+        <p id="copied" style="display: none; color: lime">Copied!</p>
     </div>
     <div class="ref">
         <h3>Options</h3>
         <a href="/edit/{{ref.type}}/{{ref.id}}">Edit reference</a> | <a href="/delete/{{ref.type}}/{{ref.id}}">Delete reference</a>
     </div>
+
+    <script>
+        const latex = document.getElementById("latex");
+        const copyButton = document.getElementById("copy-button");
+
+        copyButton.addEventListener("click", function(){
+            navigator.clipboard.writeText(latex.textContent.trim()).then(() => {
+                copied.style.display = "block";
+                setTimeout(function() {
+                    copied.style.display = "none";
+                }, 1000);
+            }).catch(err => {
+                console.error("Unable to copy text", err);
+            });
+        });
+    </script>
 {%endblock%}

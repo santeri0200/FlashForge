@@ -30,4 +30,4 @@ Setup References
     Click Button  Create
     Main Page Should Be Open
     Click Link  List of References
-    Click Link  View reference
+    Click Link  Tutkimusartikkeli

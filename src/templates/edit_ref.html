@@ -4,9 +4,14 @@
     {% set details = ref.details() %}
     <form action="/edit/{{ ref.type }}/{{ ref.id }}" method="post">
         {% for key, val in details.items() %}
-            <h3>{{ key | capitalize }}</h3>
-            <textarea name="{{ key }}" rows="1" cols="50" maxlength="100" {% if key in ref.required %}required{% endif %}>{{val or ""}}</textarea>
+            <h3>{{ key | capitalize }}{%if key in ref.required%}<div style="color: red; display: inline;"> *</div>{%endif%}</h3>
+            {%if key in ref.special%}
+                <input type="number" name="{{ key }}" value="{{val or ''}}" min="0" max="2099" {% if key in ref.required %}required="true"{% endif %}></input>
+            {%else%}
+                <textarea name="{{ key }}" rows="1" cols="50" maxlength="500" {% if key in ref.required %}required="true"{% endif %}>{{val or ""}}</textarea>
+            {%endif%}
         {% endfor %}
+        <br>
         <br>
         <input type="submit" value="Save changes"> <input type="button" onclick="location.href='/{{ ref.type }}/{{ ref.id }}';" value="Cancel">
         {% if error or False %}<p style="color:red">Error: {{ error }}</p>{% endif %}

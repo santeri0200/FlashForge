@@ -6,7 +6,8 @@ from entities.reference import Article, Book, Inproceedings, Manual
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    message = request.args.get("message", None)
+    return render_template("index.html", message=message)
 
 @app.route("/create_reference/<ref_type>", methods=["GET", "POST"])
 def add_ref(ref_type):
@@ -34,7 +35,7 @@ def add_ref(ref_type):
         return render_template("create_ref.html", ref=ref_template,
                                error="Invalid details")
 
-    return redirect(url_for("index"))
+    return redirect(url_for("index", message="createsuccess"))
 
 @app.route("/refs")
 def refs_page():
@@ -55,8 +56,16 @@ def order_references(order):
 @app.route("/result")
 def search_results():
     query = request.args.get('query')
-    refs = database.search_result(query)
-    return render_template("refs.html", references=refs, query=query, title="Search results")
+    advanced_query = request.args.get('advanced_query')
+    field = request.args.get('field')
+    if field and advanced_query:
+        refs = database.advanced_search_result(field, advanced_query)
+    elif query:
+        refs = database.search_result(query)
+    else:
+        refs = database.get_all_references()
+    return render_template("refs.html", references=refs, field=field,
+                           query=query, advanced_query=advanced_query, title="Search results")
 
 @app.route("/<ref_type>/<id>")
 def ref_page(ref_type, id):
@@ -107,7 +116,7 @@ def reference_delete(ref_type, id):
     if not database.delete_reference(ref):
         return render_template("error.html", error="Something went wrong.")
 
-    return redirect("/")
+    return redirect(url_for("index", message="deletesuccess"))
 
 @app.route("/advanced_search", methods=["GET", "POST"])
 def advanced_search():
@@ -117,15 +126,20 @@ def advanced_search():
         field = request.form.get("field")
         query = request.form.get("advanced_query")
         result = database.advanced_search_result(field, query)
-        return render_template("refs.html", references = result)
+        return render_template("refs.html", references=result, field=field,
+                               advanced_query=query, title="Search results")
 
 @app.route("/generate_bib")
 def generate_bib():
     query = request.args.get('query')
-    if query:
+    advanced_query = request.args.get('advanced_query')
+    field = request.args.get('field')
+    if field and advanced_query:
+        refs = database.advanced_search_result(field, advanced_query)
+    elif query:
         refs = database.search_result(query)
     else:
-        refs = database.get_all_articles()
+        refs = database.get_all_references()
     if refs:
         entry = ""
         for ref in refs:
