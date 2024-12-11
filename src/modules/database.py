@@ -68,24 +68,18 @@ def search_result(query):
     ]
 
 def order_references(order):
-    articles = None
-    if order == 'old_to_new':
-        refs = get_all_references()
-        key = lambda ref: ref.details().get("year")
-        return sorted(refs, key=key)
-    if order == 'new_to_old':
-        refs = get_all_references()
-        key = lambda ref: ref.details().get("year")
-        return sorted(refs, key=key, reverse=True)
-    if order == 'author_a_to_z':
-        refs = get_all_references()
-        key = lambda ref: ref.details().get("author")
-        return sorted(refs, key=key)
-    if order == 'author_z_to_a':
-        refs = get_all_references()
-        key = lambda ref: ref.details().get("author")
-        return sorted(refs, key=key, reverse=True)
-    return articles
+    match order:
+        case "old_to_new":
+            return sorted(get_all_references(), key=lambda ref: ref.details().get("year") or "")
+        case "new_to_old":
+            return order_references("old_to_new")[::-1]
+        case "author_a_to_z":
+            return sorted(get_all_references(), key=lambda ref: ref.details().get("author") or "")
+        case "author_z_to_a":
+            return order_references("author_a_to_z")[::-1]
+
+        case _:
+            return []
 
 
 def reset_db():
