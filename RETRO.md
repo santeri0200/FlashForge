@@ -1,0 +1,4 @@
+- Kokonaisuudet annettiin yksilöille tehtäväksi
+- Lisättiin tapaamisia ja yhdessä ohjelmointia
+- Lisättiin pari- ja ryhmäohjelmointia
+  - Pääosin tapaamisten jälkeen
