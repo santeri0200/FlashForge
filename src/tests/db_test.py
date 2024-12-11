@@ -29,11 +29,6 @@ class TestDatabase(unittest.TestCase):
             title   = 'Title',
             journal = 'Journal',
             year    = 2024,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
 
         with self.context:
@@ -45,11 +40,6 @@ class TestDatabase(unittest.TestCase):
             title   = 'Title',
             journal = 'Journal',
             year    = 2024,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
         ref1 = Book(
             author    = 'Author',
@@ -63,25 +53,10 @@ class TestDatabase(unittest.TestCase):
             title        = 'Title',
             booktitle    = 'Booktitle',
             year         = 2024,
-            editor       = None,
-            volume       = None,
-            number       = None,
-            series       = None,
-            pages        = None,
-            address      = None,
-            organization = None,
-            month        = None,
-            publisher    = None,
         )
         ref3 = Manual(
             title        = 'Title',
             year         = 2024,
-            author       = None,
-            organization = None,
-            address      = None,
-            edition      = None,
-            month        = None,
-            note         = None,
         )
 
         with self.context:
@@ -108,11 +83,6 @@ class TestDatabase(unittest.TestCase):
             title   = 'Title',
             journal = 'Journal',
             year    = 2024,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
 
         with self.context:
@@ -125,11 +95,6 @@ class TestDatabase(unittest.TestCase):
             title   = 'Title',
             journal = 'Journal',
             year    = 2024,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
 
         with self.context:
@@ -151,11 +116,6 @@ class TestDatabase(unittest.TestCase):
             title   = 'Title',
             journal = 'Journal',
             year    = 2024,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
 
         with self.context:
@@ -173,33 +133,78 @@ class TestDatabase(unittest.TestCase):
             title   = 'Title',
             journal = 'Journal',
             year    = 2024,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
 
         with self.context:
             self.assertTrue(ref.insert(db))
             res = database.get_all_articles()
+            ref.id = res[0].id
 
-            expected = Article(
-                id      = res[0].id,
-                author  = 'Author',
-                title   = 'Title',
-                journal = 'Journal',
-                year    = 2024,
-                volume  = None,
-                number  = None,
-                pages   = None,
-                month   = None,
-                note    = None,
-            )
+            self.assertTrue(database.edit_ref(ref))
+            res = database.ref_from_id(ref.type, ref.id)
+            self.assertEqual(res.details(), ref.details())
 
-            self.assertTrue(database.edit_ref(expected))
-            res = database.ref_from_id("article", expected.id)
-            self.assertEqual(res.details(), expected.details())
+    def test_database_edit_book(self):
+        ref = Book(
+            author  = 'Author',
+            title   = 'Title',
+            publisher = 'Publisher',
+            year    = 2024,
+            address = 'Address',
+        )
+
+        with self.context:
+            self.assertTrue(ref.insert(db))
+            res = database.get_all_books()
+            ref.id = res[0].id
+
+            self.assertTrue(database.edit_ref(ref))
+            res = database.ref_from_id(ref.type, ref.id)
+            self.assertEqual(res.details(), ref.details())
+
+    def test_database_edit_inproceedings(self):
+        ref = Inproceedings(
+            author  = 'Author',
+            title   = 'Title',
+            booktitle = 'Booktitle',
+            year    = 2024,
+        )
+
+        with self.context:
+            self.assertTrue(ref.insert(db))
+            res = database.get_all_inproceedings()
+            ref.id = res[0].id
+
+            self.assertTrue(database.edit_ref(ref))
+            res = database.ref_from_id(ref.type, ref.id)
+            self.assertEqual(res.details(), ref.details())
+
+    def test_database_edit_manual(self):
+        ref = Manual(
+            title   = 'Title',
+            year    = 2024,
+        )
+
+        with self.context:
+            self.assertTrue(ref.insert(db))
+            res = database.get_all_manuals()
+            ref.id = res[0].id
+
+            self.assertTrue(database.edit_ref(ref))
+            res = database.ref_from_id(ref.type, ref.id)
+            self.assertEqual(res.details(), ref.details())
+
+    def test_database_edit_invalid(self):
+        ref = Manual(
+            id      = 0,
+            title   = 'Title',
+            year    = 2024,
+        )
+
+        with self.context:
+            self.assertTrue(database.edit_ref(ref))
+            res = database.ref_from_id("invalid", ref.id)
+            self.assertEqual(res, None)
 
     def test_database_delete_article(self):
         ref = Article(
@@ -207,11 +212,6 @@ class TestDatabase(unittest.TestCase):
             title   = 'Title',
             journal = 'Journal',
             year    = 2024,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
 
         with self.context:
@@ -252,15 +252,6 @@ class TestDatabase(unittest.TestCase):
             title        = 'Title',
             booktitle    = 'Booktitle',
             year         = 2024,
-            editor       = None,
-            volume       = None,
-            number       = None,
-            series       = None,
-            pages        = None,
-            address      = None,
-            organization = None,
-            month        = None,
-            publisher    = None,
         )
 
         with self.context:
@@ -272,15 +263,6 @@ class TestDatabase(unittest.TestCase):
             title        = 'Title',
             booktitle    = 'Booktitle',
             year         = 2024,
-            editor       = None,
-            volume       = None,
-            number       = None,
-            series       = None,
-            pages        = None,
-            address      = None,
-            organization = None,
-            month        = None,
-            publisher    = None,
         )
 
         with self.context:
@@ -291,12 +273,6 @@ class TestDatabase(unittest.TestCase):
         ref = Manual(
             title        = 'Title',
             year         = 2024,
-            author       = None,
-            organization = None,
-            address      = None,
-            edition      = None,
-            month        = None,
-            note         = None,
         )
 
         with self.context:
@@ -306,12 +282,6 @@ class TestDatabase(unittest.TestCase):
         ref = Manual(
             title        = 'Title',
             year         = 2024,
-            author       = None,
-            organization = None,
-            address      = None,
-            edition      = None,
-            month        = None,
-            note         = None,
         )
 
         with self.context:
@@ -324,11 +294,6 @@ class TestDatabase(unittest.TestCase):
             title   = 'Title',
             journal = 'Journal',
             year    = 2024,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
 
         with self.context:
@@ -350,22 +315,12 @@ class TestDatabase(unittest.TestCase):
             title   = 'Title',
             journal = 'Journal',
             year    = 2024,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
         ref2 = Article(
             author  = 'Author2',
             title   = 'Title2',
             journal = 'Journal2',
             year    = 2022,
-            volume  = None,
-            number  = None,
-            pages   = None,
-            month   = None,
-            note    = None,
         )
 
         with self.context:
@@ -375,3 +330,41 @@ class TestDatabase(unittest.TestCase):
             self.assertEqual(res[0].details().get("author"), 'Author2')
             res = database.order_references('new_to_old')
             self.assertEqual(res[0].details().get("author"), 'Author')
+
+    def test_order_references_by_author(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+        )
+        ref2 = Article(
+            author  = 'Author2',
+            title   = 'Title2',
+            journal = 'Journal2',
+            year    = 2022,
+        )
+
+        with self.context:
+            self.assertTrue(database.add_reference(ref))
+            self.assertTrue(database.add_reference(ref2))
+            res = database.order_references('author_a_to_z')
+            self.assertEqual(res[0].details().get("author"), 'Author')
+            res = database.order_references('author_z_to_a')
+            self.assertEqual(res[0].details().get("author"), 'Author2')
+
+    def test_order_references_by_invalid(self):
+        ref = Article(
+            author  = 'Author',
+            title   = 'Title',
+            journal = 'Journal',
+            year    = 2024,
+        )
+
+        with self.context:
+            self.assertTrue(database.add_reference(ref))
+            self.assertEqual([
+                val.details() for val in database.order_references('invalid')
+            ], [
+                val.details() for val in database.get_all_references()
+            ])

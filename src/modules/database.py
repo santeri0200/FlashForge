@@ -67,7 +67,7 @@ def order_references(order):
             return order_references("author_a_to_z")[::-1]
 
         case _:
-            return []
+            return get_all_references()
 
 def advanced_search_result(field, query):
     if field == "all_fields":
