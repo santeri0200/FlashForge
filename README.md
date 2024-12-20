@@ -5,6 +5,8 @@ OHTU miniprojekti
 [BACKLOG](https://github.com/users/santeri0200/projects/4)
 [SPRINT BACKLOG](https://github.com/users/santeri0200/projects/3)
 
+[END REPORT](REPORT.pdf)
+
 ## Running the project
 Run the project with `sh scripts/setup.sh`.
 The script uses database `ohtu` which is the same as the default used without `.env`-file.
