@@ -1,5 +1,7 @@
 CREATE TABLE IF NOT EXISTS Articles (
     id      SERIAL PRIMARY KEY,
+    -- DOI reference (required if found)
+    doi          TEXT,
     -- Required fields
     author  TEXT NOT NULL,
     title   TEXT NOT NULL,
@@ -17,6 +19,8 @@ CREATE TABLE IF NOT EXISTS Articles (
 
 CREATE TABLE IF NOT EXISTS Books (
     id        SERIAL PRIMARY KEY,
+    -- DOI reference (required if found)
+    doi          TEXT,
     -- Required fields
     author    TEXT NOT NULL,
     year      INT  NOT NULL,
@@ -29,6 +33,8 @@ CREATE TABLE IF NOT EXISTS Books (
 
 CREATE TABLE IF NOT EXISTS Inproceedings (
     id           SERIAL PRIMARY KEY,
+    -- DOI reference (required if found)
+    doi          TEXT,
     -- Required fields
     author       TEXT NOT NULL,
     title        TEXT NOT NULL,
@@ -50,6 +56,8 @@ CREATE TABLE IF NOT EXISTS Inproceedings (
 
 CREATE TABLE IF NOT EXISTS Manuals (
     id           SERIAL PRIMARY KEY,
+    -- DOI reference (required if found)
+    doi          TEXT,
     -- Required fields
     title        TEXT NOT NULL,
     year         INT  NOT NULL,

@@ -38,7 +38,7 @@ class Reference:
         return required_fields and typed_fields
 
     def details(self):
-        default   = {key: None for key in self.required + self.optional}
+        default   = {key: None for key in ["doi"] + self.required + self.optional}
         populated = {key: val or None for key, val in self.fields.items()}
         return {**default, **populated}
 
